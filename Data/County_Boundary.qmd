@@ -1,0 +1,107 @@
+<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis version="3.40.6-Bratislava">
+  <identifier>County_Boundary</identifier>
+  <parentidentifier></parentidentifier>
+  <language>ENG</language>
+  <type>dataset</type>
+  <title>County Boundary</title>
+  <abstract>A polygonal representation of the City and County of Denver's jurisdictional boundary. This datasets also includes all enclaves administered by other jurisdications that are located within the City and County of Denver's boundary.
+
+This dataset should be used as a reference to locate activities that are within or outside the City and County of Denver.
+
+A polygonal representation of the City and County of Denver's jurisdictional boundary. This datasets also includes all enclaves administered by other jurisdications that are located within the City and County of Denver's boundary.
+
+This dataset should be used as a reference to locate activities that are within or outside the City and County of Denver.
+
+The City and County of Denver boundary dataset is being updated when information is provided by the City Engineer's Office surveyors. The currentness of the data is defined by the most recent date listed under Citation Revision Date or Time Period of Information.
+
+The City and County of Denver boundary dataset is being updated when information is provided by the City Engineer's Office surveyors. The currentness of the data is defined by the most recent date listed under Citation Revision Date or Time Period of Information.</abstract>
+  <keywords vocabulary="Search keys">
+    <keyword>boundaries</keyword>
+    <keyword>USA</keyword>
+    <keyword>Denver</keyword>
+    <keyword>Colorado</keyword>
+    <keyword>survey</keyword>
+    <keyword>Denver County</keyword>
+  </keywords>
+  <keywords vocabulary="gmd:topicCategory">
+    <keyword>survey</keyword>
+    <keyword>boundaries</keyword>
+    <keyword>survey</keyword>
+    <keyword>boundaries</keyword>
+  </keywords>
+  <contact>
+    <contactAddress>
+      <type></type>
+      <address>201 W Colfax Ave, Dept 507</address>
+      <city>Denver</city>
+      <administrativearea>CO</administrativearea>
+      <postalcode>80202</postalcode>
+      <country>US</country>
+    </contactAddress>
+    <name>Paul Rogalla City and County of Denver - Public Works/Survey </name>
+    <organization></organization>
+    <position></position>
+    <voice>720-865-3118</voice>
+    <fax></fax>
+    <email>Paul.Rogalla@denvergov.org</email>
+    <role>Point of contact</role>
+  </contact>
+  <contact>
+    <contactAddress>
+      <type>unknown</type>
+      <address>201 W Colfax Ave, Dept 507</address>
+      <city>Denver</city>
+      <administrativearea>CO</administrativearea>
+      <postalcode>80202</postalcode>
+      <country>USA</country>
+    </contactAddress>
+    <name>City and County of Denver - Public Works/Survey</name>
+    <organization>City and County of Denver - Public Works/Survey</organization>
+    <position></position>
+    <voice>720-865-3118</voice>
+    <fax>720-865-3280</fax>
+    <email>Paul.Rogalla@denvergov.org</email>
+    <role>Point of contact</role>
+  </contact>
+  <links/>
+  <history>Data source: Coordinate geometry based on legal descriptions. On-screen digitization following natural features when legal descriptions could not be obtained.</history>
+  <dates>
+    <date value="2012-01-25T00:00:00" type="Published"/>
+  </dates>
+  <fees></fees>
+  <constraints type="Security constraints"></constraints>
+  <constraints type="Limitations of use">ACCESS CONSTRAINTS: None. USE CONSTRAINTS: The City and County of Denver is not responsible and shall not be liable to the user for damages of any kind arising out of the use of data or information provided by the City and County of Denver, including the installation of the data or information, its use, or the results obtained from its use. ANY DATA OR INFORMATION PROVIDED BY THE City and County of Denver IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Data or information provided by the City and County of Denver shall be used and relied upon only at the user's sole risk, and the user agrees to indemnify and hold harmless the City and County of Denver, its officials, officers and employees from any liability arising out of the use of the data/information provided. NOT FOR ENGINEERING PURPOSES</constraints>
+  <constraints type="Access">None</constraints>
+  <rights>City and County of Denver - Public Works/Survey</rights>
+  <rights>ACCESS CONSTRAINTS: None. USE CONSTRAINTS: The City and County of Denver is not responsible and shall not be liable to the user for damages of any kind arising out of the use of data or information provided by the City and County of Denver, including the installation of the data or information, its use, or the results obtained from its use. ANY DATA OR INFORMATION PROVIDED BY THE City and County of Denver IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Data or information provided by the City and County of Denver shall be used and relied upon only at the user's sole risk, and the user agrees to indemnify and hold harmless the City and County of Denver, its officials, officers and employees from any liability arising out of the use of the data/information provided. NOT FOR ENGINEERING PURPOSES</rights>
+  <encoding></encoding>
+  <crs>
+    <spatialrefsys nativeFormat="Wkt">
+      <wkt>PROJCRS["NAD83(HARN) / Colorado Central (ftUS)",BASEGEOGCRS["NAD83(HARN)",DATUM["NAD83 (High Accuracy Reference Network)",ELLIPSOID["GRS 1980",6378137,298.257222101,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],ID["EPSG",4152]],CONVERSION["SPCS83 Colorado Central zone (US survey foot)",METHOD["Lambert Conic Conformal (2SP)",ID["EPSG",9802]],PARAMETER["Latitude of false origin",37.8333333333333,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8821]],PARAMETER["Longitude of false origin",-105.5,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8822]],PARAMETER["Latitude of 1st standard parallel",39.75,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8823]],PARAMETER["Latitude of 2nd standard parallel",38.45,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8824]],PARAMETER["Easting at false origin",3000000,LENGTHUNIT["US survey foot",0.304800609601219],ID["EPSG",8826]],PARAMETER["Northing at false origin",1000000,LENGTHUNIT["US survey foot",0.304800609601219],ID["EPSG",8827]]],CS[Cartesian,2],AXIS["easting (X)",east,ORDER[1],LENGTHUNIT["US survey foot",0.304800609601219]],AXIS["northing (Y)",north,ORDER[2],LENGTHUNIT["US survey foot",0.304800609601219]],USAGE[SCOPE["Engineering survey, topographic mapping."],AREA["United States (USA) - Colorado - counties Arapahoe; Chaffee; Cheyenne; Clear Creek; Delta; Denver; Douglas; Eagle; El Paso; Elbert; Fremont; Garfield; Gunnison; Jefferson; Kit Carson; Lake; Lincoln; Mesa; Park; Pitkin; Summit; Teller."],BBOX[38.14,-109.06,40.09,-102.04]],ID["EPSG",2877]]</wkt>
+      <proj4>+proj=lcc +lat_0=37.8333333333333 +lon_0=-105.5 +lat_1=39.75 +lat_2=38.45 +x_0=914401.828803658 +y_0=304800.609601219 +ellps=GRS80 +units=us-ft +no_defs</proj4>
+      <srsid>846</srsid>
+      <srid>2877</srid>
+      <authid>EPSG:2877</authid>
+      <description>NAD83(HARN) / Colorado Central (ftUS)</description>
+      <projectionacronym>lcc</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys>
+  </crs>
+  <extent>
+    <spatial maxz="0" dimensions="2" minz="0" maxx="-104.59939500000000123" miny="39.61157999999999646" minx="-105.11003800000000297" crs="EPSG:2877" maxy="39.91630800000000079"/>
+    <temporal>
+      <period>
+        <start>2012-01-25T08:00:00Z</start>
+        <end></end>
+      </period>
+    </temporal>
+    <temporal>
+      <period>
+        <start></start>
+        <end></end>
+      </period>
+    </temporal>
+  </extent>
+</qgis>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Denver Social Vulnerability Map</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        #map {
+            height: 600px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Denver Social Vulnerability Map</h1>
+
+    <div id="map"></div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+    <script>
+
+        // Create the map
+        var map = L.map('map').setView([39.7392, -104.9903], 10);
+
+        // Add a basemap
+        L.tileLayer(
+            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            {
+                attribution: '&copy; OpenStreetMap contributors'
+            }
+        ).addTo(map);
+
+        // Load census tracts
+        fetch('Data/Census_Tracts.geojson')
+            .then(response => {
+                console.log("Response:", response);
+                return response.json();
+            })
+            .then(data => {
+
+                console.log("GeoJSON loaded:", data);
+                console.log("Number of features:", data.features.length);
+
+
+                function getColor(value) {
+                    if (value > 0.8) return "#800026";
+                    if (value > 0.6) return "#BD0026";
+                    if (value > 0.4) return "#E31A1C";
+                    if (value > 0.2) return "#FC4E2A";
+                    return "#FFEDA0";
+                }
+
+                function style(feature) {
+                    return {
+                        fillColor: getColor(feature.properties.SVI),
+                        weight: 1,
+                        opacity: 1,
+                        color: "white",
+                        fillOpacity: 1
+                    };
+                }
+
+                var censusTracts = L.geoJSON(data, {
+                    style: style
+                }).addTo(map);
+
+                map.fitBounds(censusTracts.getBounds());
+
+            })
+            .catch(error => {
+                console.error("GeoJSON error:", error);
+            });
+
+    </script>
+
+</body>
+
+</html>
