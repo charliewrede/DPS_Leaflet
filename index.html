@@ -43,6 +43,7 @@
             .then(data => {
 
                 var alternativeSchools = L.geoJSON(data, {
+                    pane: "pointPane",
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 6,
@@ -62,6 +63,7 @@
             .then(data => {
 
                 var traditionalSchools = L.geoJSON(data, {
+                    pane: "pointPane",
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 6,
@@ -81,6 +83,7 @@
             .then(data => {
 
                 var schools = L.geoJSON(data, {
+                    pane: "pointPane",
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 6,
@@ -103,7 +106,8 @@
                         color: "#000000",
                         weight: 3,
                         fill: false
-                    }
+                    },
+                    pane: 'boundaryPane'
                 });
                 countyBoundary.addTo(map);
             });
@@ -112,7 +116,8 @@
             .then(response => response.json())
             .then(data => {
 
-                var reacreationCenters = L.geoJSON(data, {
+                var recreationCenters = L.geoJSON(data, {
+                    pane: "pointPane",
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 6,
@@ -132,6 +137,7 @@
             .then(data => {
 
                 var sudFacitilities = L.geoJSON(data, {
+                    pane: "pointPane",
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 6,
@@ -142,7 +148,7 @@
                         });
                     }
                 })
-                sudFacilities.addTo(map);
+                sudFacitilities.addTo(map);
 
             });
 
@@ -155,7 +161,8 @@
                         color: "#555555",
                         weight: 1,
                         fill: false
-                    }
+                    },
+                    pane: 'neighborhood'
                 })
                 neighborhoods.addTo(map);
             });
@@ -171,7 +178,8 @@
                         weight: 3,
                         fillColor: "#FF0000",
                         fillOpacity: 0.25
-                    }
+                    },
+                    pane: 'highlightPane'
                 })
                 fiveHighestCensusTracts.addTo(map);
 
@@ -207,7 +215,8 @@
                 }
 
                 var censusTracts = L.geoJSON(data, {
-                    style: style
+                    style: style,
+                    pane: 'censusPane'
                 }).addTo(map);
 
                 map.fitBounds(censusTracts.getBounds());
@@ -216,6 +225,21 @@
             .catch(error => {
                 console.error("GeoJSON error:", error);
             });
+
+        // Create map panes
+        map.createPane('censusPane');
+        map.createPane('boundaryPane');
+        map.createPane('highlightPane');
+        map.createPane('pointPane');
+        map.createPane('neighborhood');
+
+
+        // Set drawing order
+        map.getPane('censusPane').style.zIndex = 300;
+        map.getPane('neighborhood').style.zIndex = 400;
+        map.getPane('boundaryPane').style.zIndex = 600;
+        map.getPane('highlightPane').style.zIndex = 500;
+        map.getPane('pointPane').style.zIndex = 700;
 
 
 
