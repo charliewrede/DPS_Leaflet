@@ -37,7 +37,138 @@
                 attribution: '&copy; OpenStreetMap contributors'
             }
         ).addTo(map);
+        // Alternative Schools
+        fetch('Data/Alternative_Schools.geojson')
+            .then(response => response.json())
+            .then(data => {
 
+                L.geoJSON(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, {
+                            radius: 6,
+                            fillColor: "#800080",
+                            color: "#FFFFFF",
+                            weight: 1,
+                            fillOpacity: 1
+                        });
+                    }
+                }).addTo(map);
+
+            });
+        // Traditional Schools
+        fetch('Data/Traditional_Schools.geojson')
+            .then(response => response.json())
+            .then(data => {
+
+                L.geoJSON(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, {
+                            radius: 6,
+                            fillColor: "#008000",
+                            color: "#FFFFFF",
+                            weight: 1,
+                            fillOpacity: 1
+                        });
+                    }
+                }).addTo(map);
+
+            });
+        // Schools
+        fetch('Data/Schools.geojson')
+            .then(response => response.json())
+            .then(data => {
+
+                L.geoJSON(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, {
+                            radius: 6,
+                            fillColor: "#0000FF",
+                            color: "#FFFFFF",
+                            weight: 1,
+                            fillOpacity: 1
+                        });
+                    }
+                }).addTo(map);
+
+            });
+        // County Boundary
+        fetch('Data/County_Boundary.geojson')
+            .then(response => response.json())
+            .then(data => {
+                var countyBoundary = L.geoJSON(data, {
+                    style: {
+                        color: "#000000",
+                        weight: 3,
+                        fill: false
+                    }
+                });
+                countyBoundary.addTo(map);
+            });
+        // Recreation Centers
+        fetch('Data/Recreation%20Centers.geojson')
+            .then(response => response.json())
+            .then(data => {
+
+                L.geoJSON(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, {
+                            radius: 6,
+                            fillColor: "#FFA500",
+                            color: "#FFFFFF",
+                            weight: 1,
+                            fillOpacity: 1
+                        });
+                    }
+                }).addTo(map);
+
+            });
+        // SUD Facilities
+        fetch('Data/SUD_Facilities.geojson')
+            .then(response => response.json())
+            .then(data => {
+
+                L.geoJSON(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, {
+                            radius: 6,
+                            fillColor: "#FF00FF",
+                            color: "#FFFFFF",
+                            weight: 1,
+                            fillOpacity: 1
+                        });
+                    }
+                }).addTo(map);
+
+            });
+
+        // Neighborhoods
+        fetch('Data/Neighborhoods.geojson')
+            .then(response => response.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: {
+                        color: "#555555",
+                        weight: 1,
+                        fill: false
+                    }
+                }).addTo(map);
+            });
+
+        // Five Highest Census Tracts
+        fetch('Data/Five_Highest_Census_Tracts.geojson')
+            .then(response => response.json())
+            .then(data => {
+
+                L.geoJSON(data, {
+                    style: {
+                        color: "#000000",
+                        weight: 3,
+                        fillColor: "#FF0000",
+                        fillOpacity: 0.25
+                    }
+                }).addTo(map);
+
+            });
         // Load census tracts
         fetch('Data/Census_Tracts.geojson')
             .then(response => {
@@ -78,135 +209,9 @@
             .catch(error => {
                 console.error("GeoJSON error:", error);
             });
-        // County Boundary
-        fetch('Data/County_Boundary.geojson')
-            .then(response => response.json())
-            .then(data => {
-                L.geoJSON(data, {
-                    style: {
-                        color: "#000000",
-                        weight: 3,
-                        fill: false
-                    }
-                }).addTo(map);
-            });
-        // Neighborhoods
-        fetch('Data/Neighborhoods.geojson')
-            .then(response => response.json())
-            .then(data => {
-                L.geoJSON(data, {
-                    style: {
-                        color: "#555555",
-                        weight: 1,
-                        fill: false
-                    }
-                }).addTo(map);
-            });
-        // Schools
-        fetch('Data/Schools.geojson')
-            .then(response => response.json())
-            .then(data => {
 
-                L.geoJSON(data, {
-                    pointToLayer: function (feature, latlng) {
-                        return L.circleMarker(latlng, {
-                            radius: 6,
-                            fillColor: "#0000FF",
-                            color: "#FFFFFF",
-                            weight: 1,
-                            fillOpacity: 1
-                        });
-                    }
-                }).addTo(map);
 
-            });
-        // Traditional Schools
-        fetch('Data/Traditional_Schools.geojson')
-            .then(response => response.json())
-            .then(data => {
 
-                L.geoJSON(data, {
-                    pointToLayer: function (feature, latlng) {
-                        return L.circleMarker(latlng, {
-                            radius: 6,
-                            fillColor: "#008000",
-                            color: "#FFFFFF",
-                            weight: 1,
-                            fillOpacity: 1
-                        });
-                    }
-                }).addTo(map);
-
-            });
-        // Alternative Schools
-        fetch('Data/Alternative_Schools.geojson')
-            .then(response => response.json())
-            .then(data => {
-
-                L.geoJSON(data, {
-                    pointToLayer: function (feature, latlng) {
-                        return L.circleMarker(latlng, {
-                            radius: 6,
-                            fillColor: "#800080",
-                            color: "#FFFFFF",
-                            weight: 1,
-                            fillOpacity: 1
-                        });
-                    }
-                }).addTo(map);
-
-            });
-        // Recreation Centers
-        fetch('Data/Recreation%20Centers.geojson')
-            .then(response => response.json())
-            .then(data => {
-
-                L.geoJSON(data, {
-                    pointToLayer: function (feature, latlng) {
-                        return L.circleMarker(latlng, {
-                            radius: 6,
-                            fillColor: "#FFA500",
-                            color: "#FFFFFF",
-                            weight: 1,
-                            fillOpacity: 1
-                        });
-                    }
-                }).addTo(map);
-
-            });
-        // SUD Facilities
-        fetch('Data/SUD_Facilities.geojson')
-            .then(response => response.json())
-            .then(data => {
-
-                L.geoJSON(data, {
-                    pointToLayer: function (feature, latlng) {
-                        return L.circleMarker(latlng, {
-                            radius: 6,
-                            fillColor: "#FF00FF",
-                            color: "#FFFFFF",
-                            weight: 1,
-                            fillOpacity: 1
-                        });
-                    }
-                }).addTo(map);
-
-            });
-        // Five Highest Census Tracts
-        fetch('Data/Five_Highest_Census_Tracts.geojson')
-            .then(response => response.json())
-            .then(data => {
-
-                L.geoJSON(data, {
-                    style: {
-                        color: "#000000",
-                        weight: 3,
-                        fillColor: "#FF0000",
-                        fillOpacity: 0.25
-                    }
-                }).addTo(map);
-
-            });
     </script>
 
 </body>
