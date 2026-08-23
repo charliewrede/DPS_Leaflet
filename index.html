@@ -42,7 +42,7 @@
             .then(response => response.json())
             .then(data => {
 
-                L.geoJSON(data, {
+                var alternativeSchools = L.geoJSON(data, {
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 6,
@@ -52,7 +52,8 @@
                             fillOpacity: 1
                         });
                     }
-                }).addTo(map);
+                })
+                alternativeSchools.addTo(map);
 
             });
         // Traditional Schools
@@ -60,7 +61,7 @@
             .then(response => response.json())
             .then(data => {
 
-                L.geoJSON(data, {
+                var traditionalSchools = L.geoJSON(data, {
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 6,
@@ -70,7 +71,8 @@
                             fillOpacity: 1
                         });
                     }
-                }).addTo(map);
+                })
+                traditionalSchools.addTo(map);
 
             });
         // Schools
@@ -78,7 +80,7 @@
             .then(response => response.json())
             .then(data => {
 
-                L.geoJSON(data, {
+                var schools = L.geoJSON(data, {
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 6,
@@ -88,7 +90,8 @@
                             fillOpacity: 1
                         });
                     }
-                }).addTo(map);
+                })
+                schools.addTo(map);
 
             });
         // County Boundary
@@ -109,7 +112,7 @@
             .then(response => response.json())
             .then(data => {
 
-                L.geoJSON(data, {
+                var reacreationCenters = L.geoJSON(data, {
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 6,
@@ -119,7 +122,8 @@
                             fillOpacity: 1
                         });
                     }
-                }).addTo(map);
+                })
+                recreationCenters.addTo(map);
 
             });
         // SUD Facilities
@@ -127,7 +131,7 @@
             .then(response => response.json())
             .then(data => {
 
-                L.geoJSON(data, {
+                var sudFacitilities = L.geoJSON(data, {
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 6,
@@ -137,7 +141,8 @@
                             fillOpacity: 1
                         });
                     }
-                }).addTo(map);
+                })
+                sudFacilities.addTo(map);
 
             });
 
@@ -145,13 +150,14 @@
         fetch('Data/Neighborhoods.geojson')
             .then(response => response.json())
             .then(data => {
-                L.geoJSON(data, {
+                var neighborhoods = L.geoJSON(data, {
                     style: {
                         color: "#555555",
                         weight: 1,
                         fill: false
                     }
-                }).addTo(map);
+                })
+                neighborhoods.addTo(map);
             });
 
         // Five Highest Census Tracts
@@ -159,14 +165,15 @@
             .then(response => response.json())
             .then(data => {
 
-                L.geoJSON(data, {
+                var fiveHighestCensusTracts = L.geoJSON(data, {
                     style: {
                         color: "#000000",
                         weight: 3,
                         fillColor: "#FF0000",
                         fillOpacity: 0.25
                     }
-                }).addTo(map);
+                })
+                fiveHighestCensusTracts.addTo(map);
 
             });
         // Load census tracts
