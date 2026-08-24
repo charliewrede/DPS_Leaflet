@@ -116,6 +116,19 @@
 
             return "#F5F500";
         }
+        function getSchoolColor(value) {
+
+            if (value === null || value === undefined || isNaN(value)) {
+                return "#808080";
+            }
+
+            if (value > 0.8) return "#F50000";
+            if (value > 0.6) return "#F53D00";
+            if (value > 0.4) return "#F57A00";
+            if (value > 0.2) return "#F5B800";
+
+            return "#F5F500";
+        }
 
 
         // ============================================================
@@ -129,21 +142,6 @@
                 weight: 1,
                 opacity: 1,
                 color: "#000000",
-                fillOpacity: 1
-            };
-        }
-
-        // ============================================================
-        // SVI School STYLE
-        // ============================================================
-
-        function schoolStyle(feature) {
-
-            return {
-                fillColor: getColor(feature.properties.SRI_SCORE),
-                radius: 6,
-                color: "#000000",
-                weight: 1,
                 fillOpacity: 1
             };
         }
@@ -372,7 +370,17 @@
                     pointToLayer: function (feature, latlng) {
 
                         return L.circleMarker(latlng, {
-                            style: schoolStyle
+
+                            radius: 6,
+
+                            fillColor: getSchoolColor(
+                                feature.properties.SRI_SCORE
+                            ),
+
+                            color: "#000000",
+                            weight: 1,
+                            fillOpacity: 1
+
                         });
 
                     },
@@ -387,6 +395,7 @@
                     }
 
                 });
+
 
 
                 // ========================================================
