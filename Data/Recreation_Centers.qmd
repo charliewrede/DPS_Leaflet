@@ -75,6 +75,6 @@ This dataset should be used as reference to locate recreation centers and recrea
     </spatialrefsys>
   </crs>
   <extent>
-    <spatial maxz="0" dimensions="2" minz="0" maxx="-104.73400499999999624" miny="39.61266100000000279" minx="-105.11003700000000549" crs="EPSG:2877" maxy="39.82519200000000126"/>
+    <spatial minz="0" maxx="-104.73400499999999624" crs="EPSG:2877" maxy="39.82519200000000126" minx="-105.11003700000000549" maxz="0" miny="39.61266100000000279" dimensions="2"/>
   </extent>
 </qgis>
