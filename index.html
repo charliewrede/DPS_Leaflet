@@ -133,6 +133,21 @@
             };
         }
 
+        // ============================================================
+        // SVI School STYLE
+        // ============================================================
+
+        function schoolStyle(feature) {
+
+            return {
+                fillColor: getColor(feature.properties.SRI_SCORE),
+                radius: 6,
+                fillColor: "#0000FF",
+                color: "#FFFFFF",
+                weight: 1,
+                fillOpacity: 1
+            };
+        }
 
         // ============================================================
         // LOAD ALL DATA
@@ -358,13 +373,7 @@
                     pointToLayer: function (feature, latlng) {
 
                         return L.circleMarker(latlng, {
-
-                            radius: 6,
-                            fillColor: "#0000FF",
-                            color: "#FFFFFF",
-                            weight: 1,
-                            fillOpacity: 1
-
+                            style: schoolStyle
                         });
 
                     },
@@ -540,10 +549,10 @@
                         pane: 'highlightPane',
 
                         style: {
-                            color: "#000000",
+                            color: "#A80000",
                             weight: 3,
                             opacity: 1,
-                            fillColor: "#8C0000",
+                            fillColor: "#A80000",
                             fillOpacity: 1
                         },
 
