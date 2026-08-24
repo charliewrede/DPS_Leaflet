@@ -580,7 +580,7 @@
                                 latlng,
                                 {
 
-                                    radius: 10,
+                                    radius: 7,
 
                                     fillColor: getSchoolColor(
                                         feature.properties.SRI_SCORE
@@ -632,7 +632,7 @@
                                 latlng,
                                 {
 
-                                    radius: 6,
+                                    radius: 7,
 
                                     fillColor: "#008000",
 
@@ -682,7 +682,7 @@
                                 latlng,
                                 {
 
-                                    radius: 6,
+                                    radius: 7,
 
                                     fillColor: "#800080",
 
@@ -895,54 +895,24 @@
 
                 L.control.layers(
 
-                    // ----------------------------------------------------
-                    // BASEMAPS
-                    // ----------------------------------------------------
-
                     {
                         "OpenStreetMap": osm
                     },
 
-                    // ----------------------------------------------------
-                    // OVERLAY LAYERS
-                    // ----------------------------------------------------
-
                     {
-
-                        "Census Tracts":
-                            censusTracts,
-
-                        "County Boundary":
-                            countyBoundary,
-
-                        "Neighborhoods":
-                            neighborhoods,
-
-                        "Schools":
-                            schools,
-
-                        "Traditional Schools":
-                            traditionalSchools,
-
-                        "Alternative Schools":
-                            alternativeSchools,
-
-                        "Recreation Centers":
-                            recreationCenters,
-
-                        "SUD Facilities":
-                            sudFacilities,
-
-                        "Five Highest SVI Tracts":
-                            fiveHighestCensusTracts
-
+                        "Census Tracts": censusTracts,
+                        "County Boundary": countyBoundary,
+                        "Neighborhoods": neighborhoods,
+                        "Schools": schools,
+                        "Traditional Schools": traditionalSchools,
+                        "Alternative Schools": alternativeSchools,
+                        "Recreation Centers": recreationCenters,
+                        "SUD Facilities": sudFacilities,
+                        "Five Highest SVI Tracts": fiveHighestCensusTracts
                     },
 
-                    // ----------------------------------------------------
-                    // OPTIONS
-                    // ----------------------------------------------------
-
                     {
+                        position: 'topleft',
                         collapsed: false
                     }
 
