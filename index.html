@@ -12,6 +12,49 @@
         #map {
             height: 600px;
         }
+
+        .info.legend {
+            padding: 10px 12px;
+            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            line-height: 22px;
+            color: #333;
+        }
+
+        .info.legend h4 {
+            margin: 0 0 6px 0;
+            font-size: 14px;
+        }
+
+        .info.legend .legend-section {
+            margin-top: 8px;
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+
+        .info.legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 1;
+        }
+
+        .info.legend .circle-symbol {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 3px 8px 0 3px;
+        }
+
+        .info.legend .line-symbol {
+            width: 20px;
+            height: 0;
+            margin-top: 10px;
+            border-top: 3px solid;
+        }
     </style>
 </head>
 
@@ -371,7 +414,7 @@
 
                         return L.circleMarker(latlng, {
 
-                            radius: 6,
+                            radius: 10,
 
                             fillColor: getSchoolColor(
                                 feature.properties.SRI_SCORE
@@ -487,7 +530,7 @@
                             return L.circleMarker(latlng, {
 
                                 radius: 6,
-                                fillColor: "#FFA500",
+                                fillColor: "#4CE600",
                                 color: "#FFFFFF",
                                 weight: 1,
                                 fillOpacity: 1
@@ -524,7 +567,7 @@
                             return L.circleMarker(latlng, {
 
                                 radius: 6,
-                                fillColor: "#FF00FF",
+                                fillColor: "#0070FF",
                                 color: "#FFFFFF",
                                 weight: 1,
                                 fillOpacity: 1
@@ -637,16 +680,146 @@
 
             })
 
+        // ============================================================
+        // LEGEND
+        // ============================================================
+
+        var legend = L.control({ position: 'bottomright' });
+
+        legend.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend');
+
+            // --------------------------------------------------------
+            // TITLE
+            // --------------------------------------------------------
+
+            div.innerHTML += '<h4>Map Legend</h4>';
+
+
+            // --------------------------------------------------------
+            // SVI / SRI SCORE
+            // --------------------------------------------------------
+
+            div.innerHTML +=
+                '<div class="legend-section">SVI / SRI Score</div>';
+
+            div.innerHTML +=
+                '<i style="background:#F5F500"></i>' +
+                '0.0 – 0.2<br>';
+
+            div.innerHTML +=
+                '<i style="background:#F5B800"></i>' +
+                '>0.2 – 0.4<br>';
+
+            div.innerHTML +=
+                '<i style="background:#F57A00"></i>' +
+                '>0.4 – 0.6<br>';
+
+            div.innerHTML +=
+                '<i style="background:#F53D00"></i>' +
+                '>0.6 – 0.8<br>';
+
+            div.innerHTML +=
+                '<i style="background:#F50000"></i>' +
+                '>0.8 – 1.0<br>';
+
+            div.innerHTML +=
+                '<i style="background:#808080"></i>' +
+                'No data<br>';
+
+
+            // --------------------------------------------------------
+            // BOUNDARIES
+            // --------------------------------------------------------
+
+            div.innerHTML +=
+                '<div class="legend-section">Boundaries</div>';
+
+            div.innerHTML +=
+                '<i class="line-symbol" ' +
+                'style="border-color:#000000"></i>' +
+                'County Boundary<br>';
+
+            div.innerHTML +=
+                '<i class="line-symbol" ' +
+                'style="border-color:#555555"></i>' +
+                'Neighborhood Boundary<br>';
+
+            div.innerHTML +=
+                '<i class="line-symbol" ' +
+                'style="border-color:#000000"></i>' +
+                'Census Tract Boundary<br>';
+
+
+            // --------------------------------------------------------
+            // SCHOOLS
+            // --------------------------------------------------------
+
+            div.innerHTML +=
+                '<div class="legend-section">Schools</div>';
+
+            div.innerHTML +=
+                '<i class="circle-symbol" ' +
+                'style="background:#F50000; border:1px solid #000000"></i>' +
+                'School — SRI Score<br>';
+
+            div.innerHTML +=
+                '<i class="circle-symbol" ' +
+                'style="background:#008000; border:1px solid #FFFFFF"></i>' +
+                'Traditional School<br>';
+
+            div.innerHTML +=
+                '<i class="circle-symbol" ' +
+                'style="background:#800080; border:1px solid #FFFFFF"></i>' +
+                'Alternative School<br>';
+
+
+            // --------------------------------------------------------
+            // FACILITIES
+            // --------------------------------------------------------
+
+            div.innerHTML +=
+                '<div class="legend-section">Facilities</div>';
+
+            div.innerHTML +=
+                '<i class="circle-symbol" ' +
+                'style="background:#4CE600; border:1px solid #FFFFFF"></i>' +
+                'Recreation Center<br>';
+
+            div.innerHTML +=
+                '<i class="circle-symbol" ' +
+                'style="background:#0070FF; border:1px solid #FFFFFF"></i>' +
+                'SUD Facility<br>';
+
+
+            // --------------------------------------------------------
+            // HIGHLIGHT
+            // --------------------------------------------------------
+
+            div.innerHTML +=
+                '<div class="legend-section">Highlights</div>';
+
+            div.innerHTML +=
+                '<i style="background:#A80000; ' +
+                'border:2px solid #A80000"></i>' +
+                'Five Highest SVI Tracts<br>';
+
+
+            return div;
+        };
+
+        legend.addTo(map);
 
             // ============================================================
             // ERROR HANDLING
             // ============================================================
 
-            .catch(function (error) {
+            .catch (function (error) {
 
-                console.error("ERROR LOADING MAP DATA:", error);
+            console.error("ERROR LOADING MAP DATA:", error);
 
-            });
+        });
 
     </script>
 
