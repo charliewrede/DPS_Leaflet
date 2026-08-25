@@ -59,7 +59,7 @@ Many city agencies, such as the Denver Police Department and others, continue to
   </contact>
   <links/>
   <dates>
-    <date value="2011-06-30T00:00:00" type="Published"/>
+    <date type="Published" value="2011-06-30T00:00:00"/>
   </dates>
   <fees></fees>
   <constraints type="Security constraints"></constraints>
@@ -82,7 +82,7 @@ Many city agencies, such as the Denver Police Department and others, continue to
     </spatialrefsys>
   </crs>
   <extent>
-    <spatial maxz="0" dimensions="2" minz="0" maxx="-104.59940000000000282" miny="39.61160000000000281" minx="-105.10999999999999943" crs="EPSG:2877" maxy="39.91629999999999967"/>
+    <spatial miny="39.61160000000000281" dimensions="2" maxx="-104.59940000000000282" maxy="39.91629999999999967" maxz="0" minz="0" crs="EPSG:2877" minx="-105.10999999999999943"/>
     <temporal>
       <period>
         <start>2011-06-30T07:00:00Z</start>
