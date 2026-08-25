@@ -39,6 +39,6 @@ This data set should be used for planning and analysis of activities that are wi
     </spatialrefsys>
   </crs>
   <extent>
-    <spatial minx="-105.11003700000000549" maxz="0" dimensions="2" miny="39.61157899999999898" crs="EPSG:2877" maxx="-104.59935199999999611" maxy="39.91632599999999798" minz="0"/>
+    <spatial miny="39.61157899999999898" dimensions="2" maxx="-104.59935199999999611" maxy="39.91632599999999798" maxz="0" minz="0" crs="EPSG:2877" minx="-105.11003700000000549"/>
   </extent>
 </qgis>
