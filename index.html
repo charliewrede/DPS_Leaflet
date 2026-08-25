@@ -580,7 +580,7 @@
                                 latlng,
                                 {
 
-                                    radius: 7,
+                                    radius: 6,
 
                                     fillColor: getSchoolColor(
                                         feature.properties.SRI_SCORE
@@ -632,7 +632,7 @@
                                 latlng,
                                 {
 
-                                    radius: 7,
+                                    radius: 6,
 
                                     fillColor: "#008000",
 
@@ -682,7 +682,7 @@
                                 latlng,
                                 {
 
-                                    radius: 7,
+                                    radius: 6,
 
                                     fillColor: "#800080",
 
@@ -732,7 +732,7 @@
                                 latlng,
                                 {
 
-                                    radius: 6,
+                                    radius: 4,
 
                                     fillColor: "#4CE600",
 
@@ -782,7 +782,7 @@
                                 latlng,
                                 {
 
-                                    radius: 6,
+                                    radius: 4,
 
                                     fillColor: "#0070FF",
 
@@ -951,57 +951,33 @@
 
                     div.innerHTML +=
                         '<div class="legend-section">' +
-                        'SVI / SRI Score' +
+                        'Census Tracts - SVI Score' +
                         '</div>';
 
 
                     div.innerHTML +=
                         '<i style="background:#F5F500"></i>' +
-                        '0.0 – 0.2<br>';
+                        'Low<br>';
 
 
                     div.innerHTML +=
                         '<i style="background:#F5B800"></i>' +
-                        '>0.2 – 0.4<br>';
+                        '>Low - Moderate<br>';
 
 
                     div.innerHTML +=
                         '<i style="background:#F57A00"></i>' +
-                        '>0.4 – 0.6<br>';
+                        '>Moderate<br>';
 
 
                     div.innerHTML +=
                         '<i style="background:#F53D00"></i>' +
-                        '>0.6 – 0.8<br>';
+                        '>Moderate - High<br>';
 
 
                     div.innerHTML +=
                         '<i style="background:#F50000"></i>' +
-                        '>0.8 – 1.0<br>';
-
-
-                    div.innerHTML +=
-                        '<i style="background:#808080"></i>' +
-                        'No data<br>';
-
-
-                    // ====================================================
-                    // CENSUS TRACTS
-                    // ====================================================
-
-                    div.innerHTML +=
-                        '<div class="legend-section">' +
-                        'Census Tracts' +
-                        '</div>';
-
-
-                    div.innerHTML +=
-                        '<i style="' +
-                        'background:#F57A00;' +
-                        'border:1px solid #000000' +
-                        '"></i>' +
-                        'Census Tract<br>';
-
+                        '>High<br>';
 
                     // ====================================================
                     // HIGHLIGHTED CENSUS TRACTS
@@ -1014,7 +990,97 @@
                         '"></i>' +
                         'Five Highest SVI Tracts<br>';
 
+                    // ====================================================
+                    // SCHOOLS
+                    // ====================================================
 
+                    div.innerHTML +=
+                        '<div class="legend-section">' +
+                        'Schools — SRI Score' +
+                        '</div>';
+
+
+                    // Low SRI
+
+                    div.innerHTML +=
+                        '<i class="circle-symbol" ' +
+                        'style="' +
+                        'background:#F5F500;' +
+                        'border:1px solid #000000' +
+                        '"></i>' +
+                        'Low<br>';
+
+
+                    // Low - Moderate
+
+                    div.innerHTML +=
+                        '<i class="circle-symbol" ' +
+                        'style="' +
+                        'background:#F5B800;' +
+                        'border:1px solid #000000' +
+                        '"></i>' +
+                        '>Low - Moderate<br>';
+
+
+                    // Moderate
+
+                    div.innerHTML +=
+                        '<i class="circle-symbol" ' +
+                        'style="' +
+                        'background:#F57A00;' +
+                        'border:1px solid #000000' +
+                        '"></i>' +
+                        '>Moderate<br>';
+
+
+                    // Moderate - High
+
+                    div.innerHTML +=
+                        '<i class="circle-symbol" ' +
+                        'style="' +
+                        'background:#F53D00;' +
+                        'border:1px solid #000000' +
+                        '"></i>' +
+                        '>Moderate - High<br>';
+
+
+                    // High
+
+                    div.innerHTML +=
+                        '<i class="circle-symbol" ' +
+                        'style="' +
+                        'background:#F50000;' +
+                        'border:1px solid #000000' +
+                        '"></i>' +
+                        '>High<br>';
+
+
+                    // ====================================================
+                    // SCHOOL TYPES
+                    // ====================================================
+
+                    div.innerHTML +=
+                        '<div class="legend-section">' +
+                        'School Types' +
+                        '</div>';
+
+
+                    div.innerHTML +=
+                        '<i class="circle-symbol" ' +
+                        'style="' +
+                        'background:#008000;' +
+                        'border:1px solid #FFFFFF' +
+                        '"></i>' +
+                        'Top 5 Traditional Schools<br>';
+
+
+                    div.innerHTML +=
+                        '<i class="circle-symbol" ' +
+                        'style="' +
+                        'background:#800080;' +
+                        'border:1px solid #FFFFFF' +
+                        '"></i>' +
+                        'Top 5 Alternative Schools<br>';
                     // ====================================================
                     // BOUNDARIES
                     // ====================================================
@@ -1050,116 +1116,12 @@
 
 
                     // ====================================================
-                    // SCHOOLS
-                    // ====================================================
-
-                    div.innerHTML +=
-                        '<div class="legend-section">' +
-                        'Schools — SRI Score' +
-                        '</div>';
-
-
-                    // Low SRI
-
-                    div.innerHTML +=
-                        '<i class="circle-symbol" ' +
-                        'style="' +
-                        'background:#F5F500;' +
-                        'border:1px solid #000000' +
-                        '"></i>' +
-                        '0.0 – 0.2<br>';
-
-
-                    // 0.2 - 0.4
-
-                    div.innerHTML +=
-                        '<i class="circle-symbol" ' +
-                        'style="' +
-                        'background:#F5B800;' +
-                        'border:1px solid #000000' +
-                        '"></i>' +
-                        '>0.2 – 0.4<br>';
-
-
-                    // 0.4 - 0.6
-
-                    div.innerHTML +=
-                        '<i class="circle-symbol" ' +
-                        'style="' +
-                        'background:#F57A00;' +
-                        'border:1px solid #000000' +
-                        '"></i>' +
-                        '>0.4 – 0.6<br>';
-
-
-                    // 0.6 - 0.8
-
-                    div.innerHTML +=
-                        '<i class="circle-symbol" ' +
-                        'style="' +
-                        'background:#F53D00;' +
-                        'border:1px solid #000000' +
-                        '"></i>' +
-                        '>0.6 – 0.8<br>';
-
-
-                    // High SRI
-
-                    div.innerHTML +=
-                        '<i class="circle-symbol" ' +
-                        'style="' +
-                        'background:#F50000;' +
-                        'border:1px solid #000000' +
-                        '"></i>' +
-                        '>0.8 – 1.0<br>';
-
-
-                    // No data
-
-                    div.innerHTML +=
-                        '<i class="circle-symbol" ' +
-                        'style="' +
-                        'background:#808080;' +
-                        'border:1px solid #000000' +
-                        '"></i>' +
-                        'No data<br>';
-
-
-                    // ====================================================
-                    // SCHOOL TYPES
-                    // ====================================================
-
-                    div.innerHTML +=
-                        '<div class="legend-section">' +
-                        'School Types' +
-                        '</div>';
-
-
-                    div.innerHTML +=
-                        '<i class="circle-symbol" ' +
-                        'style="' +
-                        'background:#008000;' +
-                        'border:1px solid #FFFFFF' +
-                        '"></i>' +
-                        'Traditional School<br>';
-
-
-                    div.innerHTML +=
-                        '<i class="circle-symbol" ' +
-                        'style="' +
-                        'background:#800080;' +
-                        'border:1px solid #FFFFFF' +
-                        '"></i>' +
-                        'Alternative School<br>';
-
-
-                    // ====================================================
                     // FACILITIES
                     // ====================================================
 
                     div.innerHTML +=
                         '<div class="legend-section">' +
-                        'Facilities' +
+                        'Protective Layers' +
                         '</div>';
 
 
@@ -1169,7 +1131,7 @@
                         'background:#4CE600;' +
                         'border:1px solid #FFFFFF' +
                         '"></i>' +
-                        'Recreation Center<br>';
+                        'Recreation Centers<br>';
 
 
                     div.innerHTML +=
@@ -1178,7 +1140,7 @@
                         'background:#0070FF;' +
                         'border:1px solid #FFFFFF' +
                         '"></i>' +
-                        'SUD Facility<br>';
+                        'SUD Facilities<br>';
 
 
                     return div;
