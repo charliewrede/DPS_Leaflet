@@ -133,12 +133,30 @@
         map.getPane('boundaryPane').style.zIndex = 700;
         map.getPane('pointPane').style.zIndex = 800;
 
-        console.log("Census pane:", map.getPane('censusPane').style.zIndex);
-        console.log("Neighborhood pane:", map.getPane('neighborhoodPane').style.zIndex);
-        console.log("Highlight pane:", map.getPane('highlightPane').style.zIndex);
-        console.log("Boundary pane:", map.getPane('boundaryPane').style.zIndex);
-        console.log("Point pane:", map.getPane('pointPane').style.zIndex);
+        console.log(
+            "Census z-index:",
+            map.getPane('censusPane').style.zIndex
+        );
 
+        console.log(
+            "Neighborhood z-index:",
+            map.getPane('neighborhoodPane').style.zIndex
+        );
+
+        console.log(
+            "Highlight z-index:",
+            map.getPane('highlightPane').style.zIndex
+        );
+
+        console.log(
+            "Boundary z-index:",
+            map.getPane('boundaryPane').style.zIndex
+        );
+
+        console.log(
+            "Point z-index:",
+            map.getPane('pointPane').style.zIndex
+        );
         // ============================================================
         // POPUP FUNCTION
         // ============================================================
