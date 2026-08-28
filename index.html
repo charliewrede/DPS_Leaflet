@@ -14,8 +14,8 @@
         }
 
         /* ============================================================
-           LEGEND
-           ============================================================ */
+        LEGEND
+        ============================================================ */
 
         .info.legend {
             padding: 10px 12px;
@@ -76,6 +76,38 @@
             height: 18px;
             margin-right: 8px;
         }
+
+        /* ============================================================
+   NEIGHBORHOOD LABELS
+   ============================================================ */
+
+        .neighborhood-label {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+
+            color: #000000;
+
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+
+            white-space: nowrap;
+
+            text-align: center;
+
+            pointer-events: none;
+
+            transition:
+                font-size 0.15s ease,
+                opacity 0.15s ease;
+        }
+
+
+        /* Remove Leaflet tooltip triangle */
+
+        .neighborhood-label::before {
+            display: none;
+        }
     </style>
 </head>
 
@@ -126,7 +158,10 @@
         map.createPane('boundaryPane');
         map.createPane('highlightPane');
         map.createPane('pointPane');
+        map.createPane('labelPane');
 
+        map.getPane('labelPane').style.zIndex = 600;
+        map.getPane('labelPane').style.pointerEvents = 'none';
         map.getPane('censusPane').style.zIndex = 300;
         map.getPane('neighborhoodPane').style.zIndex = 500;
         map.getPane('highlightPane').style.zIndex = 400;
@@ -598,16 +633,121 @@
                             layer
                         ) {
 
+                            // --------------------------------------------
+                            // POPUP
+                            // --------------------------------------------
+
                             layer.bindPopup(
                                 "<strong>Neighborhood</strong><br><br>" +
                                 createPopup(feature)
                             );
 
+
+                            // --------------------------------------------
+                            // NEIGHBORHOOD LABEL
+                            // --------------------------------------------
+
+                            if (
+                                feature.properties &&
+                                feature.properties.NBHD_NAME
+                            ) {
+
+                                layer.bindTooltip(
+                                    feature.properties.NBHD_NAME,
+                                    {
+                                        permanent: true,
+                                        direction: 'center',
+                                        className: 'neighborhood-label',
+                                        pane: 'labelPane',
+                                        opacity: 0
+                                    }
+                                );
+
+                            }
+
                         }
 
                     }
                 );
+                // ========================================================
+                // UPDATE NEIGHBORHOOD LABELS BASED ON ZOOM
+                // ========================================================
 
+                function updateNeighborhoodLabels() {
+
+                    var zoom = map.getZoom();
+
+
+                    neighborhoods.eachLayer(function (layer) {
+
+                        var tooltip = layer.getTooltip();
+
+                        if (!tooltip) {
+                            return;
+                        }
+
+
+                        // --------------------------------------------
+                        // HIDE LABELS WHEN:
+                        // 1. Zoomed too far out
+                        // 2. Neighborhood layer is turned off
+                        // --------------------------------------------
+
+                        if (
+                            zoom < 12 ||
+                            !map.hasLayer(neighborhoods)
+                        ) {
+
+                            tooltip.setOpacity(0);
+
+                            return;
+                        }
+
+
+                        // --------------------------------------------
+                        // SHOW LABELS
+                        // --------------------------------------------
+
+                        tooltip.setOpacity(1);
+
+                    });
+
+
+                    // --------------------------------------------
+                    // CHANGE FONT SIZE WITH ZOOM
+                    // --------------------------------------------
+
+                    var labelElements =
+                        document.querySelectorAll(
+                            '.neighborhood-label'
+                        );
+
+
+                    var fontSize =
+                        Math.min(
+                            16,
+                            8 + ((zoom - 12) * 2)
+                        );
+
+                    labelElements.forEach(function (label) {
+
+                        label.style.fontSize =
+                            fontSize + 'px';
+
+
+                    });
+
+                }
+                map.on(
+                    'zoomend',
+                    updateNeighborhoodLabels
+                );
+
+                map.on(
+                    'overlayadd overlayremove',
+                    updateNeighborhoodLabels
+                );
+                updateNeighborhoodLabels();
 
                 // ========================================================
                 // SCHOOLS
