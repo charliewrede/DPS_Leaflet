@@ -109,8 +109,11 @@
 
 
         /* Make absolutely sure Leaflet does not override bold text */
-        .leaflet-tooltip.neighborhood-label {
+        .leaflet-tooltip.neighborhood-label,
+        .leaflet-tooltip.neighborhood-label strong {
+            font-family: Arial, sans-serif !important;
             font-weight: 700 !important;
+            font-style: normal !important;
         }
 
 
@@ -1371,7 +1374,9 @@
                                     // Apply this version of the label
 
                                     tooltipElement.innerHTML =
-                                        currentLayout;
+                                        "<strong>" +
+                                        currentLayout +
+                                        "</strong>";
 
 
                                     // Always force bold styling
@@ -1711,10 +1716,11 @@
                                 // for the fallback.
 
                                 tooltipElement.innerHTML =
+                                    "<strong>" +
                                     labelLayouts[
                                     labelLayouts.length - 1
-                                    ];
-
+                                    ] +
+                                    "</strong>";
 
                                 tooltip.setLatLng(
                                     center
