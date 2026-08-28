@@ -88,12 +88,10 @@
 
             color: #000000;
 
-            font-family: Arial, sans-serif;
+            font-family: Arial, sans-serif !important;
+            font-weight: 900 !important;
+            font-style: normal !important;
 
-            /* ALWAYS keep neighborhood labels bold */
-            font-weight: 700 !important;
-
-            /* Allow labels to use multiple lines */
             white-space: normal;
 
             text-align: center;
@@ -108,16 +106,22 @@
         }
 
 
-        /* Make absolutely sure Leaflet does not override bold text */
+        /* Force ALL text inside neighborhood labels to stay bold */
+        .neighborhood-label,
+        .neighborhood-label *,
         .leaflet-tooltip.neighborhood-label,
-        .leaflet-tooltip.neighborhood-label strong {
+        .leaflet-tooltip.neighborhood-label * {
             font-family: Arial, sans-serif !important;
-            font-weight: 700 !important;
+            font-weight: 900 !important;
             font-style: normal !important;
         }
 
 
-        /* Remove Leaflet tooltip triangle */
+        /* Slightly reinforce very small text */
+        .neighborhood-label {
+            -webkit-text-stroke: 0.15px currentColor;
+        }
+
 
         .neighborhood-label::before {
             display: none;
@@ -1094,7 +1098,7 @@
                     // ====================================================
 
                     if (
-                        zoom < 12 ||
+                        zoom < 13 ||
                         !map.hasLayer(neighborhoods)
                     ) {
 
@@ -1206,7 +1210,7 @@
                     var preferredFontSize =
                         Math.min(
                             16,
-                            9 + ((zoom - 12) * 1.5)
+                            9 + ((zoom - 13) * 1.5)
                         );
 
 
@@ -1342,7 +1346,7 @@
                             // =================================================
 
                             while (
-                                fontSize >= 7 &&
+                                fontSize >= 5 &&
                                 !placed
                             ) {
 
@@ -1382,7 +1386,7 @@
                                     // Always force bold styling
 
                                     tooltipElement.style.fontWeight =
-                                        "700";
+                                        "900";
 
 
                                     tooltipElement.style.textAlign =
@@ -1687,7 +1691,7 @@
 
                                 var fallbackFontSize =
                                     Math.max(
-                                        7,
+                                        5,
                                         Math.min(
                                             preferredFontSize,
                                             10
@@ -1701,7 +1705,7 @@
 
 
                                 tooltipElement.style.fontWeight =
-                                    "700";
+                                    "900";
 
 
                                 tooltipElement.style.textAlign =
