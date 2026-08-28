@@ -129,7 +129,7 @@
 
         map.getPane('censusPane').style.zIndex = 300;
         map.getPane('neighborhoodPane').style.zIndex = 400;
-        map.getPane('highlightPane').style.zIndex = 650;
+        map.getPane('highlightPane').style.zIndex = 500;
         map.getPane('boundaryPane').style.zIndex = 700;
         map.getPane('pointPane').style.zIndex = 800;
 
@@ -568,7 +568,6 @@
                 var schools = L.geoJSON(
                     schoolsData,
                     {
-
                         pane: 'pointPane',
 
                         pointToLayer: function (
