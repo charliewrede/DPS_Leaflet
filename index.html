@@ -659,7 +659,8 @@
                                         direction: 'center',
                                         className: 'neighborhood-label',
                                         pane: 'labelPane',
-                                        opacity: 0
+                                        opacity: 0,
+                                        interactive: false
                                     }
                                 );
 
@@ -670,84 +671,855 @@
                     }
                 );
                 // ========================================================
-                // UPDATE NEIGHBORHOOD LABELS BASED ON ZOOM
+                // DYNAMIC NEIGHBORHOOD LABEL PLACEMENT
+                // ========================================================
+
+
+                // --------------------------------------------------------
+                // POINT-IN-RING TEST
+                //
+                // Used to determine whether a proposed label position
+                // is actually inside the neighborhood polygon.
+                // --------------------------------------------------------
+
+                function pointInRing(point, ring) {
+
+                    var x = point.lng;
+                    var y = point.lat;
+
+                    var inside = false;
+
+                    for (
+                        var i = 0, j = ring.length - 1;
+                        i < ring.length;
+                        j = i++
+                    ) {
+
+                        var xi = ring[i][0];
+                        var yi = ring[i][1];
+
+                        var xj = ring[j][0];
+                        var yj = ring[j][1];
+
+
+                        var intersects =
+                            ((yi > y) !== (yj > y)) &&
+                            (
+                                x <
+                                (xj - xi) *
+                                (y - yi) /
+                                ((yj - yi) || 0.0000001) +
+                                xi
+                            );
+
+
+                        if (intersects) {
+                            inside = !inside;
+                        }
+
+                    }
+
+                    return inside;
+                }
+
+
+                // --------------------------------------------------------
+                // CHECK ONE POLYGON
+                //
+                // GeoJSON polygons may contain:
+                //
+                // ring 0 = exterior boundary
+                // ring 1+ = holes
+                // --------------------------------------------------------
+
+                function pointInPolygonCoordinates(
+                    point,
+                    polygonCoordinates
+                ) {
+
+                    if (
+                        !polygonCoordinates ||
+                        polygonCoordinates.length === 0
+                    ) {
+                        return false;
+                    }
+
+
+                    // Must be inside exterior ring
+
+                    if (
+                        !pointInRing(
+                            point,
+                            polygonCoordinates[0]
+                        )
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    // Must NOT be inside a hole
+
+                    for (
+                        var i = 1;
+                        i < polygonCoordinates.length;
+                        i++
+                    ) {
+
+                        if (
+                            pointInRing(
+                                point,
+                                polygonCoordinates[i]
+                            )
+                        ) {
+
+                            return false;
+
+                        }
+
+                    }
+
+
+                    return true;
+                }
+
+
+                // --------------------------------------------------------
+                // CHECK WHETHER A LABEL BOX FITS INSIDE ITS NEIGHBORHOOD
+                //
+                // We test:
+                // center
+                // four corners
+                // four edge midpoints
+                //
+                // This makes it much harder for text to cross a
+                // neighborhood boundary.
+                // --------------------------------------------------------
+
+                function labelFitsInsideNeighborhood(
+                    box,
+                    feature
+                ) {
+
+                    if (
+                        !feature ||
+                        !feature.geometry
+                    ) {
+
+                        return true;
+
+                    }
+
+
+                    var geometry =
+                        feature.geometry;
+
+
+                    // Screen positions to test
+
+                    var screenPoints = [
+
+                        // Center
+                        L.point(
+                            (box.left + box.right) / 2,
+                            (box.top + box.bottom) / 2
+                        ),
+
+                        // Corners
+                        L.point(
+                            box.left,
+                            box.top
+                        ),
+
+                        L.point(
+                            box.right,
+                            box.top
+                        ),
+
+                        L.point(
+                            box.left,
+                            box.bottom
+                        ),
+
+                        L.point(
+                            box.right,
+                            box.bottom
+                        ),
+
+                        // Top midpoint
+                        L.point(
+                            (box.left + box.right) / 2,
+                            box.top
+                        ),
+
+                        // Bottom midpoint
+                        L.point(
+                            (box.left + box.right) / 2,
+                            box.bottom
+                        ),
+
+                        // Left midpoint
+                        L.point(
+                            box.left,
+                            (box.top + box.bottom) / 2
+                        ),
+
+                        // Right midpoint
+                        L.point(
+                            box.right,
+                            (box.top + box.bottom) / 2
+                        )
+
+                    ];
+
+
+                    // Convert screen coordinates back to geographic coordinates
+
+                    var geographicPoints =
+                        screenPoints.map(function (point) {
+
+                            return map.containerPointToLatLng(
+                                point
+                            );
+
+                        });
+
+
+                    // ====================================================
+                    // NORMAL POLYGON
+                    // ====================================================
+
+                    if (
+                        geometry.type === "Polygon"
+                    ) {
+
+                        return geographicPoints.every(
+                            function (point) {
+
+                                return pointInPolygonCoordinates(
+                                    point,
+                                    geometry.coordinates
+                                );
+
+                            }
+                        );
+
+                    }
+
+
+                    // ====================================================
+                    // MULTIPOLYGON
+                    //
+                    // All sample points must fit inside the SAME polygon
+                    // component.
+                    // ====================================================
+
+                    if (
+                        geometry.type === "MultiPolygon"
+                    ) {
+
+                        return geometry.coordinates.some(
+                            function (polygonCoordinates) {
+
+                                return geographicPoints.every(
+                                    function (point) {
+
+                                        return pointInPolygonCoordinates(
+                                            point,
+                                            polygonCoordinates
+                                        );
+
+                                    }
+                                );
+
+                            }
+                        );
+
+                    }
+
+
+                    return true;
+                }
+
+
+
+                // ========================================================
+                // UPDATE NEIGHBORHOOD LABELS
                 // ========================================================
 
                 function updateNeighborhoodLabels() {
 
-                    var zoom = map.getZoom();
+                    var zoom =
+                        map.getZoom();
 
 
-                    neighborhoods.eachLayer(function (layer) {
+                    // ====================================================
+                    // HIDE LABELS WHEN ZOOMED OUT
+                    // ====================================================
 
-                        var tooltip = layer.getTooltip();
+                    if (
+                        zoom < 12 ||
+                        !map.hasLayer(neighborhoods)
+                    ) {
 
-                        if (!tooltip) {
+                        neighborhoods.eachLayer(
+                            function (layer) {
+
+                                var tooltip =
+                                    layer.getTooltip();
+
+                                if (tooltip) {
+
+                                    tooltip.setOpacity(0);
+
+                                }
+
+                            }
+                        );
+
+                        return;
+
+                    }
+
+
+
+                    // ====================================================
+                    // COLLECT POINT FEATURES
+                    //
+                    // Neighborhood labels will try to avoid these.
+                    // ====================================================
+
+                    var obstaclePoints = [];
+
+
+                    function collectPointObstacles(
+                        layerGroup
+                    ) {
+
+                        if (
+                            !layerGroup ||
+                            !map.hasLayer(layerGroup)
+                        ) {
+
                             return;
+
                         }
 
 
-                        // --------------------------------------------
-                        // HIDE LABELS WHEN:
-                        // 1. Zoomed too far out
-                        // 2. Neighborhood layer is turned off
-                        // --------------------------------------------
+                        layerGroup.eachLayer(
+                            function (layer) {
 
-                        if (
-                            zoom < 12 ||
-                            !map.hasLayer(neighborhoods)
-                        ) {
+                                if (
+                                    layer.getLatLng
+                                ) {
+
+                                    var point =
+                                        map.latLngToContainerPoint(
+                                            layer.getLatLng()
+                                        );
+
+
+                                    obstaclePoints.push(
+                                        point
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    }
+
+
+                    collectPointObstacles(
+                        schools
+                    );
+
+                    collectPointObstacles(
+                        traditionalSchools
+                    );
+
+                    collectPointObstacles(
+                        alternativeSchools
+                    );
+
+                    collectPointObstacles(
+                        recreationCenters
+                    );
+
+                    collectPointObstacles(
+                        sudFacilities
+                    );
+
+
+
+                    // ====================================================
+                    // TRACK LABELS ALREADY PLACED
+                    // ====================================================
+
+                    var occupiedBoxes = [];
+
+
+
+                    // ====================================================
+                    // BASE FONT SIZE
+                    //
+                    // Automatically increases as user zooms in.
+                    // ====================================================
+
+                    var preferredFontSize =
+                        Math.min(
+                            16,
+                            9 + ((zoom - 12) * 1.5)
+                        );
+
+
+
+                    // ====================================================
+                    // PROCESS EVERY NEIGHBORHOOD
+                    // ====================================================
+
+                    neighborhoods.eachLayer(
+                        function (layer) {
+
+                            var tooltip =
+                                layer.getTooltip();
+
+
+                            if (!tooltip) {
+                                return;
+                            }
+
+
+                            layer.openTooltip();
+
+
+                            var tooltipElement =
+                                tooltip.getElement();
+
+
+                            if (!tooltipElement) {
+                                return;
+                            }
+
+
+                            // Hide while calculating
 
                             tooltip.setOpacity(0);
 
-                            return;
+
+
+                            // =================================================
+                            // GET NEIGHBORHOOD CENTER
+                            // =================================================
+
+                            if (
+                                !layer.getBounds
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            var center =
+                                layer
+                                    .getBounds()
+                                    .getCenter();
+
+
+                            var centerPoint =
+                                map.latLngToContainerPoint(
+                                    center
+                                );
+
+
+
+                            // =================================================
+                            // POSSIBLE LABEL POSITIONS
+                            //
+                            // Starts close to center and gradually expands.
+                            // =================================================
+
+                            var offsets = [
+
+                                // Center
+                                [0, 0],
+
+                                // Slight movement
+                                [0, -12],
+                                [0, 12],
+                                [-18, 0],
+                                [18, 0],
+
+                                // Diagonals
+                                [-18, -12],
+                                [18, -12],
+                                [-18, 12],
+                                [18, 12],
+
+                                // Greater movement
+                                [0, -25],
+                                [0, 25],
+                                [-35, 0],
+                                [35, 0],
+
+                                // Greater diagonals
+                                [-30, -20],
+                                [30, -20],
+                                [-30, 20],
+                                [30, 20],
+
+                                // Even farther
+                                [0, -40],
+                                [0, 40],
+                                [-50, 0],
+                                [50, 0]
+
+                            ];
+
+
+
+                            var placed = false;
+
+                            var fontSize =
+                                preferredFontSize;
+
+
+
+                            // =================================================
+                            // TRY DIFFERENT FONT SIZES
+                            // =================================================
+
+                            while (
+                                fontSize >= 7 &&
+                                !placed
+                            ) {
+
+                                tooltipElement.style.fontSize =
+                                    fontSize + "px";
+
+
+                                // Force browser to calculate actual dimensions
+
+                                var width =
+                                    tooltipElement.offsetWidth;
+
+
+                                var height =
+                                    tooltipElement.offsetHeight;
+
+
+
+                                // =================================================
+                                // TRY EACH POSSIBLE POSITION
+                                // =================================================
+
+                                for (
+                                    var i = 0;
+                                    i < offsets.length;
+                                    i++
+                                ) {
+
+                                    var offsetX =
+                                        offsets[i][0];
+
+
+                                    var offsetY =
+                                        offsets[i][1];
+
+
+                                    var x =
+                                        centerPoint.x +
+                                        offsetX;
+
+
+                                    var y =
+                                        centerPoint.y +
+                                        offsetY;
+
+
+
+                                    // =============================================
+                                    // BUILD LABEL BOUNDING BOX
+                                    // =============================================
+
+                                    var box = {
+
+                                        left:
+                                            x -
+                                            width / 2,
+
+                                        right:
+                                            x +
+                                            width / 2,
+
+                                        top:
+                                            y -
+                                            height / 2,
+
+                                        bottom:
+                                            y +
+                                            height / 2
+
+                                    };
+
+
+
+                                    var collision =
+                                        false;
+
+
+
+                                    // =============================================
+                                    // CONDITION 1:
+                                    // LABEL MUST FIT INSIDE ITS NEIGHBORHOOD
+                                    // =============================================
+
+                                    if (
+                                        !labelFitsInsideNeighborhood(
+                                            box,
+                                            layer.feature
+                                        )
+                                    ) {
+
+                                        continue;
+
+                                    }
+
+
+
+                                    // =============================================
+                                    // CONDITION 2:
+                                    // AVOID POINT FEATURES
+                                    // =============================================
+
+                                    var pointPadding =
+                                        10;
+
+
+                                    for (
+                                        var p = 0;
+                                        p < obstaclePoints.length;
+                                        p++
+                                    ) {
+
+                                        var obstacle =
+                                            obstaclePoints[p];
+
+
+                                        if (
+                                            obstacle.x >
+                                            box.left -
+                                            pointPadding &&
+
+                                            obstacle.x <
+                                            box.right +
+                                            pointPadding &&
+
+                                            obstacle.y >
+                                            box.top -
+                                            pointPadding &&
+
+                                            obstacle.y <
+                                            box.bottom +
+                                            pointPadding
+                                        ) {
+
+                                            collision = true;
+
+                                            break;
+
+                                        }
+
+                                    }
+
+
+                                    if (collision) {
+
+                                        continue;
+
+                                    }
+
+
+
+                                    // =============================================
+                                    // CONDITION 3:
+                                    // AVOID OTHER NEIGHBORHOOD LABELS
+                                    // =============================================
+
+                                    var labelPadding =
+                                        4;
+
+
+                                    for (
+                                        var b = 0;
+                                        b < occupiedBoxes.length;
+                                        b++
+                                    ) {
+
+                                        var other =
+                                            occupiedBoxes[b];
+
+
+                                        var overlaps =
+                                            !(
+                                                box.right +
+                                                labelPadding <
+                                                other.left ||
+
+                                                box.left -
+                                                labelPadding >
+                                                other.right ||
+
+                                                box.bottom +
+                                                labelPadding <
+                                                other.top ||
+
+                                                box.top -
+                                                labelPadding >
+                                                other.bottom
+                                            );
+
+
+                                        if (overlaps) {
+
+                                            collision = true;
+
+                                            break;
+
+                                        }
+
+                                    }
+
+
+                                    if (collision) {
+
+                                        continue;
+
+                                    }
+
+
+
+                                    // =============================================
+                                    // EVERYTHING PASSED
+                                    //
+                                    // PLACE LABEL HERE
+                                    // =============================================
+
+                                    var newPoint =
+                                        L.point(
+                                            x,
+                                            y
+                                        );
+
+
+                                    var newLatLng =
+                                        map.containerPointToLatLng(
+                                            newPoint
+                                        );
+
+
+                                    tooltip.setLatLng(
+                                        newLatLng
+                                    );
+
+
+                                    tooltip.setOpacity(
+                                        1
+                                    );
+
+
+                                    occupiedBoxes.push(
+                                        box
+                                    );
+
+
+                                    placed =
+                                        true;
+
+
+                                    break;
+
+                                }
+
+
+
+                                // =================================================
+                                // NOTHING FIT?
+                                //
+                                // Shrink and try every position again.
+                                // =================================================
+
+                                if (!placed) {
+
+                                    fontSize -= 1;
+
+                                }
+
+                            }
+
+
+
+                            // =====================================================
+                            // FALLBACK
+                            //
+                            // If absolutely no position satisfies every rule,
+                            // ALWAYS display the neighborhood name anyway.
+                            //
+                            // It returns to the neighborhood center at a small
+                            // readable size.
+                            // =====================================================
+
+                            if (!placed) {
+
+                                var fallbackFontSize =
+                                    Math.max(
+                                        7,
+                                        Math.min(
+                                            preferredFontSize,
+                                            10
+                                        )
+                                    );
+
+
+                                tooltipElement.style.fontSize =
+                                    fallbackFontSize +
+                                    "px";
+
+
+                                tooltip.setLatLng(
+                                    center
+                                );
+
+
+                                tooltip.setOpacity(
+                                    1
+                                );
+
+                            }
+
                         }
-
-
-                        // --------------------------------------------
-                        // SHOW LABELS
-                        // --------------------------------------------
-
-                        tooltip.setOpacity(1);
-
-                    });
-
-
-                    // --------------------------------------------
-                    // CHANGE FONT SIZE WITH ZOOM
-                    // --------------------------------------------
-
-                    var labelElements =
-                        document.querySelectorAll(
-                            '.neighborhood-label'
-                        );
-
-
-                    var fontSize =
-                        Math.min(
-                            16,
-                            8 + ((zoom - 12) * 2)
-                        );
-
-                    labelElements.forEach(function (label) {
-
-                        label.style.fontSize =
-                            fontSize + 'px';
-
-
-                    });
+                    );
 
                 }
-                map.on(
-                    'zoomend',
-                    updateNeighborhoodLabels
-                );
+
+                // ========================================================
+                // RECALCULATE LABELS WHEN MAP CHANGES
+                // ========================================================
 
                 map.on(
-                    'overlayadd overlayremove',
-                    updateNeighborhoodLabels
+                    'zoomend moveend overlayadd overlayremove',
+                    function () {
+
+                        setTimeout(
+                            updateNeighborhoodLabels,
+                            50
+                        );
+
+                    }
                 );
-                updateNeighborhoodLabels();
 
                 // ========================================================
                 // SCHOOLS
@@ -1064,10 +1836,6 @@
                 // are OFF by default.
 
 
-                // ========================================================
-                // FIT MAP TO CENSUS TRACTS
-                // ========================================================
-
                 if (censusTracts.getBounds().isValid()) {
 
                     map.fitBounds(
@@ -1075,6 +1843,21 @@
                     );
 
                 }
+
+
+                // ========================================================
+                // INITIAL NEIGHBORHOOD LABEL PLACEMENT
+                // ========================================================
+
+                setTimeout(
+                    updateNeighborhoodLabels,
+                    100
+                );
+
+
+                // ========================================================
+                // LAYER CONTROL
+                // ========================================================
 
 
                 // ========================================================
