@@ -89,17 +89,28 @@
             color: #000000;
 
             font-family: Arial, sans-serif;
-            font-weight: bold;
 
-            white-space: nowrap;
+            /* ALWAYS keep neighborhood labels bold */
+            font-weight: 700 !important;
+
+            /* Allow labels to use multiple lines */
+            white-space: normal;
 
             text-align: center;
+
+            line-height: 1.05;
 
             pointer-events: none;
 
             transition:
                 font-size 0.15s ease,
                 opacity 0.15s ease;
+        }
+
+
+        /* Make absolutely sure Leaflet does not override bold text */
+        .leaflet-tooltip.neighborhood-label {
+            font-weight: 700 !important;
         }
 
 
@@ -160,7 +171,7 @@
         map.createPane('pointPane');
         map.createPane('labelPane');
 
-        map.getPane('labelPane').style.zIndex = 600;
+        map.getPane('labelPane').style.zIndex = 900;
         map.getPane('labelPane').style.pointerEvents = 'none';
         map.getPane('censusPane').style.zIndex = 300;
         map.getPane('neighborhoodPane').style.zIndex = 500;
@@ -942,7 +953,128 @@
                     return true;
                 }
 
+                // ========================================================
+                // CREATE POSSIBLE MULTI-LINE LABEL FORMATS
+                // ========================================================
 
+                function createLabelLayouts(text) {
+
+                    var words =
+                        text
+                            .trim()
+                            .split(/\s+/);
+
+
+                    var layouts = [];
+
+
+                    // ----------------------------------------------------
+                    // OPTION 1:
+                    // Entire neighborhood name on one line
+                    // ----------------------------------------------------
+
+                    layouts.push(
+                        text
+                    );
+
+
+                    // ----------------------------------------------------
+                    // OPTION 2:
+                    // If there are multiple words,
+                    // split roughly in half
+                    // ----------------------------------------------------
+
+                    if (words.length >= 2) {
+
+                        var middle =
+                            Math.ceil(
+                                words.length / 2
+                            );
+
+
+                        var firstHalf =
+                            words
+                                .slice(0, middle)
+                                .join(" ");
+
+
+                        var secondHalf =
+                            words
+                                .slice(middle)
+                                .join(" ");
+
+
+                        if (secondHalf) {
+
+                            layouts.push(
+                                firstHalf +
+                                "<br>" +
+                                secondHalf
+                            );
+
+                        }
+
+                    }
+
+
+                    // ----------------------------------------------------
+                    // OPTION 3:
+                    // For 3+ words, try approximately three lines
+                    // ----------------------------------------------------
+
+                    if (words.length >= 3) {
+
+                        var lines = [];
+
+                        var wordsPerLine =
+                            Math.ceil(
+                                words.length / 3
+                            );
+
+
+                        for (
+                            var i = 0;
+                            i < words.length;
+                            i += wordsPerLine
+                        ) {
+
+                            lines.push(
+                                words
+                                    .slice(
+                                        i,
+                                        i + wordsPerLine
+                                    )
+                                    .join(" ")
+                            );
+
+                        }
+
+
+                        layouts.push(
+                            lines.join("<br>")
+                        );
+
+                    }
+
+
+                    // ----------------------------------------------------
+                    // OPTION 4:
+                    // One word per line
+                    //
+                    // Most compact horizontally
+                    // ----------------------------------------------------
+
+                    if (words.length >= 2) {
+
+                        layouts.push(
+                            words.join("<br>")
+                        );
+
+                    }
+
+
+                    return layouts;
+                }
 
                 // ========================================================
                 // UPDATE NEIGHBORHOOD LABELS
@@ -1097,7 +1229,21 @@
 
                             var tooltipElement =
                                 tooltip.getElement();
+                            // =================================================
+                            // ORIGINAL NEIGHBORHOOD NAME
+                            // =================================================
 
+                            var neighborhoodName =
+                                layer.feature &&
+                                    layer.feature.properties
+                                    ? layer.feature.properties.NBHD_NAME
+                                    : "";
+
+
+                            var labelLayouts =
+                                createLabelLayouts(
+                                    neighborhoodName
+                                );
 
                             if (!tooltipElement) {
                                 return;
@@ -1201,246 +1347,298 @@
                                     fontSize + "px";
 
 
-                                // Force browser to calculate actual dimensions
-
-                                var width =
-                                    tooltipElement.offsetWidth;
-
-
-                                var height =
-                                    tooltipElement.offsetHeight;
-
-
-
                                 // =================================================
-                                // TRY EACH POSSIBLE POSITION
+                                // TRY EACH TEXT LAYOUT
+                                //
+                                // 1 line
+                                // 2 lines
+                                // 3 lines
+                                // one word per line
                                 // =================================================
 
                                 for (
-                                    var i = 0;
-                                    i < offsets.length;
-                                    i++
+                                    var layoutIndex = 0;
+                                    layoutIndex < labelLayouts.length;
+                                    layoutIndex++
                                 ) {
 
-                                    var offsetX =
-                                        offsets[i][0];
+                                    var currentLayout =
+                                        labelLayouts[
+                                        layoutIndex
+                                        ];
 
 
-                                    var offsetY =
-                                        offsets[i][1];
+                                    // Apply this version of the label
+
+                                    tooltipElement.innerHTML =
+                                        currentLayout;
 
 
-                                    var x =
-                                        centerPoint.x +
-                                        offsetX;
+                                    // Always force bold styling
+
+                                    tooltipElement.style.fontWeight =
+                                        "700";
 
 
-                                    var y =
-                                        centerPoint.y +
-                                        offsetY;
+                                    tooltipElement.style.textAlign =
+                                        "center";
 
 
+                                    tooltipElement.style.lineHeight =
+                                        "1.05";
 
-                                    // =============================================
-                                    // BUILD LABEL BOUNDING BOX
-                                    // =============================================
 
-                                    var box = {
+                                    // Force browser to calculate actual dimensions
 
-                                        left:
-                                            x -
-                                            width / 2,
+                                    var width =
+                                        tooltipElement.offsetWidth;
 
-                                        right:
-                                            x +
-                                            width / 2,
 
-                                        top:
-                                            y -
-                                            height / 2,
-
-                                        bottom:
-                                            y +
-                                            height / 2
-
-                                    };
+                                    var height =
+                                        tooltipElement.offsetHeight;
 
 
 
-                                    var collision =
-                                        false;
-
-
-
-                                    // =============================================
-                                    // CONDITION 1:
-                                    // LABEL MUST FIT INSIDE ITS NEIGHBORHOOD
-                                    // =============================================
-
-                                    if (
-                                        !labelFitsInsideNeighborhood(
-                                            box,
-                                            layer.feature
-                                        )
-                                    ) {
-
-                                        continue;
-
-                                    }
-
-
-
-                                    // =============================================
-                                    // CONDITION 2:
-                                    // AVOID POINT FEATURES
-                                    // =============================================
-
-                                    var pointPadding =
-                                        10;
-
+                                    // =================================================
+                                    // TRY EACH POSSIBLE POSITION
+                                    // =================================================
 
                                     for (
-                                        var p = 0;
-                                        p < obstaclePoints.length;
-                                        p++
+                                        var i = 0;
+                                        i < offsets.length;
+                                        i++
                                     ) {
 
-                                        var obstacle =
-                                            obstaclePoints[p];
+                                        var offsetX =
+                                            offsets[i][0];
 
+
+                                        var offsetY =
+                                            offsets[i][1];
+
+
+                                        var x =
+                                            centerPoint.x +
+                                            offsetX;
+
+
+                                        var y =
+                                            centerPoint.y +
+                                            offsetY;
+
+
+
+                                        // =============================================
+                                        // BUILD LABEL BOUNDING BOX
+                                        // =============================================
+
+                                        var box = {
+
+                                            left:
+                                                x -
+                                                width / 2,
+
+                                            right:
+                                                x +
+                                                width / 2,
+
+                                            top:
+                                                y -
+                                                height / 2,
+
+                                            bottom:
+                                                y +
+                                                height / 2
+
+                                        };
+
+
+                                        var collision =
+                                            false;
+
+
+
+                                        // =============================================
+                                        // CONDITION 1:
+                                        // LABEL MUST FIT INSIDE NEIGHBORHOOD
+                                        // =============================================
 
                                         if (
-                                            obstacle.x >
-                                            box.left -
-                                            pointPadding &&
-
-                                            obstacle.x <
-                                            box.right +
-                                            pointPadding &&
-
-                                            obstacle.y >
-                                            box.top -
-                                            pointPadding &&
-
-                                            obstacle.y <
-                                            box.bottom +
-                                            pointPadding
+                                            !labelFitsInsideNeighborhood(
+                                                box,
+                                                layer.feature
+                                            )
                                         ) {
 
-                                            collision = true;
-
-                                            break;
+                                            continue;
 
                                         }
 
-                                    }
 
 
-                                    if (collision) {
+                                        // =============================================
+                                        // CONDITION 2:
+                                        // AVOID POINT FEATURES
+                                        // =============================================
 
-                                        continue;
-
-                                    }
-
-
-
-                                    // =============================================
-                                    // CONDITION 3:
-                                    // AVOID OTHER NEIGHBORHOOD LABELS
-                                    // =============================================
-
-                                    var labelPadding =
-                                        4;
+                                        var pointPadding =
+                                            10;
 
 
-                                    for (
-                                        var b = 0;
-                                        b < occupiedBoxes.length;
-                                        b++
-                                    ) {
+                                        for (
+                                            var p = 0;
+                                            p < obstaclePoints.length;
+                                            p++
+                                        ) {
 
-                                        var other =
-                                            occupiedBoxes[b];
+                                            var obstacle =
+                                                obstaclePoints[p];
 
 
-                                        var overlaps =
-                                            !(
-                                                box.right +
-                                                labelPadding <
-                                                other.left ||
-
+                                            if (
+                                                obstacle.x >
                                                 box.left -
-                                                labelPadding >
-                                                other.right ||
+                                                pointPadding &&
 
-                                                box.bottom +
-                                                labelPadding <
-                                                other.top ||
+                                                obstacle.x <
+                                                box.right +
+                                                pointPadding &&
 
+                                                obstacle.y >
                                                 box.top -
-                                                labelPadding >
-                                                other.bottom
+                                                pointPadding &&
+
+                                                obstacle.y <
+                                                box.bottom +
+                                                pointPadding
+                                            ) {
+
+                                                collision =
+                                                    true;
+
+                                                break;
+
+                                            }
+
+                                        }
+
+
+                                        if (collision) {
+
+                                            continue;
+
+                                        }
+
+
+
+                                        // =============================================
+                                        // CONDITION 3:
+                                        // AVOID OTHER LABELS
+                                        // =============================================
+
+                                        var labelPadding =
+                                            4;
+
+
+                                        for (
+                                            var b = 0;
+                                            b < occupiedBoxes.length;
+                                            b++
+                                        ) {
+
+                                            var other =
+                                                occupiedBoxes[b];
+
+
+                                            var overlaps =
+                                                !(
+                                                    box.right +
+                                                    labelPadding <
+                                                    other.left ||
+
+                                                    box.left -
+                                                    labelPadding >
+                                                    other.right ||
+
+                                                    box.bottom +
+                                                    labelPadding <
+                                                    other.top ||
+
+                                                    box.top -
+                                                    labelPadding >
+                                                    other.bottom
+                                                );
+
+
+                                            if (overlaps) {
+
+                                                collision =
+                                                    true;
+
+                                                break;
+
+                                            }
+
+                                        }
+
+
+                                        if (collision) {
+
+                                            continue;
+
+                                        }
+
+
+
+                                        // =============================================
+                                        // VALID POSITION FOUND
+                                        // =============================================
+
+                                        var newPoint =
+                                            L.point(
+                                                x,
+                                                y
                                             );
 
 
-                                        if (overlaps) {
+                                        var newLatLng =
+                                            map.containerPointToLatLng(
+                                                newPoint
+                                            );
 
-                                            collision = true;
 
-                                            break;
+                                        tooltip.setLatLng(
+                                            newLatLng
+                                        );
 
-                                        }
+
+                                        tooltip.setOpacity(
+                                            1
+                                        );
+
+
+                                        occupiedBoxes.push(
+                                            box
+                                        );
+
+
+                                        placed =
+                                            true;
+
+
+                                        break;
 
                                     }
 
 
-                                    if (collision) {
+                                    // Stop trying alternate layouts
+                                    // once we found a valid solution
 
-                                        continue;
+                                    if (placed) {
+
+                                        break;
 
                                     }
-
-
-
-                                    // =============================================
-                                    // EVERYTHING PASSED
-                                    //
-                                    // PLACE LABEL HERE
-                                    // =============================================
-
-                                    var newPoint =
-                                        L.point(
-                                            x,
-                                            y
-                                        );
-
-
-                                    var newLatLng =
-                                        map.containerPointToLatLng(
-                                            newPoint
-                                        );
-
-
-                                    tooltip.setLatLng(
-                                        newLatLng
-                                    );
-
-
-                                    tooltip.setOpacity(
-                                        1
-                                    );
-
-
-                                    occupiedBoxes.push(
-                                        box
-                                    );
-
-
-                                    placed =
-                                        true;
-
-
-                                    break;
 
                                 }
 
@@ -1449,7 +1647,14 @@
                                 // =================================================
                                 // NOTHING FIT?
                                 //
-                                // Shrink and try every position again.
+                                // Reduce font size and try:
+                                //
+                                // one-line
+                                // two-line
+                                // three-line
+                                // vertical
+                                //
+                                // all over again.
                                 // =================================================
 
                                 if (!placed) {
@@ -1465,11 +1670,12 @@
                             // =====================================================
                             // FALLBACK
                             //
-                            // If absolutely no position satisfies every rule,
-                            // ALWAYS display the neighborhood name anyway.
+                            // No collision-free placement was possible.
                             //
-                            // It returns to the neighborhood center at a small
-                            // readable size.
+                            // Still ALWAYS show the neighborhood name.
+                            //
+                            // Use the most compact multi-line version and
+                            // ALWAYS keep it bold.
                             // =====================================================
 
                             if (!placed) {
@@ -1489,6 +1695,27 @@
                                     "px";
 
 
+                                tooltipElement.style.fontWeight =
+                                    "700";
+
+
+                                tooltipElement.style.textAlign =
+                                    "center";
+
+
+                                tooltipElement.style.lineHeight =
+                                    "1.05";
+
+
+                                // Use the narrowest available layout
+                                // for the fallback.
+
+                                tooltipElement.innerHTML =
+                                    labelLayouts[
+                                    labelLayouts.length - 1
+                                    ];
+
+
                                 tooltip.setLatLng(
                                     center
                                 );
@@ -1500,759 +1727,754 @@
 
                             }
 
-                        }
-                    );
+                            // ========================================================
+                            // RECALCULATE LABELS WHEN MAP CHANGES
+                            // ========================================================
 
-                }
+                            map.on(
+                                'zoomend moveend overlayadd overlayremove',
+                                function () {
 
-                // ========================================================
-                // RECALCULATE LABELS WHEN MAP CHANGES
-                // ========================================================
-
-                map.on(
-                    'zoomend moveend overlayadd overlayremove',
-                    function () {
-
-                        setTimeout(
-                            updateNeighborhoodLabels,
-                            50
-                        );
-
-                    }
-                );
-
-                // ========================================================
-                // SCHOOLS
-                // Colored by SRI_SCORE
-                // ========================================================
-
-                var schools = L.geoJSON(
-                    schoolsData,
-                    {
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-                                    radius: 6,
-
-                                    fillColor: getSchoolColor(
-                                        feature.properties.SRI_SCORE
-                                    ),
-
-                                    color: "#000000",
-
-                                    weight: 1,
-
-                                    fillOpacity: 1
+                                    setTimeout(
+                                        updateNeighborhoodLabels,
+                                        50
+                                    );
 
                                 }
                             );
 
-                        },
+                            // ========================================================
+                            // SCHOOLS
+                            // Colored by SRI_SCORE
+                            // ========================================================
 
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                "<strong>School</strong><br><br>" +
-                                createPopup(feature)
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                // ========================================================
-                // TRADITIONAL SCHOOLS
-                // ========================================================
-
-                var traditionalSchools = L.geoJSON(
-                    traditionalSchoolsData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
+                            var schools = L.geoJSON(
+                                schoolsData,
                                 {
                                     pane: 'pointPane',
-                                    radius: 6,
 
-                                    fillColor: "#008000",
+                                    pointToLayer: function (
+                                        feature,
+                                        latlng
+                                    ) {
 
-                                    color: "#FFFFFF",
+                                        return L.circleMarker(
+                                            latlng,
+                                            {
+                                                pane: 'pointPane',
+                                                radius: 6,
 
-                                    weight: 1,
+                                                fillColor: getSchoolColor(
+                                                    feature.properties.SRI_SCORE
+                                                ),
 
-                                    fillOpacity: 1
+                                                color: "#000000",
+
+                                                weight: 1,
+
+                                                fillOpacity: 1
+
+                                            }
+                                        );
+
+                                    },
+
+                                    onEachFeature: function (
+                                        feature,
+                                        layer
+                                    ) {
+
+                                        layer.bindPopup(
+                                            "<strong>School</strong><br><br>" +
+                                            createPopup(feature)
+                                        );
+
+                                    }
 
                                 }
                             );
 
-                        },
 
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
+                            // ========================================================
+                            // TRADITIONAL SCHOOLS
+                            // ========================================================
 
-                            layer.bindPopup(
-                                "<strong>Traditional School</strong><br><br>" +
-                                createPopup(feature)
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                // ========================================================
-                // ALTERNATIVE SCHOOLS
-                // ========================================================
-
-                var alternativeSchools = L.geoJSON(
-                    alternativeSchoolsData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
+                            var traditionalSchools = L.geoJSON(
+                                traditionalSchoolsData,
                                 {
+
                                     pane: 'pointPane',
-                                    radius: 6,
 
-                                    fillColor: "#800080",
+                                    pointToLayer: function (
+                                        feature,
+                                        latlng
+                                    ) {
 
-                                    color: "#FFFFFF",
+                                        return L.circleMarker(
+                                            latlng,
+                                            {
+                                                pane: 'pointPane',
+                                                radius: 6,
 
-                                    weight: 1,
+                                                fillColor: "#008000",
 
-                                    fillOpacity: 1
+                                                color: "#FFFFFF",
+
+                                                weight: 1,
+
+                                                fillOpacity: 1
+
+                                            }
+                                        );
+
+                                    },
+
+                                    onEachFeature: function (
+                                        feature,
+                                        layer
+                                    ) {
+
+                                        layer.bindPopup(
+                                            "<strong>Traditional School</strong><br><br>" +
+                                            createPopup(feature)
+                                        );
+
+                                    }
 
                                 }
                             );
 
-                        },
 
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
+                            // ========================================================
+                            // ALTERNATIVE SCHOOLS
+                            // ========================================================
 
-                            layer.bindPopup(
-                                "<strong>Alternative School</strong><br><br>" +
-                                createPopup(feature)
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                // ========================================================
-                // RECREATION CENTERS
-                // ========================================================
-
-                var recreationCenters = L.geoJSON(
-                    recreationData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
+                            var alternativeSchools = L.geoJSON(
+                                alternativeSchoolsData,
                                 {
+
                                     pane: 'pointPane',
-                                    radius: 4,
 
-                                    fillColor: "#4CE600",
+                                    pointToLayer: function (
+                                        feature,
+                                        latlng
+                                    ) {
 
-                                    color: "#FFFFFF",
+                                        return L.circleMarker(
+                                            latlng,
+                                            {
+                                                pane: 'pointPane',
+                                                radius: 6,
 
-                                    weight: 1,
+                                                fillColor: "#800080",
 
-                                    fillOpacity: 1
+                                                color: "#FFFFFF",
+
+                                                weight: 1,
+
+                                                fillOpacity: 1
+
+                                            }
+                                        );
+
+                                    },
+
+                                    onEachFeature: function (
+                                        feature,
+                                        layer
+                                    ) {
+
+                                        layer.bindPopup(
+                                            "<strong>Alternative School</strong><br><br>" +
+                                            createPopup(feature)
+                                        );
+
+                                    }
 
                                 }
                             );
 
-                        },
 
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
+                            // ========================================================
+                            // RECREATION CENTERS
+                            // ========================================================
 
-                            layer.bindPopup(
-                                "<strong>Recreation Center</strong><br><br>" +
-                                createPopup(feature)
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                // ========================================================
-                // SUD FACILITIES
-                // ========================================================
-
-                var sudFacilities = L.geoJSON(
-                    sudData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
+                            var recreationCenters = L.geoJSON(
+                                recreationData,
                                 {
+
                                     pane: 'pointPane',
-                                    radius: 4,
 
-                                    fillColor: "#0070FF",
+                                    pointToLayer: function (
+                                        feature,
+                                        latlng
+                                    ) {
 
-                                    color: "#FFFFFF",
+                                        return L.circleMarker(
+                                            latlng,
+                                            {
+                                                pane: 'pointPane',
+                                                radius: 4,
 
-                                    weight: 1,
+                                                fillColor: "#4CE600",
 
-                                    fillOpacity: 1
+                                                color: "#FFFFFF",
+
+                                                weight: 1,
+
+                                                fillOpacity: 1
+
+                                            }
+                                        );
+
+                                    },
+
+                                    onEachFeature: function (
+                                        feature,
+                                        layer
+                                    ) {
+
+                                        layer.bindPopup(
+                                            "<strong>Recreation Center</strong><br><br>" +
+                                            createPopup(feature)
+                                        );
+
+                                    }
 
                                 }
                             );
 
-                        },
 
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
+                            // ========================================================
+                            // SUD FACILITIES
+                            // ========================================================
 
-                            layer.bindPopup(
-                                "<strong>SUD Facility</strong><br><br>" +
-                                createPopup(feature)
+                            var sudFacilities = L.geoJSON(
+                                sudData,
+                                {
+
+                                    pane: 'pointPane',
+
+                                    pointToLayer: function (
+                                        feature,
+                                        latlng
+                                    ) {
+
+                                        return L.circleMarker(
+                                            latlng,
+                                            {
+                                                pane: 'pointPane',
+                                                radius: 4,
+
+                                                fillColor: "#0070FF",
+
+                                                color: "#FFFFFF",
+
+                                                weight: 1,
+
+                                                fillOpacity: 1
+
+                                            }
+                                        );
+
+                                    },
+
+                                    onEachFeature: function (
+                                        feature,
+                                        layer
+                                    ) {
+
+                                        layer.bindPopup(
+                                            "<strong>SUD Facility</strong><br><br>" +
+                                            createPopup(feature)
+                                        );
+
+                                    }
+
+                                }
                             );
 
-                        }
 
-                    }
-                );
+                            // ========================================================
+                            // FIVE HIGHEST SVI CENSUS TRACTS
+                            // ========================================================
 
+                            var fiveHighestCensusTracts = L.geoJSON(
+                                highestData,
+                                {
 
-                // ========================================================
-                // FIVE HIGHEST SVI CENSUS TRACTS
-                // ========================================================
+                                    pane: 'highlightPane',
 
-                var fiveHighestCensusTracts = L.geoJSON(
-                    highestData,
-                    {
+                                    style: {
 
-                        pane: 'highlightPane',
+                                        color: "#A80000",
 
-                        style: {
+                                        weight: 3,
 
-                            color: "#A80000",
+                                        opacity: 1,
 
-                            weight: 3,
+                                        fillColor: "#A80000",
 
-                            opacity: 1,
+                                        fillOpacity: 1
 
-                            fillColor: "#A80000",
+                                    },
 
-                            fillOpacity: 1
+                                    onEachFeature: function (
+                                        feature,
+                                        layer
+                                    ) {
 
-                        },
+                                        layer.bindPopup(
+                                            "<strong>Highest SVI Census Tract</strong><br><br>" +
+                                            createPopup(feature)
+                                        );
 
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
+                                    }
 
-                            layer.bindPopup(
-                                "<strong>Highest SVI Census Tract</strong><br><br>" +
-                                createPopup(feature)
+                                }
                             );
 
-                        }
 
-                    }
-                );
+                            // ========================================================
+                            // ADD INITIAL LAYERS TO MAP
+                            // ========================================================
 
+                            censusTracts.addTo(map);
 
-                // ========================================================
-                // ADD INITIAL LAYERS TO MAP
-                // ========================================================
+                            countyBoundary.addTo(map);
 
-                censusTracts.addTo(map);
+                            schools.addTo(map);
 
-                countyBoundary.addTo(map);
+                            traditionalSchools.addTo(map);
 
-                schools.addTo(map);
+                            alternativeSchools.addTo(map);
 
-                traditionalSchools.addTo(map);
+                            fiveHighestCensusTracts.addTo(map);
 
-                alternativeSchools.addTo(map);
+                            neighborhoods.addTo(map);
 
-                fiveHighestCensusTracts.addTo(map);
+                            // Recreation Centers and SUD Facilities
+                            // are available in the layer control but
+                            // are OFF by default.
 
-                neighborhoods.addTo(map);
 
-                // Recreation Centers and SUD Facilities
-                // are available in the layer control but
-                // are OFF by default.
+                            if (censusTracts.getBounds().isValid()) {
 
+                                map.fitBounds(
+                                    censusTracts.getBounds()
+                                );
 
-                if (censusTracts.getBounds().isValid()) {
+                            }
 
-                    map.fitBounds(
-                        censusTracts.getBounds()
-                    );
 
-                }
+                            // ========================================================
+                            // INITIAL NEIGHBORHOOD LABEL PLACEMENT
+                            // ========================================================
 
+                            setTimeout(
+                                updateNeighborhoodLabels,
+                                100
+                            );
 
-                // ========================================================
-                // INITIAL NEIGHBORHOOD LABEL PLACEMENT
-                // ========================================================
 
-                setTimeout(
-                    updateNeighborhoodLabels,
-                    100
-                );
+                            // ========================================================
+                            // LAYER CONTROL
+                            // ========================================================
 
 
-                // ========================================================
-                // LAYER CONTROL
-                // ========================================================
+                            // ========================================================
+                            // LAYER CONTROL
+                            // ========================================================
 
+                            L.control.layers(
 
-                // ========================================================
-                // LAYER CONTROL
-                // ========================================================
+                                {
+                                    "OpenStreetMap": osm
+                                },
 
-                L.control.layers(
+                                {
+                                    "Census Tracts": censusTracts,
+                                    "County Boundary": countyBoundary,
+                                    "Neighborhoods": neighborhoods,
+                                    "Schools": schools,
+                                    "Traditional Schools": traditionalSchools,
+                                    "Alternative Schools": alternativeSchools,
+                                    "Recreation Centers": recreationCenters,
+                                    "SUD Facilities": sudFacilities,
+                                    "Five Highest SVI Tracts": fiveHighestCensusTracts
+                                },
 
-                    {
-                        "OpenStreetMap": osm
-                    },
+                                {
+                                    position: 'topleft',
+                                    collapsed: false
+                                }
 
-                    {
-                        "Census Tracts": censusTracts,
-                        "County Boundary": countyBoundary,
-                        "Neighborhoods": neighborhoods,
-                        "Schools": schools,
-                        "Traditional Schools": traditionalSchools,
-                        "Alternative Schools": alternativeSchools,
-                        "Recreation Centers": recreationCenters,
-                        "SUD Facilities": sudFacilities,
-                        "Five Highest SVI Tracts": fiveHighestCensusTracts
-                    },
+                            ).addTo(map);
 
-                    {
-                        position: 'topleft',
-                        collapsed: false
-                    }
+                            // ========================================================
+                            // LEGEND
+                            // ========================================================
 
-                ).addTo(map);
+                            var legend = L.control({
+                                position: 'bottomright'
+                            });
 
-                // ========================================================
-                // LEGEND
-                // ========================================================
 
-                var legend = L.control({
-                    position: 'bottomright'
-                });
+                            legend.onAdd = function (map) {
 
+                                var div = L.DomUtil.create(
+                                    'div',
+                                    'info legend'
+                                );
 
-                legend.onAdd = function (map) {
+                                return div;
+                            };
 
-                    var div = L.DomUtil.create(
-                        'div',
-                        'info legend'
-                    );
 
-                    return div;
-                };
+                            legend.addTo(map);
 
 
-                legend.addTo(map);
+                            // ========================================================
+                            // UPDATE LEGEND
+                            // Changes automatically when layers are turned
+                            // on or off using the layer control.
+                            // ========================================================
 
+                            function updateLegend() {
 
-                // ========================================================
-                // UPDATE LEGEND
-                // Changes automatically when layers are turned
-                // on or off using the layer control.
-                // ========================================================
+                                var div = legend.getContainer();
 
-                function updateLegend() {
+                                div.innerHTML = '';
 
-                    var div = legend.getContainer();
 
-                    div.innerHTML = '';
+                                // ====================================================
+                                // CENSUS TRACTS
+                                // ====================================================
 
+                                if (map.hasLayer(censusTracts)) {
 
-                    // ====================================================
-                    // CENSUS TRACTS
-                    // ====================================================
+                                    div.innerHTML +=
+                                        '<div class="legend-section">' +
+                                        'Census Tracts - SVI Score' +
+                                        '</div>';
 
-                    if (map.hasLayer(censusTracts)) {
 
-                        div.innerHTML +=
-                            '<div class="legend-section">' +
-                            'Census Tracts - SVI Score' +
-                            '</div>';
+                                    div.innerHTML +=
+                                        '<i style="background:#F5F500"></i>' +
+                                        'Low<br>';
 
 
-                        div.innerHTML +=
-                            '<i style="background:#F5F500"></i>' +
-                            'Low<br>';
+                                    div.innerHTML +=
+                                        '<i style="background:#F5B800"></i>' +
+                                        'Low - Moderate<br>';
 
 
-                        div.innerHTML +=
-                            '<i style="background:#F5B800"></i>' +
-                            'Low - Moderate<br>';
+                                    div.innerHTML +=
+                                        '<i style="background:#F57A00"></i>' +
+                                        'Moderate<br>';
 
 
-                        div.innerHTML +=
-                            '<i style="background:#F57A00"></i>' +
-                            'Moderate<br>';
+                                    div.innerHTML +=
+                                        '<i style="background:#F53D00"></i>' +
+                                        'Moderate - High<br>';
 
 
-                        div.innerHTML +=
-                            '<i style="background:#F53D00"></i>' +
-                            'Moderate - High<br>';
+                                    div.innerHTML +=
+                                        '<i style="background:#F50000"></i>' +
+                                        'High<br>';
+                                }
 
 
-                        div.innerHTML +=
-                            '<i style="background:#F50000"></i>' +
-                            'High<br>';
-                    }
+                                // ====================================================
+                                // FIVE HIGHEST SVI CENSUS TRACTS
+                                // ====================================================
 
+                                if (map.hasLayer(fiveHighestCensusTracts)) {
 
-                    // ====================================================
-                    // FIVE HIGHEST SVI CENSUS TRACTS
-                    // ====================================================
 
-                    if (map.hasLayer(fiveHighestCensusTracts)) {
+                                    div.innerHTML +=
+                                        '<i style="' +
+                                        'background:#A80000;' +
+                                        'border:1px solid #000000;' +
+                                        'width:18px;' +
+                                        'height:18px;' +
+                                        '"></i>' +
+                                        'Five Highest Census Tracts<br>';
+                                }
 
 
-                        div.innerHTML +=
-                            '<i style="' +
-                            'background:#A80000;' +
-                            'border:1px solid #000000;' +
-                            'width:18px;' +
-                            'height:18px;' +
-                            '"></i>' +
-                            'Five Highest Census Tracts<br>';
-                    }
+                                // ====================================================
+                                // SCHOOLS
+                                // ====================================================
 
+                                if (map.hasLayer(schools)) {
 
-                    // ====================================================
-                    // SCHOOLS
-                    // ====================================================
+                                    div.innerHTML +=
+                                        '<div class="legend-section">' +
+                                        'Schools — SRI Score' +
+                                        '</div>';
 
-                    if (map.hasLayer(schools)) {
 
-                        div.innerHTML +=
-                            '<div class="legend-section">' +
-                            'Schools — SRI Score' +
-                            '</div>';
+                                    // Low SRI
 
+                                    div.innerHTML +=
+                                        '<i class="circle-symbol" ' +
+                                        'style="' +
+                                        'background:#F5F500;' +
+                                        'border:1px solid #000000' +
+                                        '"></i>' +
+                                        'Low<br>';
 
-                        // Low SRI
 
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#F5F500;' +
-                            'border:1px solid #000000' +
-                            '"></i>' +
-                            'Low<br>';
+                                    // Low - Moderate
 
+                                    div.innerHTML +=
+                                        '<i class="circle-symbol" ' +
+                                        'style="' +
+                                        'background:#F5B800;' +
+                                        'border:1px solid #000000' +
+                                        '"></i>' +
+                                        'Low - Moderate<br>';
 
-                        // Low - Moderate
 
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#F5B800;' +
-                            'border:1px solid #000000' +
-                            '"></i>' +
-                            'Low - Moderate<br>';
+                                    // Moderate
 
+                                    div.innerHTML +=
+                                        '<i class="circle-symbol" ' +
+                                        'style="' +
+                                        'background:#F57A00;' +
+                                        'border:1px solid #000000' +
+                                        '"></i>' +
+                                        'Moderate<br>';
 
-                        // Moderate
 
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#F57A00;' +
-                            'border:1px solid #000000' +
-                            '"></i>' +
-                            'Moderate<br>';
+                                    // Moderate - High
 
+                                    div.innerHTML +=
+                                        '<i class="circle-symbol" ' +
+                                        'style="' +
+                                        'background:#F53D00;' +
+                                        'border:1px solid #000000' +
+                                        '"></i>' +
+                                        'Moderate - High<br>';
 
-                        // Moderate - High
 
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#F53D00;' +
-                            'border:1px solid #000000' +
-                            '"></i>' +
-                            'Moderate - High<br>';
+                                    // High
 
+                                    div.innerHTML +=
+                                        '<i class="circle-symbol" ' +
+                                        'style="' +
+                                        'background:#F50000;' +
+                                        'border:1px solid #000000' +
+                                        '"></i>' +
+                                        'High<br>';
 
-                        // High
+                                }
 
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#F50000;' +
-                            'border:1px solid #000000' +
-                            '"></i>' +
-                            'High<br>';
 
-                    }
+                                // ====================================================
+                                // TRADITIONAL SCHOOLS
+                                // ====================================================
 
+                                if (map.hasLayer(traditionalSchools)) {
 
-                    // ====================================================
-                    // TRADITIONAL SCHOOLS
-                    // ====================================================
+                                    div.innerHTML +=
+                                        '<div class="legend-section">' +
+                                        'School Types' +
+                                        '</div>';
 
-                    if (map.hasLayer(traditionalSchools)) {
 
-                        div.innerHTML +=
-                            '<div class="legend-section">' +
-                            'School Types' +
-                            '</div>';
+                                    div.innerHTML +=
+                                        '<i class="circle-symbol" ' +
+                                        'style="' +
+                                        'background:#008000;' +
+                                        'border:1px solid #FFFFFF' +
+                                        '"></i>' +
+                                        'Top 5 Traditional Schools<br>';
+                                }
 
 
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#008000;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
-                            'Top 5 Traditional Schools<br>';
-                    }
+                                // ====================================================
+                                // ALTERNATIVE SCHOOLS
+                                // ====================================================
 
+                                if (map.hasLayer(alternativeSchools)) {
 
-                    // ====================================================
-                    // ALTERNATIVE SCHOOLS
-                    // ====================================================
+                                    if (!map.hasLayer(traditionalSchools)) {
 
-                    if (map.hasLayer(alternativeSchools)) {
+                                        div.innerHTML +=
+                                            '<div class="legend-section">' +
+                                            'School Types' +
+                                            '</div>';
+                                    }
 
-                        if (!map.hasLayer(traditionalSchools)) {
 
-                            div.innerHTML +=
-                                '<div class="legend-section">' +
-                                'School Types' +
-                                '</div>';
-                        }
+                                    div.innerHTML +=
+                                        '<i class="circle-symbol" ' +
+                                        'style="' +
+                                        'background:#800080;' +
+                                        'border:1px solid #FFFFFF' +
+                                        '"></i>' +
+                                        'Top 5 Alternative Schools<br>';
+                                }
 
 
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#800080;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
-                            'Top 5 Alternative Schools<br>';
-                    }
+                                // ====================================================
+                                // COUNTY BOUNDARY
+                                // ====================================================
 
+                                if (map.hasLayer(countyBoundary)) {
 
-                    // ====================================================
-                    // COUNTY BOUNDARY
-                    // ====================================================
+                                    div.innerHTML +=
+                                        '<div class="legend-section">' +
+                                        'Boundaries' +
+                                        '</div>';
 
-                    if (map.hasLayer(countyBoundary)) {
 
-                        div.innerHTML +=
-                            '<div class="legend-section">' +
-                            'Boundaries' +
-                            '</div>';
+                                    div.innerHTML +=
+                                        '<i class="line-symbol" ' +
+                                        'style="border-color:#000000; ' +
+                                        'border-top-width:3px">' +
+                                        '</i>' +
+                                        'County Boundary<br>';
+                                }
 
 
-                        div.innerHTML +=
-                            '<i class="line-symbol" ' +
-                            'style="border-color:#000000; ' +
-                            'border-top-width:3px">' +
-                            '</i>' +
-                            'County Boundary<br>';
-                    }
+                                // ====================================================
+                                // NEIGHBORHOODS
+                                // ====================================================
 
+                                if (map.hasLayer(neighborhoods)) {
 
-                    // ====================================================
-                    // NEIGHBORHOODS
-                    // ====================================================
+                                    if (!map.hasLayer(countyBoundary)) {
 
-                    if (map.hasLayer(neighborhoods)) {
+                                        div.innerHTML +=
+                                            '<div class="legend-section">' +
+                                            'Boundaries' +
+                                            '</div>';
+                                    }
 
-                        if (!map.hasLayer(countyBoundary)) {
 
-                            div.innerHTML +=
-                                '<div class="legend-section">' +
-                                'Boundaries' +
-                                '</div>';
-                        }
+                                    div.innerHTML +=
+                                        '<i class="line-symbol" ' +
+                                        'style="border-color:#000000; ' +
+                                        'border-top-width:2px">' +
+                                        '</i>' +
+                                        'Neighborhood Boundary<br>';
+                                }
 
 
-                        div.innerHTML +=
-                            '<i class="line-symbol" ' +
-                            'style="border-color:#000000; ' +
-                            'border-top-width:2px">' +
-                            '</i>' +
-                            'Neighborhood Boundary<br>';
-                    }
+                                // ====================================================
+                                // RECREATION CENTERS
+                                // Protective Layer
+                                // ====================================================
 
+                                if (map.hasLayer(recreationCenters)) {
 
-                    // ====================================================
-                    // RECREATION CENTERS
-                    // Protective Layer
-                    // ====================================================
+                                    div.innerHTML +=
+                                        '<div class="legend-section">' +
+                                        'Protective Layers' +
+                                        '</div>';
 
-                    if (map.hasLayer(recreationCenters)) {
 
-                        div.innerHTML +=
-                            '<div class="legend-section">' +
-                            'Protective Layers' +
-                            '</div>';
+                                    div.innerHTML +=
+                                        '<i class="circle-symbol" ' +
+                                        'style="' +
+                                        'background:#4CE600;' +
+                                        'border:1px solid #FFFFFF' +
+                                        '"></i>' +
+                                        'Recreation Centers<br>';
+                                }
 
 
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#4CE600;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
-                            'Recreation Centers<br>';
-                    }
+                                // ====================================================
+                                // SUD FACILITIES
+                                // Protective Layer
+                                // ====================================================
 
+                                if (map.hasLayer(sudFacilities)) {
 
-                    // ====================================================
-                    // SUD FACILITIES
-                    // Protective Layer
-                    // ====================================================
+                                    if (!map.hasLayer(recreationCenters)) {
 
-                    if (map.hasLayer(sudFacilities)) {
+                                        div.innerHTML +=
+                                            '<div class="legend-section">' +
+                                            'Protective Layers' +
+                                            '</div>';
+                                    }
 
-                        if (!map.hasLayer(recreationCenters)) {
 
-                            div.innerHTML +=
-                                '<div class="legend-section">' +
-                                'Protective Layers' +
-                                '</div>';
-                        }
+                                    div.innerHTML +=
+                                        '<i class="circle-symbol" ' +
+                                        'style="' +
+                                        'background:#0070FF;' +
+                                        'border:1px solid #FFFFFF' +
+                                        '"></i>' +
+                                        'SUD Facilities<br>';
+                                }
 
 
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#0070FF;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
-                            'SUD Facilities<br>';
-                    }
+                                // ====================================================
+                                // CENSUS TRACT BOUNDARY
+                                // ====================================================
+                                // This is always included with Census Tracts.
+                                // It is intentionally not given its own legend
+                                // symbol because the SVI colors already explain
+                                // the Census Tract layer.
+                                // ====================================================
 
 
-                    // ====================================================
-                    // CENSUS TRACT BOUNDARY
-                    // ====================================================
-                    // This is always included with Census Tracts.
-                    // It is intentionally not given its own legend
-                    // symbol because the SVI colors already explain
-                    // the Census Tract layer.
-                    // ====================================================
+                            }
 
 
-                }
+                            // ========================================================
+                            // INITIAL LEGEND
+                            // Shows all layers that are currently displayed.
+                            // ========================================================
 
+                            updateLegend();
 
-                // ========================================================
-                // INITIAL LEGEND
-                // Shows all layers that are currently displayed.
-                // ========================================================
 
-                updateLegend();
+                            // ========================================================
+                            // UPDATE LEGEND WHEN A LAYER IS TURNED ON
+                            // ========================================================
 
+                            map.on('overlayadd', function () {
 
-                // ========================================================
-                // UPDATE LEGEND WHEN A LAYER IS TURNED ON
-                // ========================================================
+                                updateLegend();
 
-                map.on('overlayadd', function () {
+                            });
 
-                    updateLegend();
 
-                });
+                            // ========================================================
+                            // UPDATE LEGEND WHEN A LAYER IS TURNED OFF
+                            // ========================================================
 
+                            map.on('overlayremove', function () {
 
-                // ========================================================
-                // UPDATE LEGEND WHEN A LAYER IS TURNED OFF
-                // ========================================================
+                                updateLegend();
 
-                map.on('overlayremove', function () {
+                            });
 
-                    updateLegend();
 
-                });
+                            console.log(
+                                "Map layers and legend successfully created."
+                            );
 
+                        })
 
-                console.log(
-                    "Map layers and legend successfully created."
-                );
 
-            })
+                        // ============================================================
+                        // ERROR HANDLING
+                        // ============================================================
 
+                        .catch(function (error) {
 
-            // ============================================================
-            // ERROR HANDLING
-            // ============================================================
+                            console.error(
+                                "ERROR LOADING MAP DATA:",
+                                error
+                            );
 
-            .catch(function (error) {
-
-                console.error(
-                    "ERROR LOADING MAP DATA:",
-                    error
-                );
-
-            });
+                        });
 
     </script>
 
