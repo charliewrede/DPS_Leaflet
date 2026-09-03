@@ -1042,6 +1042,275 @@
             return popupContent;
         }
         // ============================================================
+        // RECREATION CENTER POPUP FUNCTION
+        // ============================================================
+
+        function createRecreationPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+
+            // --------------------------------------------------------
+            // BASIC INFORMATION
+            // --------------------------------------------------------
+
+            if (
+                p.REC_NAME !== null &&
+                p.REC_NAME !== undefined &&
+                p.REC_NAME !== ""
+            ) {
+                popupContent +=
+                    "<strong>Recreation Center:</strong> " +
+                    p.REC_NAME +
+                    "<br>";
+            }
+
+
+            if (
+                p.REC_TYPE !== null &&
+                p.REC_TYPE !== undefined &&
+                p.REC_TYPE !== ""
+            ) {
+                popupContent +=
+                    "<strong>Center Type:</strong> " +
+                    p.REC_TYPE +
+                    "<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // ADDRESS
+            // --------------------------------------------------------
+
+            if (
+                p.ADDRESS_LI !== null &&
+                p.ADDRESS_LI !== undefined &&
+                p.ADDRESS_LI !== ""
+            ) {
+
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.ADDRESS_LI;
+
+                if (
+                    p.CITY !== null &&
+                    p.CITY !== undefined &&
+                    p.CITY !== ""
+                ) {
+                    popupContent += ", " + p.CITY;
+                }
+
+                if (
+                    p.STATE !== null &&
+                    p.STATE !== undefined &&
+                    p.STATE !== ""
+                ) {
+                    popupContent += ", " + p.STATE;
+                }
+
+                if (
+                    p.ZIP !== null &&
+                    p.ZIP !== undefined &&
+                    p.ZIP !== ""
+                ) {
+                    popupContent += " " + p.ZIP;
+                }
+
+                popupContent += "<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // CONTACT INFORMATION
+            // --------------------------------------------------------
+
+            if (
+                p.PHONE !== null &&
+                p.PHONE !== undefined &&
+                p.PHONE !== ""
+            ) {
+                popupContent +=
+                    "<strong>Phone:</strong> " +
+                    p.PHONE +
+                    "<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // FACILITIES AND PROGRAMS
+            // --------------------------------------------------------
+
+            if (
+                p.MARKETED_F !== null &&
+                p.MARKETED_F !== undefined &&
+                p.MARKETED_F !== ""
+            ) {
+                popupContent +=
+                    "<strong>Facilities & Amenities:</strong> " +
+                    p.MARKETED_F +
+                    "<br>";
+            }
+
+
+            if (
+                p.MARKETED_P !== null &&
+                p.MARKETED_P !== undefined &&
+                p.MARKETED_P !== ""
+            ) {
+                popupContent +=
+                    "<strong>Programs & Activities:</strong> " +
+                    p.MARKETED_P +
+                    "<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // WEBSITE
+            // --------------------------------------------------------
+
+            if (
+                p.NEWS_LINK !== null &&
+                p.NEWS_LINK !== undefined &&
+                p.NEWS_LINK !== ""
+            ) {
+
+                var website = p.NEWS_LINK;
+
+                if (
+                    !website.startsWith("http://") &&
+                    !website.startsWith("https://")
+                ) {
+                    website = "https://" + website;
+                }
+
+                popupContent +=
+                    '<strong>Website:</strong> ' +
+                    '<a href="' +
+                    website +
+                    '" target="_blank" rel="noopener noreferrer">' +
+                    'View Recreation Center Website' +
+                    '</a><br>';
+            }
+
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+        // ============================================================
+        // SUD FACILITY POPUP FUNCTION
+        // ============================================================
+
+        function createSUDPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+
+            // --------------------------------------------------------
+            // BASIC INFORMATION
+            // --------------------------------------------------------
+
+            if (
+                p.FacilityNa !== null &&
+                p.FacilityNa !== undefined &&
+                p.FacilityNa !== ""
+            ) {
+                popupContent +=
+                    "<strong>Facility Name:</strong> " +
+                    p.FacilityNa +
+                    "<br>";
+            }
+
+
+            if (
+                p.Address !== null &&
+                p.Address !== undefined &&
+                p.Address !== ""
+            ) {
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.Address +
+                    "<br>";
+            }
+
+
+            if (
+                p.CNTYNAME !== null &&
+                p.CNTYNAME !== undefined &&
+                p.CNTYNAME !== ""
+            ) {
+                popupContent +=
+                    "<strong>County:</strong> " +
+                    p.CNTYNAME +
+                    " County<br>";
+            }
+
+
+            if (
+                p.Year !== null &&
+                p.Year !== undefined &&
+                p.Year !== ""
+            ) {
+                popupContent +=
+                    "<strong>Facility Data Year:</strong> " +
+                    p.Year +
+                    "<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // SERVICES
+            // --------------------------------------------------------
+
+            var services = [];
+
+
+            if (Number(p.OP) === 1) {
+                services.push("Outpatient Services");
+            }
+
+
+            if (Number(p.RES) === 1) {
+                services.push("Residential Services");
+            }
+
+
+            if (Number(p.DT) === 1) {
+                services.push("Detoxification Services");
+            }
+
+
+            if (Number(p.TELE) === 1) {
+                services.push("Telehealth Services");
+            }
+
+
+            if (services.length > 0) {
+
+                popupContent +=
+                    "<strong>Services:</strong> " +
+                    services.join(", ") +
+                    "<br>";
+            }
+
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+        // ============================================================
         // SVI COLOR FUNCTION
         // ============================================================
 
@@ -2761,10 +3030,10 @@
                         ) {
 
                             layer.bindPopup(
-                                "<strong>Recreation Center</strong><br><br>" +
-                                createPopup(feature), {
-                                pane: 'popupTopPane'
-                            }
+                                createRecreationPopup(feature),
+                                {
+                                    pane: 'popupTopPane'
+                                }
                             );
 
                         }
@@ -2813,10 +3082,10 @@
                         ) {
 
                             layer.bindPopup(
-                                "<strong>SUD Facility</strong><br><br>" +
-                                createPopup(feature), {
-                                pane: 'popupTopPane'
-                            }
+                                createSUDPopup(feature),
+                                {
+                                    pane: 'popupTopPane'
+                                }
                             );
 
                         }
