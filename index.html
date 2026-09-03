@@ -177,6 +177,7 @@
         map.createPane('highlightPane');
         map.createPane('pointPane');
         map.createPane('labelPane');
+        map.createPane('popupTopPane');
 
         map.getPane('labelPane').style.zIndex = 900;
         map.getPane('labelPane').style.pointerEvents = 'none';
@@ -185,6 +186,7 @@
         map.getPane('highlightPane').style.zIndex = 400;
         map.getPane('boundaryPane').style.zIndex = 700;
         map.getPane('pointPane').style.zIndex = 800;
+        map.getPane('popupTopPane').style.zIndex = 1200;
 
         console.log(
             "Census z-index:",
@@ -577,7 +579,9 @@
 
                             layer.bindPopup(
                                 "<strong>Census Tract</strong><br><br>" +
-                                createPopup(feature)
+                                createPopup(feature), {
+                                pane: 'popupTopPane'
+                            }
                             );
 
                         }
@@ -615,7 +619,9 @@
 
                             layer.bindPopup(
                                 "<strong>County Boundary</strong><br><br>" +
-                                createPopup(feature)
+                                createPopup(feature), {
+                                pane: 'popupTopPane'
+                            }
                             );
 
                         }
@@ -1808,7 +1814,9 @@
 
                             layer.bindPopup(
                                 "<strong>School</strong><br><br>" +
-                                createPopup(feature)
+                                createPopup(feature), {
+                                pane: 'popupTopPane'
+                            }
                             );
 
                         }
@@ -1858,7 +1866,9 @@
 
                             layer.bindPopup(
                                 "<strong>Traditional School</strong><br><br>" +
-                                createPopup(feature)
+                                createPopup(feature), {
+                                pane: 'popupTopPane'
+                            }
                             );
 
                         }
@@ -1908,7 +1918,9 @@
 
                             layer.bindPopup(
                                 "<strong>Alternative School</strong><br><br>" +
-                                createPopup(feature)
+                                createPopup(feature), {
+                                pane: 'popupTopPane'
+                            }
                             );
 
                         }
@@ -1958,7 +1970,9 @@
 
                             layer.bindPopup(
                                 "<strong>Recreation Center</strong><br><br>" +
-                                createPopup(feature)
+                                createPopup(feature), {
+                                pane: 'popupTopPane'
+                            }
                             );
 
                         }
@@ -2008,7 +2022,9 @@
 
                             layer.bindPopup(
                                 "<strong>SUD Facility</strong><br><br>" +
-                                createPopup(feature)
+                                createPopup(feature), {
+                                pane: 'popupTopPane'
+                            }
                             );
 
                         }
@@ -2048,7 +2064,9 @@
 
                             layer.bindPopup(
                                 "<strong>Highest SVI Census Tract</strong><br><br>" +
-                                createPopup(feature)
+                                createPopup(feature), {
+                                pane: 'popupTopPane'
+                            }
                             );
 
                         }
