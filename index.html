@@ -1316,6 +1316,113 @@
             return popupContent;
         }
         // ============================================================
+        // FARMERS MARKET POPUP FUNCTION
+        // ============================================================
+
+        function createFarmersMarketPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+
+            // --------------------------------------------------------
+            // BASIC INFORMATION
+            // --------------------------------------------------------
+
+            if (
+                p.NAME !== null &&
+                p.NAME !== undefined &&
+                p.NAME !== ""
+            ) {
+                popupContent +=
+                    "<strong>Farmers Market:</strong> " +
+                    p.NAME +
+                    "<br>";
+            }
+
+
+            if (
+                p.LOCATION_G !== null &&
+                p.LOCATION_G !== undefined &&
+                p.LOCATION_G !== ""
+            ) {
+                popupContent +=
+                    "<strong>Location Details:</strong> " +
+                    p.LOCATION_G +
+                    "<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // ADDRESS
+            // --------------------------------------------------------
+
+            if (
+                p.ADDRESS_FU !== null &&
+                p.ADDRESS_FU !== undefined &&
+                p.ADDRESS_FU !== ""
+            ) {
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.ADDRESS_FU +
+                    "<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // STATUS / SEASON
+            // --------------------------------------------------------
+
+            if (
+                p.STATUS !== null &&
+                p.STATUS !== undefined &&
+                p.STATUS !== ""
+            ) {
+                popupContent +=
+                    "<strong>Season / Status:</strong> " +
+                    p.STATUS +
+                    "<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // FOOD ACCESS PROGRAMS
+            // --------------------------------------------------------
+
+            if (
+                p.SNAP !== null &&
+                p.SNAP !== undefined &&
+                p.SNAP !== ""
+            ) {
+                popupContent +=
+                    "<strong>SNAP Accepted:</strong> " +
+                    p.SNAP +
+                    "<br>";
+            }
+
+
+            if (
+                p.DOUBLE_UP_ !== null &&
+                p.DOUBLE_UP_ !== undefined &&
+                p.DOUBLE_UP_ !== ""
+            ) {
+                popupContent +=
+                    "<strong>Double Up Food Bucks:</strong> " +
+                    p.DOUBLE_UP_ +
+                    "<br>";
+            }
+
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+        // ============================================================
         // SVI COLOR FUNCTION
         // ============================================================
 
@@ -1587,6 +1694,23 @@
                     }
 
                     return response.json();
+                }),
+            // --------------------------------------------------------
+            // FARMERS MARKETS
+            // --------------------------------------------------------
+
+            fetch('Data/Farmers_Markets.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Could not load Farmers_Markets.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
                 })
         ])
             // ============================================================
@@ -1612,7 +1736,8 @@
                 var alternativeSchoolsData = data[5];
                 var recreationData = data[6];
                 var sudData = data[7];
-                var highestData = data[8];
+                var farmersMarketsData = data[8];
+                var highestData = data[9];
 
 
                 console.log(
@@ -1722,9 +1847,6 @@
                             feature,
                             layer
                         ) {
-
-
-
 
                             // --------------------------------------------
                             // NEIGHBORHOOD LABEL
@@ -2254,6 +2376,9 @@
 
                     collectPointObstacles(
                         sudFacilities
+                    );
+                    collectPointObstacles(
+                        farmersMarkets
                     );
 
 
@@ -3132,6 +3257,57 @@
 
                     }
                 );
+                // ========================================================
+                // FARMERS MARKETS
+                // Protective Factor
+                // ========================================================
+
+                var farmersMarkets = L.geoJSON(
+                    farmersMarketsData,
+                    {
+
+                        pane: 'pointPane',
+
+                        pointToLayer: function (
+                            feature,
+                            latlng
+                        ) {
+
+                            return L.circleMarker(
+                                latlng,
+                                {
+                                    pane: 'pointPane',
+
+                                    radius: 4,
+
+                                    fillColor: "#FFAA00",
+
+                                    color: "#FFFFFF",
+
+                                    weight: 1,
+
+                                    fillOpacity: 1
+                                }
+                            );
+
+                        },
+
+                        onEachFeature: function (
+                            feature,
+                            layer
+                        ) {
+
+                            layer.bindPopup(
+                                createFarmersMarketPopup(feature),
+                                {
+                                    pane: 'popupTopPane'
+                                }
+                            );
+
+                        }
+
+                    }
+                );
 
 
                 // ========================================================
@@ -3193,6 +3369,7 @@
 
                     {
                         "Census Tracts": censusTracts,
+                        "Five Highest SVI Tracts": fiveHighestCensusTracts,
                         "County Boundary": countyBoundary,
                         "Neighborhoods": neighborhoods,
                         "Schools": schools,
@@ -3200,7 +3377,7 @@
                         "Alternative Schools": alternativeSchools,
                         "Recreation Centers": recreationCenters,
                         "SUD Facilities": sudFacilities,
-                        "Five Highest SVI Tracts": fiveHighestCensusTracts
+                        "Farmers Markets": farmersMarkets
                     },
 
                     {
@@ -3509,6 +3686,33 @@
                             'border:1px solid #FFFFFF' +
                             '"></i>' +
                             'SUD Facilities<br>';
+                    }
+                    // ====================================================
+                    // FARMERS MARKETS
+                    // Protective Layer
+                    // ====================================================
+
+                    if (map.hasLayer(farmersMarkets)) {
+
+                        if (
+                            !map.hasLayer(recreationCenters) &&
+                            !map.hasLayer(sudFacilities)
+                        ) {
+
+                            div.innerHTML +=
+                                '<div class="legend-section">' +
+                                'Protective Layers' +
+                                '</div>';
+                        }
+
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="' +
+                            'background:#FFAA00;' +
+                            'border:1px solid #FFFFFF' +
+                            '"></i>' +
+                            'Farmers Markets<br>';
                     }
 
 
