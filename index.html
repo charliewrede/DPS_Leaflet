@@ -462,7 +462,19 @@
                     p.school_n_1 +
                     "<br>";
             }
+            // --------------------------------------------------------
+            // SCHOOL RISK INDEX
+            // --------------------------------------------------------
 
+            if (
+                p.SRI_SCORE !== null &&
+                p.SRI_SCORE !== undefined
+            ) {
+                popupContent +=
+                    "<strong>School Risk Index Score:</strong> " +
+                    Number(p.SRI_SCORE).toFixed(3) +
+                    "<br>";
+            }
 
             if (
                 p.school_dis !== null &&
@@ -628,21 +640,6 @@
                     "<strong>Academic Performance:</strong> " +
                     (Number(p.EP_PERF) * 100).toFixed(1) +
                     "%<br>";
-            }
-
-
-            // --------------------------------------------------------
-            // SCHOOL RISK INDEX
-            // --------------------------------------------------------
-
-            if (
-                p.SRI_SCORE !== null &&
-                p.SRI_SCORE !== undefined
-            ) {
-                popupContent +=
-                    "<strong>School Risk Index Score:</strong> " +
-                    Number(p.SRI_SCORE).toFixed(3) +
-                    "<br>";
             }
 
 
