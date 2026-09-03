@@ -1,29 +1,28 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="3.40.6-Bratislava">
-  <identifier>Five_Highest_Census_Tracts</identifier>
+  <identifier>tsgis.TSGIS.SVCS_LIBRARY_P</identifier>
   <parentidentifier></parentidentifier>
   <language>ENG</language>
   <type>dataset</type>
-  <title>American Community Survey Tracts (2017-2021)</title>
-  <abstract>Census Tract level data from the American Community Survey; 5 year average, years 2017-2021. The data-set does not contain data for any enclaves administered by other jurisdictions that are located within the City and County of Denver's boundary. This data is a sample, not a census. Results should be considered estimates. Margin of error data provided where appropriate. See American Community Survey website for additional information.
+  <title>Libraries</title>
+  <abstract>Denver Public Libraries within the City and County of Denver. The data includes patronage and circulation for the previous calendar year.
 
-This data set should be used for planning and analysis of activities that are within the City and County of Denver.</abstract>
+This dataset represents Denver Public Library locations within the City and County of Denver.</abstract>
   <keywords vocabulary="Search keys">
+    <keyword>services</keyword>
+    <keyword>location</keyword>
     <keyword>USA</keyword>
+    <keyword>structure</keyword>
     <keyword>Denver County</keyword>
+    <keyword>society</keyword>
     <keyword>Denver</keyword>
     <keyword>Colorado</keyword>
-    <keyword>demographics</keyword>
-    <keyword>census</keyword>
-    <keyword>society</keyword>
-    <keyword>economy</keyword>
   </keywords>
   <links/>
   <dates/>
   <fees></fees>
-  <constraints type="Limitations of use">ACCESS CONSTRAINTS: None. USE CONSTRAINTS: The City and County of Denver is not responsible and shall not be liable to the user for damages of any kind arising out of the use of data or information provided by the City and County of Denver, including the installation of the data or information, its use, or the results obtained from its use. ANY DATA OR INFORMATION PROVIDED BY THE City and County of Denver IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Data or information provided by the City and County of Denver shall be used and relied upon only at the user's sole risk, and the user agrees to indemnify and hold harmless the City and County of Denver, its officials, officers and employees from any liability arising out of the use of the data/information provided. NOT FOR ENGINEERING PURPOSES
-</constraints>
-  <rights>City and County of Denver, Technology Services, Enterprise Data Management , derived from American Community Survey data, US Census Bureau.</rights>
+  <constraints type="Limitations of use">ACCESS CONSTRAINTS: None. USE CONSTRAINTS: The City and County of Denver is not responsible and shall not be liable to the user for damages of any kind arising out of the use of data or information provided by the City and County of Denver, including the installation of the data or information, its use, or the results obtained from its use. ANY DATA OR INFORMATION PROVIDED BY THE City and County of Denver IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Data or information provided by the City and County of Denver shall be used and relied upon only at the user's sole risk, and the user agrees to indemnify and hold harmless the City and County of Denver, its officials, officers and employees from any liability arising out of the use of the data/information provided. NOT FOR ENGINEERING PURPOSES</constraints>
+  <rights>Denver Public Library</rights>
   <encoding></encoding>
   <crs>
     <spatialrefsys nativeFormat="Wkt">
@@ -39,6 +38,6 @@ This data set should be used for planning and analysis of activities that are wi
     </spatialrefsys>
   </crs>
   <extent>
-    <spatial minz="0" maxy="39.91632599999999798" minx="-105.11003700000000549" dimensions="2" crs="EPSG:2877" maxx="-104.59935199999999611" maxz="0" miny="39.61157899999999898"/>
+    <spatial minz="0" maxy="39.78634999999999877" minx="-105.05164800000000014" dimensions="2" crs="EPSG:2877" maxx="-104.76684299999999439" maxz="0" miny="39.65371300000000332"/>
   </extent>
 </qgis>

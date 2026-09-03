@@ -67,7 +67,7 @@ The City and County of Denver boundary dataset is being updated when information
   <links/>
   <history>Data source: Coordinate geometry based on legal descriptions. On-screen digitization following natural features when legal descriptions could not be obtained.</history>
   <dates>
-    <date value="2012-01-25T00:00:00" type="Published"/>
+    <date type="Published" value="2012-01-25T00:00:00"/>
   </dates>
   <fees></fees>
   <constraints type="Security constraints"></constraints>
@@ -90,7 +90,7 @@ The City and County of Denver boundary dataset is being updated when information
     </spatialrefsys>
   </crs>
   <extent>
-    <spatial maxz="0" dimensions="2" minz="0" maxx="-104.59939500000000123" miny="39.61157999999999646" minx="-105.11003800000000297" crs="EPSG:2877" maxy="39.91630800000000079"/>
+    <spatial minz="0" maxy="39.91630800000000079" minx="-105.11003800000000297" dimensions="2" crs="EPSG:2877" maxx="-104.59939500000000123" maxz="0" miny="39.61157999999999646"/>
     <temporal>
       <period>
         <start>2012-01-25T08:00:00Z</start>

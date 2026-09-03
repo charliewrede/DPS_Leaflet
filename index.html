@@ -178,8 +178,10 @@
         map.createPane('pointPane');
         map.createPane('labelPane');
         map.createPane('popupTopPane');
+        map.createPane('protectivePolygonPane');
 
         map.getPane('labelPane').style.zIndex = 900;
+        map.getPane('protectivePolygonPane').style.zIndex = 600;
         map.getPane('labelPane').style.pointerEvents = 'none';
         map.getPane('censusPane').style.zIndex = 300;
         map.getPane('neighborhoodPane').style.zIndex = 500;
@@ -1423,6 +1425,237 @@
             return popupContent;
         }
         // ============================================================
+        // PARK POPUP FUNCTION
+        // ============================================================
+
+        function createParkPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p.FORMAL_NAM) {
+                popupContent +=
+                    "<strong>Park Name:</strong> " +
+                    p.FORMAL_NAM +
+                    "<br>";
+            }
+
+            if (p.PARK_TYPE) {
+                popupContent +=
+                    "<strong>Park Type:</strong> " +
+                    p.PARK_TYPE +
+                    "<br>";
+            }
+
+            if (p.PARK_CLASS) {
+                popupContent +=
+                    "<strong>Park Classification:</strong> " +
+                    p.PARK_CLASS +
+                    "<br>";
+            }
+
+            if (
+                p.GIS_ACRES !== null &&
+                p.GIS_ACRES !== undefined
+            ) {
+                popupContent +=
+                    "<strong>Size:</strong> " +
+                    Number(p.GIS_ACRES).toFixed(1) +
+                    " acres<br>";
+            }
+
+            if (p.ADDRESS_LI) {
+
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.ADDRESS_LI;
+
+                if (p.CITY) {
+                    popupContent += ", " + p.CITY;
+                }
+
+                if (p.STATE) {
+                    popupContent += ", " + p.STATE;
+                }
+
+                if (p.ZIP) {
+                    popupContent += " " + p.ZIP;
+                }
+
+                popupContent += "<br>";
+            }
+
+            if (p.FACILITIES) {
+                popupContent +=
+                    "<strong>Facilities:</strong> " +
+                    p.FACILITIES +
+                    "<br>";
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+
+
+        // ============================================================
+        // SWIMMING POOL POPUP FUNCTION
+        // ============================================================
+
+        function createSwimmingPoolPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p.POOL_NAME) {
+                popupContent +=
+                    "<strong>Pool Name:</strong> " +
+                    p.POOL_NAME +
+                    "<br>";
+            }
+
+            if (p.POOL_TYPE) {
+                popupContent +=
+                    "<strong>Pool Type:</strong> " +
+                    p.POOL_TYPE +
+                    "<br>";
+            }
+
+            if (p.ADDRESS_LI) {
+
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.ADDRESS_LI;
+
+                if (p.CITY) {
+                    popupContent += ", " + p.CITY;
+                }
+
+                if (p.STATE) {
+                    popupContent += ", " + p.STATE;
+                }
+
+                if (p.ZIP) {
+                    popupContent += " " + p.ZIP;
+                }
+
+                popupContent += "<br>";
+            }
+
+            if (p.PHONE) {
+                popupContent +=
+                    "<strong>Phone:</strong> " +
+                    p.PHONE +
+                    "<br>";
+            }
+
+            if (p.PARK_LOCAT) {
+                popupContent +=
+                    "<strong>Located At:</strong> " +
+                    p.PARK_LOCAT +
+                    "<br>";
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+
+
+        // ============================================================
+        // LIBRARY POPUP FUNCTION
+        // ============================================================
+
+        function createLibraryPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p.LIBRARY_NA) {
+                popupContent +=
+                    "<strong>Library Name:</strong> " +
+                    p.LIBRARY_NA +
+                    "<br>";
+            }
+
+            if (p.ADDRESS_LI) {
+
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.ADDRESS_LI;
+
+                if (p.CITY) {
+                    popupContent += ", " + p.CITY;
+                }
+
+                if (p.STATE) {
+                    popupContent += ", " + p.STATE;
+                }
+
+                if (p.ZIP) {
+                    popupContent += " " + p.ZIP;
+                }
+
+                popupContent += "<br>";
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+
+
+        // ============================================================
+        // SKATEPARK POPUP FUNCTION
+        // ============================================================
+
+        function createSkateparkPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p.LOCATION) {
+                popupContent +=
+                    "<strong>Skatepark:</strong> " +
+                    p.LOCATION +
+                    "<br>";
+            }
+
+            if (
+                p.YEAR_BUILT !== null &&
+                p.YEAR_BUILT !== undefined
+            ) {
+                popupContent +=
+                    "<strong>Year Built:</strong> " +
+                    p.YEAR_BUILT +
+                    "<br>";
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+        // ============================================================
         // SVI COLOR FUNCTION
         // ============================================================
 
@@ -1711,6 +1944,76 @@
                     }
 
                     return response.json();
+                }),
+            // --------------------------------------------------------
+            // PARKS
+            // --------------------------------------------------------
+
+            fetch('Data/Parks.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Parks.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            // --------------------------------------------------------
+            // SWIMMING POOLS
+            // --------------------------------------------------------
+
+            fetch('Data/Swimming_Pools.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Swimming_Pools.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            // --------------------------------------------------------
+            // LIBRARIES
+            // --------------------------------------------------------
+
+            fetch('Data/Libraries.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Libraries.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            // --------------------------------------------------------
+            // SKATEPARKS
+            // --------------------------------------------------------
+
+            fetch('Data/Skateparks.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Skateparks.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
                 })
         ])
             // ============================================================
@@ -1738,6 +2041,10 @@
                 var sudData = data[7];
                 var highestData = data[8];
                 var farmersMarketsData = data[9];
+                var parksData = data[10];
+                var swimmingPoolsData = data[11];
+                var librariesData = data[12];
+                var skateparksData = data[13];
 
 
                 console.log(
@@ -2379,6 +2686,17 @@
                     );
                     collectPointObstacles(
                         farmersMarkets
+                    );
+                    collectPointObstacles(
+                        swimmingPools
+                    );
+
+                    collectPointObstacles(
+                        libraries
+                    );
+
+                    collectPointObstacles(
+                        skateparks
                     );
 
 
@@ -3308,7 +3626,183 @@
 
                     }
                 );
+                // ========================================================
+                // PARKS
+                // Protective Factor
+                // ========================================================
 
+                var parks = L.geoJSON(
+                    parksData,
+                    {
+
+                        pane: 'protectivePolygonPane',
+
+                        style: {
+                            color: "#2E8B57",
+                            weight: 2,
+                            opacity: 1,
+                            fillColor: "#66C266",
+                            fillOpacity: 0.65
+                        },
+
+                        onEachFeature: function (
+                            feature,
+                            layer
+                        ) {
+
+                            layer.bindPopup(
+                                createParkPopup(feature),
+                                {
+                                    pane: 'popupTopPane'
+                                }
+                            );
+
+                        }
+
+                    }
+                );
+                // ========================================================
+                // SWIMMING POOLS
+                // Protective Factor
+                // ========================================================
+
+                var swimmingPools = L.geoJSON(
+                    swimmingPoolsData,
+                    {
+
+                        pane: 'pointPane',
+
+                        pointToLayer: function (
+                            feature,
+                            latlng
+                        ) {
+
+                            return L.circleMarker(
+                                latlng,
+                                {
+                                    pane: 'pointPane',
+                                    radius: 4,
+                                    fillColor: "#00BFFF",
+                                    color: "#FFFFFF",
+                                    weight: 1,
+                                    fillOpacity: 1
+                                }
+                            );
+
+                        },
+
+                        onEachFeature: function (
+                            feature,
+                            layer
+                        ) {
+
+                            layer.bindPopup(
+                                createSwimmingPoolPopup(feature),
+                                {
+                                    pane: 'popupTopPane'
+                                }
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                // ========================================================
+                // LIBRARIES
+                // Protective Factor
+                // ========================================================
+
+                var libraries = L.geoJSON(
+                    librariesData,
+                    {
+
+                        pane: 'pointPane',
+
+                        pointToLayer: function (
+                            feature,
+                            latlng
+                        ) {
+
+                            return L.circleMarker(
+                                latlng,
+                                {
+                                    pane: 'pointPane',
+                                    radius: 4,
+                                    fillColor: "#8A2BE2",
+                                    color: "#FFFFFF",
+                                    weight: 1,
+                                    fillOpacity: 1
+                                }
+                            );
+
+                        },
+
+                        onEachFeature: function (
+                            feature,
+                            layer
+                        ) {
+
+                            layer.bindPopup(
+                                createLibraryPopup(feature),
+                                {
+                                    pane: 'popupTopPane'
+                                }
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                // ========================================================
+                // SKATEPARKS
+                // Protective Factor
+                // ========================================================
+
+                var skateparks = L.geoJSON(
+                    skateparksData,
+                    {
+
+                        pane: 'pointPane',
+
+                        pointToLayer: function (
+                            feature,
+                            latlng
+                        ) {
+
+                            return L.circleMarker(
+                                latlng,
+                                {
+                                    pane: 'pointPane',
+                                    radius: 4,
+                                    fillColor: "#555555",
+                                    color: "#FFFFFF",
+                                    weight: 1,
+                                    fillOpacity: 1
+                                }
+                            );
+
+                        },
+
+                        onEachFeature: function (
+                            feature,
+                            layer
+                        ) {
+
+                            layer.bindPopup(
+                                createSkateparkPopup(feature),
+                                {
+                                    pane: 'popupTopPane'
+                                }
+                            );
+
+                        }
+
+                    }
+                );
 
                 // ========================================================
                 // ADD INITIAL LAYERS TO MAP
@@ -3375,9 +3869,13 @@
                         "Schools": schools,
                         "Traditional Schools": traditionalSchools,
                         "Alternative Schools": alternativeSchools,
+                        "Parks": parks,
                         "Recreation Centers": recreationCenters,
                         "SUD Facilities": sudFacilities,
-                        "Farmers Markets": farmersMarkets
+                        "Farmers Markets": farmersMarkets,
+                        "Swimming Pools": swimmingPools,
+                        "Libraries": libraries,
+                        "Skateparks": skateparks
                     },
 
                     {
@@ -3638,20 +4136,47 @@
                             '</i>' +
                             'Neighborhood Boundary<br>';
                     }
+                    // ====================================================
+                    // PROTECTIVE LAYERS
+                    // Show heading if ANY protective layer is active
+                    // ====================================================
 
+                    var hasProtectiveLayers =
+                        map.hasLayer(parks) ||
+                        map.hasLayer(recreationCenters) ||
+                        map.hasLayer(sudFacilities) ||
+                        map.hasLayer(farmersMarkets) ||
+                        map.hasLayer(swimmingPools) ||
+                        map.hasLayer(libraries) ||
+                        map.hasLayer(skateparks);
 
+                    if (hasProtectiveLayers) {
+
+                        div.innerHTML +=
+                            '<div class="legend-section">' +
+                            'Protective Layers' +
+                            '</div>';
+                    }
+                    // ====================================================
+                    // Parks
+                    // Protective Layer
+                    // ====================================================
+                    if (map.hasLayer(parks)) {
+
+                        div.innerHTML +=
+                            '<i style="' +
+                            'background:#66C266;' +
+                            'border:2px solid #2E8B57;' +
+                            'opacity:0.65;' +
+                            '"></i>' +
+                            'Parks<br>';
+                    }
                     // ====================================================
                     // RECREATION CENTERS
                     // Protective Layer
                     // ====================================================
 
                     if (map.hasLayer(recreationCenters)) {
-
-                        div.innerHTML +=
-                            '<div class="legend-section">' +
-                            'Protective Layers' +
-                            '</div>';
-
 
                         div.innerHTML +=
                             '<i class="circle-symbol" ' +
@@ -3670,15 +4195,6 @@
 
                     if (map.hasLayer(sudFacilities)) {
 
-                        if (!map.hasLayer(recreationCenters)) {
-
-                            div.innerHTML +=
-                                '<div class="legend-section">' +
-                                'Protective Layers' +
-                                '</div>';
-                        }
-
-
                         div.innerHTML +=
                             '<i class="circle-symbol" ' +
                             'style="' +
@@ -3694,18 +4210,6 @@
 
                     if (map.hasLayer(farmersMarkets)) {
 
-                        if (
-                            !map.hasLayer(recreationCenters) &&
-                            !map.hasLayer(sudFacilities)
-                        ) {
-
-                            div.innerHTML +=
-                                '<div class="legend-section">' +
-                                'Protective Layers' +
-                                '</div>';
-                        }
-
-
                         div.innerHTML +=
                             '<i class="circle-symbol" ' +
                             'style="' +
@@ -3713,6 +4217,35 @@
                             'border:1px solid #FFFFFF' +
                             '"></i>' +
                             'Farmers Markets<br>';
+                    }
+
+                    if (map.hasLayer(swimmingPools)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#00BFFF;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Swimming Pools<br>';
+                    }
+
+
+                    if (map.hasLayer(libraries)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#8A2BE2;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Libraries<br>';
+                    }
+
+
+                    if (map.hasLayer(skateparks)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#555555;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Skateparks<br>';
                     }
 
 
