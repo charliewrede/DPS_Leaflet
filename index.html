@@ -247,6 +247,183 @@
 
             return popupContent;
         }
+        // ============================================================
+        // CENSUS TRACT POPUP FUNCTION
+        // Shows only relevant, user-friendly Census Tract information
+        // ============================================================
+
+        function createCensusPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            // --------------------------------------------------------
+            // BASIC INFORMATION
+            // --------------------------------------------------------
+
+            if (p.NAME !== null && p.NAME !== undefined) {
+                popupContent +=
+                    "<strong>Census Tract:</strong> " +
+                    p.NAME +
+                    "<br>";
+            }
+
+            if (p.SVI !== null && p.SVI !== undefined) {
+                popupContent +=
+                    "<strong>Social Vulnerability Score:</strong> " +
+                    Number(p.SVI).toFixed(3) +
+                    "<br>";
+            }
+
+            if (p.E_TOTPOP !== null && p.E_TOTPOP !== undefined) {
+                popupContent +=
+                    "<strong>Population:</strong> " +
+                    Number(p.E_TOTPOP).toLocaleString() +
+                    "<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // SOCIOECONOMIC CHARACTERISTICS
+            // --------------------------------------------------------
+
+            if (p.EP_POV150 !== null && p.EP_POV150 !== undefined) {
+                popupContent +=
+                    "<strong>Below 150% of Poverty Level:</strong> " +
+                    Number(p.EP_POV150).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_UNEMP !== null && p.EP_UNEMP !== undefined) {
+                popupContent +=
+                    "<strong>Unemployment:</strong> " +
+                    Number(p.EP_UNEMP).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_HBURD !== null && p.EP_HBURD !== undefined) {
+                popupContent +=
+                    "<strong>Housing Cost Burden:</strong> " +
+                    Number(p.EP_HBURD).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_NOHSDP !== null && p.EP_NOHSDP !== undefined) {
+                popupContent +=
+                    "<strong>Without High School Diploma:</strong> " +
+                    Number(p.EP_NOHSDP).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_UNINSUR !== null && p.EP_UNINSUR !== undefined) {
+                popupContent +=
+                    "<strong>Uninsured:</strong> " +
+                    Number(p.EP_UNINSUR).toFixed(1) +
+                    "%<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // HOUSEHOLD CHARACTERISTICS
+            // --------------------------------------------------------
+
+            if (p.EP_AGE65 !== null && p.EP_AGE65 !== undefined) {
+                popupContent +=
+                    "<strong>Age 65+:</strong> " +
+                    Number(p.EP_AGE65).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_AGE17 !== null && p.EP_AGE17 !== undefined) {
+                popupContent +=
+                    "<strong>Age 17 or Younger:</strong> " +
+                    Number(p.EP_AGE17).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_DISABL !== null && p.EP_DISABL !== undefined) {
+                popupContent +=
+                    "<strong>With a Disability:</strong> " +
+                    Number(p.EP_DISABL).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_SNGPNT !== null && p.EP_SNGPNT !== undefined) {
+                popupContent +=
+                    "<strong>Single-Parent Households:</strong> " +
+                    Number(p.EP_SNGPNT).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_LIMENG !== null && p.EP_LIMENG !== undefined) {
+                popupContent +=
+                    "<strong>Limited English Proficiency:</strong> " +
+                    Number(p.EP_LIMENG).toFixed(1) +
+                    "%<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // DEMOGRAPHIC CHARACTERISTICS
+            // --------------------------------------------------------
+
+            if (p.EP_MINRTY !== null && p.EP_MINRTY !== undefined) {
+                popupContent +=
+                    "<strong>Racial/Ethnic Minority Population:</strong> " +
+                    Number(p.EP_MINRTY).toFixed(1) +
+                    "%<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // HOUSING AND TRANSPORTATION
+            // --------------------------------------------------------
+
+            if (p.EP_MUNIT !== null && p.EP_MUNIT !== undefined) {
+                popupContent +=
+                    "<strong>Multi-Unit Housing:</strong> " +
+                    Number(p.EP_MUNIT).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_MOBILE !== null && p.EP_MOBILE !== undefined) {
+                popupContent +=
+                    "<strong>Mobile Homes:</strong> " +
+                    Number(p.EP_MOBILE).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_CROWD !== null && p.EP_CROWD !== undefined) {
+                popupContent +=
+                    "<strong>Crowded Housing:</strong> " +
+                    Number(p.EP_CROWD).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_NOVEH !== null && p.EP_NOVEH !== undefined) {
+                popupContent +=
+                    "<strong>Households Without a Vehicle:</strong> " +
+                    Number(p.EP_NOVEH).toFixed(1) +
+                    "%<br>";
+            }
+
+            if (p.EP_GROUPQ !== null && p.EP_GROUPQ !== undefined) {
+                popupContent +=
+                    "<strong>Population in Group Quarters:</strong> " +
+                    Number(p.EP_GROUPQ).toFixed(1) +
+                    "%<br>";
+            }
+
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
 
 
         // ============================================================
@@ -578,10 +755,10 @@
                         ) {
 
                             layer.bindPopup(
-                                "<strong>Census Tract</strong><br><br>" +
-                                createPopup(feature), {
-                                pane: 'popupTopPane'
-                            }
+                                createCensusPopup(feature),
+                                {
+                                    pane: 'popupTopPane'
+                                }
                             );
 
                         }
