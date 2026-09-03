@@ -424,7 +424,224 @@
 
             return popupContent;
         }
+        // ============================================================
+        // SCHOOL POPUP FUNCTION
+        // Shows only relevant, user-friendly school information
+        // ============================================================
 
+        function createSchoolPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+
+            // --------------------------------------------------------
+            // BASIC SCHOOL INFORMATION
+            // --------------------------------------------------------
+
+            if (
+                p.school_n_1 !== null &&
+                p.school_n_1 !== undefined &&
+                p.school_n_1 !== ""
+            ) {
+                popupContent +=
+                    "<strong>School Name:</strong> " +
+                    p.school_n_1 +
+                    "<br>";
+            }
+
+
+            if (
+                p.school_dis !== null &&
+                p.school_dis !== undefined &&
+                p.school_dis !== ""
+            ) {
+                popupContent +=
+                    "<strong>School District:</strong> " +
+                    p.school_dis +
+                    "<br>";
+            }
+
+
+            if (
+                p.classifica !== null &&
+                p.classifica !== undefined &&
+                p.classifica !== ""
+            ) {
+                popupContent +=
+                    "<strong>School Type:</strong> " +
+                    p.classifica +
+                    "<br>";
+            }
+
+
+            if (
+                p.school_lev !== null &&
+                p.school_lev !== undefined &&
+                p.school_lev !== ""
+            ) {
+                popupContent +=
+                    "<strong>School Level:</strong> " +
+                    p.school_lev +
+                    "<br>";
+            }
+
+
+            if (
+                p.grade_leve !== null &&
+                p.grade_leve !== undefined &&
+                p.grade_leve !== ""
+            ) {
+                popupContent +=
+                    "<strong>Grades Served:</strong> " +
+                    p.grade_leve +
+                    "<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // LOCATION
+            // --------------------------------------------------------
+
+            if (
+                p.address_li !== null &&
+                p.address_li !== undefined &&
+                p.address_li !== ""
+            ) {
+
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.address_li;
+
+                if (
+                    p.city !== null &&
+                    p.city !== undefined &&
+                    p.city !== ""
+                ) {
+                    popupContent +=
+                        ", " +
+                        p.city;
+                }
+
+                if (
+                    p.state !== null &&
+                    p.state !== undefined &&
+                    p.state !== ""
+                ) {
+                    popupContent +=
+                        ", " +
+                        p.state;
+                }
+
+                if (
+                    p.zip !== null &&
+                    p.zip !== undefined &&
+                    p.zip !== ""
+                ) {
+                    popupContent +=
+                        " " +
+                        p.zip;
+                }
+
+                popupContent += "<br>";
+            }
+
+
+            if (
+                p.NBHD_NAME !== null &&
+                p.NBHD_NAME !== undefined &&
+                p.NBHD_NAME !== ""
+            ) {
+                popupContent +=
+                    "<strong>Neighborhood:</strong> " +
+                    p.NBHD_NAME +
+                    "<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // SCHOOL INDICATORS
+            // --------------------------------------------------------
+
+            if (
+                p.EP_STRATIO !== null &&
+                p.EP_STRATIO !== undefined
+            ) {
+                popupContent +=
+                    "<strong>Student-Teacher Ratio:</strong> " +
+                    Number(p.EP_STRATIO).toFixed(1) +
+                    ":1<br>";
+            }
+
+
+            if (
+                p.EP_ATTEND !== null &&
+                p.EP_ATTEND !== undefined
+            ) {
+                popupContent +=
+                    "<strong>Attendance Concern:</strong> " +
+                    (Number(p.EP_ATTEND) * 100).toFixed(1) +
+                    "%<br>";
+            }
+
+
+            if (
+                p.EP_CHRABSE !== null &&
+                p.EP_CHRABSE !== undefined
+            ) {
+                popupContent +=
+                    "<strong>Chronic Absenteeism:</strong> " +
+                    (Number(p.EP_CHRABSE) * 100).toFixed(1) +
+                    "%<br>";
+            }
+
+
+            if (
+                p.EP_TRUANCY !== null &&
+                p.EP_TRUANCY !== undefined
+            ) {
+                popupContent +=
+                    "<strong>Truancy:</strong> " +
+                    (Number(p.EP_TRUANCY) * 100).toFixed(1) +
+                    "%<br>";
+            }
+
+
+            if (
+                p.EP_PERF !== null &&
+                p.EP_PERF !== undefined
+            ) {
+                popupContent +=
+                    "<strong>Academic Performance:</strong> " +
+                    (Number(p.EP_PERF) * 100).toFixed(1) +
+                    "%<br>";
+            }
+
+
+            // --------------------------------------------------------
+            // SCHOOL RISK INDEX
+            // --------------------------------------------------------
+
+            if (
+                p.SRI_SCORE !== null &&
+                p.SRI_SCORE !== undefined
+            ) {
+                popupContent +=
+                    "<strong>School Risk Index Score:</strong> " +
+                    Number(p.SRI_SCORE).toFixed(3) +
+                    "<br>";
+            }
+
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
 
         // ============================================================
         // SVI COLOR FUNCTION
@@ -1990,10 +2207,10 @@
                         ) {
 
                             layer.bindPopup(
-                                "<strong>School</strong><br><br>" +
-                                createPopup(feature), {
-                                pane: 'popupTopPane'
-                            }
+                                createSchoolPopup(feature),
+                                {
+                                    pane: 'popupTopPane'
+                                }
                             );
 
                         }
