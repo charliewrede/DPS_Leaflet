@@ -266,10 +266,18 @@
             // BASIC INFORMATION
             // --------------------------------------------------------
 
-            if (p.NAME !== null && p.NAME !== undefined) {
+            var censusTractName =
+                p.tract_name ||
+                p.NAME;
+
+            if (
+                censusTractName !== null &&
+                censusTractName !== undefined &&
+                censusTractName !== ""
+            ) {
                 popupContent +=
                     "<strong>Census Tract:</strong> " +
-                    p.NAME +
+                    censusTractName +
                     "<br>";
             }
 
@@ -3124,10 +3132,10 @@
                         ) {
 
                             layer.bindPopup(
-                                "<strong>Highest SVI Census Tract</strong><br><br>" +
-                                createPopup(feature), {
-                                pane: 'popupTopPane'
-                            }
+                                createCensusPopup(feature),
+                                {
+                                    pane: 'popupTopPane'
+                                }
                             );
 
                         }

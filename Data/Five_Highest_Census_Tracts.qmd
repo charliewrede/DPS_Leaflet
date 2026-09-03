@@ -18,6 +18,15 @@ This data set should be used for planning and analysis of activities that are wi
     <keyword>society</keyword>
     <keyword>economy</keyword>
   </keywords>
+  <contact>
+    <name></name>
+    <organization></organization>
+    <position></position>
+    <voice></voice>
+    <fax></fax>
+    <email></email>
+    <role></role>
+  </contact>
   <links/>
   <dates/>
   <fees></fees>
@@ -39,6 +48,12 @@ This data set should be used for planning and analysis of activities that are wi
     </spatialrefsys>
   </crs>
   <extent>
-    <spatial miny="39.61157899999999898" dimensions="2" maxx="-104.59935199999999611" maxy="39.91632599999999798" maxz="0" minz="0" crs="EPSG:2877" minx="-105.11003700000000549"/>
+    <spatial miny="39.61160000000000281" minz="0" dimensions="2" maxy="39.91629999999999967" crs="EPSG:2877" minx="-105.10999999999999943" maxz="0" maxx="-104.59940000000000282"/>
+    <temporal>
+      <period>
+        <start></start>
+        <end></end>
+      </period>
+    </temporal>
   </extent>
 </qgis>
