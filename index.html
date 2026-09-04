@@ -141,38 +141,51 @@
             border: 2px solid #000000;
             border-radius: 50%;
 
+            box-sizing: border-box;
+
             display: flex;
             align-items: center;
             justify-content: center;
-
-            font-family: Arial, sans-serif;
-
-            font-size: 12px;
-            font-weight: 900;
-
-            line-height: 1;
-
-            box-sizing: border-box;
 
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 
             pointer-events: auto;
         }
 
-        .traditional-school-marker {
+
+        /* Number inside map marker */
+        .top-school-marker .rank-number {
+            display: block;
+
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+
+            line-height: 1;
+
+            text-align: center;
+
+            /* Optical correction for Arial numerals */
+            transform: translateY(-0.2px);
+        }
+
+
+        .traditional-school-marker .rank-number {
             color: #000000;
         }
 
-        .alternative-school-marker {
+
+        .alternative-school-marker .rank-number {
             color: #F50000;
         }
+
+
 
         /* ============================================================
    TOP 5 SCHOOL LEGEND SYMBOLS
    ============================================================ */
 
-
-        .school-rank-legend {
+        .info.legend .school-rank-legend {
             width: 18px !important;
             height: 18px !important;
 
@@ -181,30 +194,43 @@
             border: 2px solid #000000;
             border-radius: 50%;
 
+            box-sizing: border-box;
+
             display: inline-flex !important;
             align-items: center;
             justify-content: center;
 
+            /* Override general legend <i> behavior */
+            float: left;
+
+            margin: 2px 8px 2px 1px !important;
+
+            opacity: 1;
+        }
+
+
+        /* Number inside legend marker */
+        .school-rank-legend .rank-number {
+            display: block;
+
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 900;
 
             line-height: 1;
 
-            box-sizing: border-box;
+            text-align: center;
 
-            margin:
-                0 8px 0 1px !important;
-
-            float: left;
+            transform: translateY(-0.2px);
         }
 
-        .traditional-school-legend {
+
+        .traditional-school-legend .rank-number {
             color: #000000;
         }
 
 
-        .alternative-school-legend {
+        .alternative-school-legend .rank-number {
             color: #F50000;
         }
     </style>
@@ -3439,7 +3465,9 @@
 
                                     html:
                                         '<div class="top-school-marker traditional-school-marker">' +
+                                        '<span class="rank-number">' +
                                         traditionalRank +
+                                        '</span>' +
                                         '</div>',
 
                                     iconSize: [18, 18],
@@ -3515,7 +3543,9 @@
 
                                     html:
                                         '<div class="top-school-marker alternative-school-marker">' +
+                                        '<span class="rank-number">' +
                                         alternativeRank +
+                                        '</span>' +
                                         '</div>',
 
                                     iconSize: [18, 18],
@@ -4212,7 +4242,7 @@
                             '<i class="' +
                             'school-rank-legend ' +
                             'traditional-school-legend">' +
-                            '1' +
+                            '<span class="rank-number">1</span>' +
                             '</i>' +
                             'Top 5 Traditional Schools<br>';
                     }
@@ -4241,7 +4271,7 @@
                             '<i class="' +
                             'school-rank-legend ' +
                             'alternative-school-legend">' +
-                            '1' +
+                            '<span class="rank-number">1</span>' +
                             '</i>' +
                             'Top 5 Alternative Schools<br>';
                     }
