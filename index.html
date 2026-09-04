@@ -573,19 +573,13 @@
             // BASIC INFORMATION
             // --------------------------------------------------------
 
-            var displaySchoolName =
-                p.ranking_name ||
-                p.school_name;
-
-
-            if (displaySchoolName) {
+            if (p.school_name) {
 
                 popupContent +=
                     "<strong>School Name:</strong> " +
-                    displaySchoolName +
+                    p.school_name +
                     "<br>";
             }
-
 
             if (p.SRI_score !== null && p.SRI_score !== undefined) {
                 popupContent +=
@@ -2980,218 +2974,28 @@
                 // ========================================================
 
 
-                // --------------------------------------------------------
-                // REMOVE SCHOOL-LEVEL WORDING FROM THE END OF A NAME
-                // --------------------------------------------------------
 
-                function getSchoolCampusBaseName(feature) {
 
-                    var name =
-                        (feature.properties.school_name || "")
-                            .trim();
 
+                // ----------------------------------------------------
+                // CREATE ONE FEATURE FOR EACH CAMPUS
+                // ----------------------------------------------------
 
-                    // Remove common level endings so records from the same
-                    // campus get the same base name.
+                var uniqueSchools = [];
 
-                    var baseName =
-                        name
-                            .replace(
-                                /\s+(middle\s+school|high\s+school)$/i,
-                                ""
-                            )
-                            .replace(
-                                /\s+(middle|high)$/i,
-                                ""
-                            )
-                            .trim();
 
+                Object.keys(
+                    campusGroups
+                ).forEach(function (key) {
 
-                    return baseName;
-                }
+                    var group =
+                        campusGroups[key];
 
 
-                // --------------------------------------------------------
-                // DETERMINE WHETHER RECORD IS MIDDLE OR HIGH SCHOOL
-                // --------------------------------------------------------
+                    // Sort records within campus by SRI.
+                    // Highest one becomes representative.
 
-                function getSchoolRankingLevel(feature) {
-
-                    var p =
-                        feature.properties || {};
-
-
-                    var schoolName =
-                        (p.school_name || "")
-                            .toLowerCase();
-
-
-                    var schoolLevel =
-                        (p.school_level || "")
-                            .toLowerCase();
-
-
-                    // Prefer explicit school_level field
-
-                    if (schoolLevel.includes("middle")) {
-                        return "middle";
-                    }
-
-                    if (schoolLevel.includes("high")) {
-                        return "high";
-                    }
-
-
-                    // Fall back to school name
-
-                    if (schoolName.includes("middle school")) {
-                        return "middle";
-                    }
-
-                    if (schoolName.includes("high school")) {
-                        return "high";
-                    }
-
-
-                    return "other";
-                }
-
-
-                // --------------------------------------------------------
-                // CREATE UNIQUE RANKED SCHOOL LIST
-                // --------------------------------------------------------
-
-                function getUniqueRankedSchools(
-                    features,
-                    limit
-                ) {
-
-                    var campusGroups = {};
-
-
-                    // ----------------------------------------------------
-                    // GROUP RECORDS BY CAMPUS NAME
-                    // ----------------------------------------------------
-
-                    features.forEach(function (feature) {
-
-                        var baseName =
-                            getSchoolCampusBaseName(
-                                feature
-                            );
-
-
-                        var key =
-                            baseName
-                                .toLowerCase()
-                                .replace(/\s+/g, " ")
-                                .trim();
-
-
-                        if (!campusGroups[key]) {
-
-                            campusGroups[key] = {
-                                baseName: baseName,
-                                features: [],
-                                levels: {}
-                            };
-
-                        }
-
-
-                        campusGroups[key]
-                            .features
-                            .push(feature);
-
-
-                        var level =
-                            getSchoolRankingLevel(
-                                feature
-                            );
-
-
-                        campusGroups[key]
-                            .levels[level] = true;
-
-                    });
-
-
-                    // ----------------------------------------------------
-                    // CREATE ONE FEATURE FOR EACH CAMPUS
-                    // ----------------------------------------------------
-
-                    var uniqueSchools = [];
-
-
-                    Object.keys(
-                        campusGroups
-                    ).forEach(function (key) {
-
-                        var group =
-                            campusGroups[key];
-
-
-                        // Sort records within campus by SRI.
-                        // Highest one becomes representative.
-
-                        group.features.sort(
-                            function (a, b) {
-
-                                return (
-                                    Number(
-                                        b.properties.SRI_score
-                                    ) -
-                                    Number(
-                                        a.properties.SRI_score
-                                    )
-                                );
-
-                            }
-                        );
-
-
-                        var representative =
-                            group.features[0];
-
-
-                        // -----------------------------------------------
-                        // MIDDLE + HIGH AT SAME CAMPUS
-                        // -----------------------------------------------
-
-                        if (
-                            group.levels.middle &&
-                            group.levels.high
-                        ) {
-
-                            representative.properties
-                                .ranking_name =
-                                group.baseName +
-                                " High/Middle School";
-
-                        }
-
-                        else {
-
-                            representative.properties
-                                .ranking_name =
-                                representative.properties
-                                    .school_name;
-
-                        }
-
-
-                        uniqueSchools.push(
-                            representative
-                        );
-
-                    });
-
-
-                    // ----------------------------------------------------
-                    // SORT UNIQUE CAMPUSES BY SRI
-                    // ----------------------------------------------------
-
-                    uniqueSchools.sort(
+                    group.features.sort(
                         function (a, b) {
 
                             return (
@@ -3207,15 +3011,72 @@
                     );
 
 
-                    // ----------------------------------------------------
-                    // RETURN TOP N UNIQUE SCHOOLS
-                    // ----------------------------------------------------
+                    var representative =
+                        group.features[0];
 
-                    return uniqueSchools.slice(
-                        0,
-                        limit
+
+                    // -----------------------------------------------
+                    // MIDDLE + HIGH AT SAME CAMPUS
+                    // -----------------------------------------------
+
+                    if (
+                        group.levels.middle &&
+                        group.levels.high
+                    ) {
+
+                        representative.properties
+                            .ranking_name =
+                            group.baseName +
+                            " High/Middle School";
+
+                    }
+
+                    else {
+
+                        representative.properties
+                            .ranking_name =
+                            representative.properties
+                                .school_name;
+
+                    }
+
+
+                    uniqueSchools.push(
+                        representative
                     );
-                }
+
+                });
+
+
+                // ----------------------------------------------------
+                // SORT UNIQUE CAMPUSES BY SRI
+                // ----------------------------------------------------
+
+                uniqueSchools.sort(
+                    function (a, b) {
+
+                        return (
+                            Number(
+                                b.properties.SRI_score
+                            ) -
+                            Number(
+                                a.properties.SRI_score
+                            )
+                        );
+
+                    }
+                );
+
+
+                // ----------------------------------------------------
+                // RETURN TOP N UNIQUE SCHOOLS
+                // ----------------------------------------------------
+
+                return uniqueSchools.slice(
+                    0,
+                    limit
+                );
+            }
                 // ========================================================
                 // CREATE TOP 5 UNIQUE SCHOOL SUBSETS
                 // ========================================================
@@ -3225,1096 +3086,1123 @@
                 // TRADITIONAL SCHOOL CANDIDATES
                 // --------------------------------------------------------
 
-                var traditionalCandidates =
-                    schoolsData.features.filter(
-                        function (feature) {
 
-                            return (
-                                feature.properties.school_type ===
-                                "Traditional"
-                            );
+// ========================================================
+// CREATE TOP 5 SCHOOL SUBSETS FROM MASTER SCHOOL DATA
+// ========================================================
 
+
+// --------------------------------------------------------
+// TOP 5 TRADITIONAL SCHOOLS
+// --------------------------------------------------------
+
+var traditionalFeatures =
+            schoolsData.features
+                .filter(function (feature) {
+
+                    return (
+                        feature.properties.school_type ===
+                        "Traditional"
+                    );
+
+                })
+                .sort(function (a, b) {
+
+                    return (
+                        Number(b.properties.SRI_score) -
+                        Number(a.properties.SRI_score)
+                    );
+
+                })
+                .slice(0, 5);
+
+
+        // --------------------------------------------------------
+        // TOP 5 ALTERNATIVE / PATHWAY SCHOOLS
+        // --------------------------------------------------------
+
+        var alternativeFeatures =
+            schoolsData.features
+                .filter(function (feature) {
+
+                    return (
+                        feature.properties.school_type ===
+                        "Alternative/Pathway"
+                    );
+
+                })
+                .sort(function (a, b) {
+
+                    return (
+                        Number(b.properties.SRI_score) -
+                        Number(a.properties.SRI_score)
+                    );
+
+                })
+                .slice(0, 5);
+
+
+        // --------------------------------------------------------
+        // BUILD FEATURE COLLECTIONS
+        // --------------------------------------------------------
+
+        var traditionalTop5Data = {
+            type: "FeatureCollection",
+            features: traditionalFeatures
+        };
+
+
+        var alternativeTop5Data = {
+            type: "FeatureCollection",
+            features: alternativeFeatures
+        };
+
+        // --------------------------------------------------------
+        // BUILD FEATURE COLLECTIONS
+        // --------------------------------------------------------
+
+        var traditionalTop5Data = {
+            type: "FeatureCollection",
+            features: traditionalFeatures
+        };
+
+
+        var alternativeTop5Data = {
+            type: "FeatureCollection",
+            features: alternativeFeatures
+        };
+        // ========================================================
+        // TOP 5 TRADITIONAL SCHOOLS
+        // ========================================================
+
+        var traditionalRank = 0;
+
+
+        var traditionalSchools = L.geoJSON(
+            traditionalTop5Data,
+            {
+
+                pane: 'topSchoolPane',
+
+                pointToLayer: function (
+                    feature,
+                    latlng
+                ) {
+
+                    traditionalRank += 1;
+
+
+                    var rankIcon = L.divIcon(
+                        {
+                            className: '',
+
+                            html:
+                                '<div class="top-school-marker traditional-school-marker">' +
+                                '<span class="rank-number">' +
+                                traditionalRank +
+                                '</span>' +
+                                '</div>',
+
+                            iconSize: [18, 18],
+
+                            iconAnchor: [9, 9],
+
+                            popupAnchor: [0, -11]
                         }
                     );
 
 
-                var traditionalFeatures =
-                    getUniqueRankedSchools(
-                        traditionalCandidates,
-                        5
-                    );
-
-
-                // --------------------------------------------------------
-                // ALTERNATIVE / PATHWAY SCHOOL CANDIDATES
-                // --------------------------------------------------------
-
-                var alternativeCandidates =
-                    schoolsData.features.filter(
-                        function (feature) {
-
-                            return (
-                                feature.properties.school_type ===
-                                "Alternative/Pathway"
-                            );
-
+                    return L.marker(
+                        latlng,
+                        {
+                            pane: 'topSchoolPane',
+                            icon: rankIcon
                         }
                     );
 
+                },
 
-                var alternativeFeatures =
-                    getUniqueRankedSchools(
-                        alternativeCandidates,
-                        5
+                onEachFeature: function (
+                    feature,
+                    layer
+                ) {
+
+                    layer.bindPopup(
+                        createSchoolPopup(feature),
+                        {
+                            pane: 'popupTopPane'
+                        }
+                    );
+
+                }
+
+            }
+        );
+
+        // ========================================================
+        // TOP 5 ALTERNATIVE / PATHWAY SCHOOLS
+        // ========================================================
+
+        var alternativeRank = 0;
+
+
+        var alternativeSchools = L.geoJSON(
+            alternativeTop5Data,
+            {
+
+                pane: 'topSchoolPane',
+
+                pointToLayer: function (
+                    feature,
+                    latlng
+                ) {
+
+                    alternativeRank += 1;
+
+
+                    var rankIcon = L.divIcon(
+                        {
+                            className: '',
+
+                            html:
+                                '<div class="top-school-marker alternative-school-marker">' +
+                                '<span class="rank-number">' +
+                                alternativeRank +
+                                '</span>' +
+                                '</div>',
+
+                            iconSize: [18, 18],
+
+                            iconAnchor: [9, 9],
+
+                            popupAnchor: [0, -11]
+                        }
                     );
 
 
-                // --------------------------------------------------------
-                // BUILD FEATURE COLLECTIONS
-                // --------------------------------------------------------
-
-                var traditionalTop5Data = {
-                    type: "FeatureCollection",
-                    features: traditionalFeatures
-                };
-
-
-                var alternativeTop5Data = {
-                    type: "FeatureCollection",
-                    features: alternativeFeatures
-                };
-                // ========================================================
-                // TOP 5 TRADITIONAL SCHOOLS
-                // ========================================================
-
-                var traditionalRank = 0;
-
-
-                var traditionalSchools = L.geoJSON(
-                    traditionalTop5Data,
-                    {
-
-                        pane: 'topSchoolPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            traditionalRank += 1;
-
-
-                            var rankIcon = L.divIcon(
-                                {
-                                    className: '',
-
-                                    html:
-                                        '<div class="top-school-marker traditional-school-marker">' +
-                                        '<span class="rank-number">' +
-                                        traditionalRank +
-                                        '</span>' +
-                                        '</div>',
-
-                                    iconSize: [18, 18],
-
-                                    iconAnchor: [9, 9],
-
-                                    popupAnchor: [0, -11]
-                                }
-                            );
-
-
-                            return L.marker(
-                                latlng,
-                                {
-                                    pane: 'topSchoolPane',
-                                    icon: rankIcon
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createSchoolPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
+                    return L.marker(
+                        latlng,
+                        {
+                            pane: 'topSchoolPane',
+                            icon: rankIcon
                         }
+                    );
 
-                    }
-                );
+                },
 
-                // ========================================================
-                // TOP 5 ALTERNATIVE / PATHWAY SCHOOLS
-                // ========================================================
+                onEachFeature: function (
+                    feature,
+                    layer
+                ) {
 
-                var alternativeRank = 0;
-
-
-                var alternativeSchools = L.geoJSON(
-                    alternativeTop5Data,
-                    {
-
-                        pane: 'topSchoolPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            alternativeRank += 1;
-
-
-                            var rankIcon = L.divIcon(
-                                {
-                                    className: '',
-
-                                    html:
-                                        '<div class="top-school-marker alternative-school-marker">' +
-                                        '<span class="rank-number">' +
-                                        alternativeRank +
-                                        '</span>' +
-                                        '</div>',
-
-                                    iconSize: [18, 18],
-
-                                    iconAnchor: [9, 9],
-
-                                    popupAnchor: [0, -11]
-                                }
-                            );
-
-
-                            return L.marker(
-                                latlng,
-                                {
-                                    pane: 'topSchoolPane',
-                                    icon: rankIcon
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createSchoolPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
+                    layer.bindPopup(
+                        createSchoolPopup(feature),
+                        {
+                            pane: 'popupTopPane'
                         }
+                    );
 
-                    }
-                );
+                }
 
-                // ========================================================
-                // RECREATION CENTERS
-                // ========================================================
+            }
+        );
 
-                var recreationCenters = L.geoJSON(
-                    recreationData,
-                    {
+        // ========================================================
+        // RECREATION CENTERS
+        // ========================================================
 
-                        pane: 'pointPane',
+        var recreationCenters = L.geoJSON(
+            recreationData,
+            {
 
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
+                pane: 'pointPane',
 
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-                                    radius: 4,
+                pointToLayer: function (
+                    feature,
+                    latlng
+                ) {
 
-                                    fillColor: "#4CE600",
+                    return L.circleMarker(
+                        latlng,
+                        {
+                            pane: 'pointPane',
+                            radius: 4,
 
-                                    color: "#FFFFFF",
+                            fillColor: "#4CE600",
 
-                                    weight: 1,
+                            color: "#FFFFFF",
 
-                                    fillOpacity: 1
-
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createRecreationPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                // ========================================================
-                // SUD FACILITIES
-                // ========================================================
-
-                var sudFacilities = L.geoJSON(
-                    sudData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-                                    radius: 4,
-
-                                    fillColor: "#0070FF",
-
-                                    color: "#FFFFFF",
-
-                                    weight: 1,
-
-                                    fillOpacity: 1
-
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createSUDPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                // ========================================================
-                // FIVE HIGHEST SVI CENSUS TRACTS
-                // ========================================================
-
-                var fiveHighestCensusTracts = L.geoJSON(
-                    highestData,
-                    {
-
-                        pane: 'highlightPane',
-
-                        style: {
-
-                            color: "#A80000",
-
-                            weight: 3,
-
-                            opacity: 1,
-
-                            fillColor: "#A80000",
+                            weight: 1,
 
                             fillOpacity: 1
 
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createCensusPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
                         }
+                    );
 
-                    }
-                );
-                // ========================================================
-                // FARMERS MARKETS
-                // Protective Factor
-                // ========================================================
+                },
 
-                var farmersMarkets = L.geoJSON(
-                    farmersMarketsData,
-                    {
+                onEachFeature: function (
+                    feature,
+                    layer
+                ) {
 
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-
-                                    radius: 4,
-
-                                    fillColor: "#FFAA00",
-
-                                    color: "#FFFFFF",
-
-                                    weight: 1,
-
-                                    fillOpacity: 1
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createFarmersMarketPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
+                    layer.bindPopup(
+                        createRecreationPopup(feature),
+                        {
+                            pane: 'popupTopPane'
                         }
-
-                    }
-                );
-                // ========================================================
-                // PARKS
-                // Protective Factor
-                // ========================================================
-
-                var parks = L.geoJSON(
-                    parksData,
-                    {
-
-                        pane: 'protectivePolygonPane',
-
-                        style: {
-                            color: "#2E8B57",
-                            weight: 2,
-                            opacity: 1,
-                            fillColor: "#66C266",
-                            fillOpacity: 0.65
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createParkPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-                            layer.on(
-                                'mouseover',
-                                function () {
-
-                                    this.setStyle({
-                                        fillOpacity: 0.85,
-                                        weight: 3
-                                    });
-
-                                }
-                            );
-
-
-                            layer.on(
-                                'mouseout',
-                                function () {
-
-                                    this.setStyle({
-                                        fillOpacity: 0.65,
-                                        weight: 2
-                                    });
-
-                                }
-                            );
-
-                        }
-
-                    }
-                );
-                // ========================================================
-                // SWIMMING POOLS
-                // Protective Factor
-                // ========================================================
-
-                var swimmingPools = L.geoJSON(
-                    swimmingPoolsData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-                                    radius: 4,
-                                    fillColor: "#00BFFF",
-                                    color: "#FFFFFF",
-                                    weight: 1,
-                                    fillOpacity: 1
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createSwimmingPoolPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                // ========================================================
-                // LIBRARIES
-                // Protective Factor
-                // ========================================================
-
-                var libraries = L.geoJSON(
-                    librariesData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-                                    radius: 4,
-                                    fillColor: "#8A2BE2",
-                                    color: "#FFFFFF",
-                                    weight: 1,
-                                    fillOpacity: 1
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createLibraryPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                // ========================================================
-                // SKATEPARKS
-                // Protective Factor
-                // ========================================================
-
-                var skateparks = L.geoJSON(
-                    skateparksData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-                                    radius: 4,
-                                    fillColor: "#555555",
-                                    color: "#FFFFFF",
-                                    weight: 1,
-                                    fillOpacity: 1
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createSkateparkPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
-
-                // ========================================================
-                // ADD INITIAL LAYERS TO MAP
-                // ========================================================
-
-                censusTracts.addTo(map);
-
-                countyBoundary.addTo(map);
-
-                schools.addTo(map);
-
-                traditionalSchools.addTo(map);
-
-                alternativeSchools.addTo(map);
-
-                fiveHighestCensusTracts.addTo(map);
-
-                neighborhoods.addTo(map);
-
-                // Recreation Centers and SUD Facilities
-                // are available in the layer control but
-                // are OFF by default.
-
-
-                if (censusTracts.getBounds().isValid()) {
-
-                    map.fitBounds(
-                        censusTracts.getBounds()
                     );
 
                 }
 
-
-                // ========================================================
-                // INITIAL NEIGHBORHOOD LABEL PLACEMENT
-                // ========================================================
-
-                setTimeout(
-                    updateNeighborhoodLabels,
-                    100
-                );
+            }
+        );
 
 
-                // ========================================================
-                // LAYER CONTROL
-                // ========================================================
+        // ========================================================
+        // SUD FACILITIES
+        // ========================================================
 
+        var sudFacilities = L.geoJSON(
+            sudData,
+            {
 
-                // ========================================================
-                // LAYER CONTROL
-                // ========================================================
+                pane: 'pointPane',
 
-                L.control.layers(
+                pointToLayer: function (
+                    feature,
+                    latlng
+                ) {
 
-                    {
-                        "OpenStreetMap": osm
-                    },
+                    return L.circleMarker(
+                        latlng,
+                        {
+                            pane: 'pointPane',
+                            radius: 4,
 
-                    {
-                        "Census Tracts": censusTracts,
-                        "Five Highest SVI Tracts": fiveHighestCensusTracts,
-                        "County Boundary": countyBoundary,
-                        "Neighborhoods": neighborhoods,
-                        "Schools": schools,
-                        "Traditional Schools": traditionalSchools,
-                        "Alternative Schools": alternativeSchools,
-                        "Parks": parks,
-                        "Recreation Centers": recreationCenters,
-                        "SUD Facilities": sudFacilities,
-                        "Farmers Markets": farmersMarkets,
-                        "Swimming Pools": swimmingPools,
-                        "Libraries": libraries,
-                        "Skateparks": skateparks
-                    },
+                            fillColor: "#0070FF",
 
-                    {
-                        position: 'topleft',
-                        collapsed: false
-                    }
+                            color: "#FFFFFF",
 
-                ).addTo(map);
+                            weight: 1,
 
-                // ========================================================
-                // LEGEND
-                // ========================================================
+                            fillOpacity: 1
 
-                var legend = L.control({
-                    position: 'bottomright'
-                });
-
-
-                legend.onAdd = function (map) {
-
-                    var div = L.DomUtil.create(
-                        'div',
-                        'info legend'
+                        }
                     );
 
-                    return div;
-                };
+                },
 
+                onEachFeature: function (
+                    feature,
+                    layer
+                ) {
 
-                legend.addTo(map);
-
-
-                // ========================================================
-                // UPDATE LEGEND
-                // Changes automatically when layers are turned
-                // on or off using the layer control.
-                // ========================================================
-
-                function updateLegend() {
-
-                    var div = legend.getContainer();
-
-                    div.innerHTML = '';
-
-
-                    // ====================================================
-                    // CENSUS TRACTS
-                    // ====================================================
-
-                    if (map.hasLayer(censusTracts)) {
-
-                        div.innerHTML +=
-                            '<div class="legend-section">' +
-                            'Census Tracts - SVI Score' +
-                            '</div>';
-
-
-                        div.innerHTML +=
-                            '<i style="background:#F5F500"></i>' +
-                            'Low<br>';
-
-
-                        div.innerHTML +=
-                            '<i style="background:#F5B800"></i>' +
-                            'Low - Moderate<br>';
-
-
-                        div.innerHTML +=
-                            '<i style="background:#F57A00"></i>' +
-                            'Moderate<br>';
-
-
-                        div.innerHTML +=
-                            '<i style="background:#F53D00"></i>' +
-                            'Moderate - High<br>';
-
-
-                        div.innerHTML +=
-                            '<i style="background:#F50000"></i>' +
-                            'High<br>';
-                    }
-
-
-                    // ====================================================
-                    // FIVE HIGHEST SVI CENSUS TRACTS
-                    // ====================================================
-
-                    if (map.hasLayer(fiveHighestCensusTracts)) {
-
-
-                        div.innerHTML +=
-                            '<i style="' +
-                            'background:#A80000;' +
-                            'border:1px solid #000000;' +
-                            'width:18px;' +
-                            'height:18px;' +
-                            '"></i>' +
-                            'Five Highest Census Tracts<br>';
-                    }
-
-
-                    // ====================================================
-                    // SCHOOLS
-                    // ====================================================
-
-                    if (map.hasLayer(schools)) {
-
-                        div.innerHTML +=
-                            '<div class="legend-section">' +
-                            'Schools — SRI Score' +
-                            '</div>';
-
-
-                        // Low SRI
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#F5F500;' +
-                            'border:1px solid #000000' +
-                            '"></i>' +
-                            'Low<br>';
-
-
-                        // Low - Moderate
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#F5B800;' +
-                            'border:1px solid #000000' +
-                            '"></i>' +
-                            'Low - Moderate<br>';
-
-
-                        // Moderate
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#F57A00;' +
-                            'border:1px solid #000000' +
-                            '"></i>' +
-                            'Moderate<br>';
-
-
-                        // Moderate - High
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#F53D00;' +
-                            'border:1px solid #000000' +
-                            '"></i>' +
-                            'Moderate - High<br>';
-
-
-                        // High
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#F50000;' +
-                            'border:1px solid #000000' +
-                            '"></i>' +
-                            'High<br>';
-
-                    }
-
-
-                    // ====================================================
-                    // TRADITIONAL SCHOOLS
-                    // ====================================================
-
-                    // ====================================================
-                    // TRADITIONAL SCHOOLS
-                    // ====================================================
-
-                    if (map.hasLayer(traditionalSchools)) {
-
-                        div.innerHTML +=
-                            '<div class="legend-section">' +
-                            'School Types' +
-                            '</div>';
-
-
-                        div.innerHTML +=
-                            '<span class="' +
-                            'school-rank-legend ' +
-                            'traditional-school-legend">' +
-                            '<span class="legend-letter">T</span>' +
-                            '</span>' +
-                            'Top 5 Traditional Schools<br>';
-                    }
-
-
-                    // ====================================================
-                    // ALTERNATIVE SCHOOLS
-                    // ====================================================
-
-                    // ====================================================
-                    // ALTERNATIVE SCHOOLS
-                    // ====================================================
-
-                    if (map.hasLayer(alternativeSchools)) {
-
-                        if (!map.hasLayer(traditionalSchools)) {
-
-                            div.innerHTML +=
-                                '<div class="legend-section">' +
-                                'School Types' +
-                                '</div>';
+                    layer.bindPopup(
+                        createSUDPopup(feature),
+                        {
+                            pane: 'popupTopPane'
                         }
-
-
-                        div.innerHTML +=
-                            '<span class="' +
-                            'school-rank-legend ' +
-                            'alternative-school-legend">' +
-                            '<span class="legend-letter">A</span>' +
-                            '</span>' +
-                            'Top 5 Alternative Schools<br>';
-                    }
-
-
-                    // ====================================================
-                    // COUNTY BOUNDARY
-                    // ====================================================
-
-                    if (map.hasLayer(countyBoundary)) {
-
-                        div.innerHTML +=
-                            '<div class="legend-section">' +
-                            'Boundaries' +
-                            '</div>';
-
-
-                        div.innerHTML +=
-                            '<i class="line-symbol" ' +
-                            'style="border-color:#000000; ' +
-                            'border-top-width:3px">' +
-                            '</i>' +
-                            'County Boundary<br>';
-                    }
-
-
-                    // ====================================================
-                    // NEIGHBORHOODS
-                    // ====================================================
-
-                    if (map.hasLayer(neighborhoods)) {
-
-                        if (!map.hasLayer(countyBoundary)) {
-
-                            div.innerHTML +=
-                                '<div class="legend-section">' +
-                                'Boundaries' +
-                                '</div>';
-                        }
-
-
-                        div.innerHTML +=
-                            '<i class="line-symbol" ' +
-                            'style="border-color:#000000; ' +
-                            'border-top-width:2px">' +
-                            '</i>' +
-                            'Neighborhood Boundary<br>';
-                    }
-                    // ====================================================
-                    // PROTECTIVE LAYERS
-                    // Show heading if ANY protective layer is active
-                    // ====================================================
-
-                    var hasProtectiveLayers =
-                        map.hasLayer(parks) ||
-                        map.hasLayer(recreationCenters) ||
-                        map.hasLayer(sudFacilities) ||
-                        map.hasLayer(farmersMarkets) ||
-                        map.hasLayer(swimmingPools) ||
-                        map.hasLayer(libraries) ||
-                        map.hasLayer(skateparks);
-
-                    if (hasProtectiveLayers) {
-
-                        div.innerHTML +=
-                            '<div class="legend-section">' +
-                            'Protective Layers' +
-                            '</div>';
-                    }
-                    // ====================================================
-                    // Parks
-                    // Protective Layer
-                    // ====================================================
-                    if (map.hasLayer(parks)) {
-
-                        div.innerHTML +=
-                            '<i style="' +
-                            'background:#66C266;' +
-                            'border:2px solid #2E8B57;' +
-                            'opacity:0.65;' +
-                            '"></i>' +
-                            'Parks<br>';
-                    }
-                    // ====================================================
-                    // RECREATION CENTERS
-                    // Protective Layer
-                    // ====================================================
-
-                    if (map.hasLayer(recreationCenters)) {
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#4CE600;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
-                            'Recreation Centers<br>';
-                    }
-
-
-                    // ====================================================
-                    // SUD FACILITIES
-                    // Protective Layer
-                    // ====================================================
-
-                    if (map.hasLayer(sudFacilities)) {
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#0070FF;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
-                            'SUD Facilities<br>';
-                    }
-                    // ====================================================
-                    // FARMERS MARKETS
-                    // Protective Layer
-                    // ====================================================
-
-                    if (map.hasLayer(farmersMarkets)) {
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#FFAA00;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
-                            'Farmers Markets<br>';
-                    }
-
-                    if (map.hasLayer(swimmingPools)) {
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="background:#00BFFF;' +
-                            'border:1px solid #FFFFFF"></i>' +
-                            'Swimming Pools<br>';
-                    }
-
-
-                    if (map.hasLayer(libraries)) {
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="background:#8A2BE2;' +
-                            'border:1px solid #FFFFFF"></i>' +
-                            'Libraries<br>';
-                    }
-
-
-                    if (map.hasLayer(skateparks)) {
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="background:#555555;' +
-                            'border:1px solid #FFFFFF"></i>' +
-                            'Skateparks<br>';
-                    }
-
-
-                    // ====================================================
-                    // CENSUS TRACT BOUNDARY
-                    // ====================================================
-                    // This is always included with Census Tracts.
-                    // It is intentionally not given its own legend
-                    // symbol because the SVI colors already explain
-                    // the Census Tract layer.
-                    // ====================================================
-
+                    );
 
                 }
 
-
-                // ========================================================
-                // INITIAL LEGEND
-                // Shows all layers that are currently displayed.
-                // ========================================================
-
-                updateLegend();
+            }
+        );
 
 
-                // ========================================================
-                // UPDATE LEGEND WHEN A LAYER IS TURNED ON
-                // ========================================================
+        // ========================================================
+        // FIVE HIGHEST SVI CENSUS TRACTS
+        // ========================================================
 
-                map.on('overlayadd', function () {
+        var fiveHighestCensusTracts = L.geoJSON(
+            highestData,
+            {
 
-                    updateLegend();
+                pane: 'highlightPane',
 
-                });
+                style: {
+
+                    color: "#A80000",
+
+                    weight: 3,
+
+                    opacity: 1,
+
+                    fillColor: "#A80000",
+
+                    fillOpacity: 1
+
+                },
+
+                onEachFeature: function (
+                    feature,
+                    layer
+                ) {
+
+                    layer.bindPopup(
+                        createCensusPopup(feature),
+                        {
+                            pane: 'popupTopPane'
+                        }
+                    );
+
+                }
+
+            }
+        );
+        // ========================================================
+        // FARMERS MARKETS
+        // Protective Factor
+        // ========================================================
+
+        var farmersMarkets = L.geoJSON(
+            farmersMarketsData,
+            {
+
+                pane: 'pointPane',
+
+                pointToLayer: function (
+                    feature,
+                    latlng
+                ) {
+
+                    return L.circleMarker(
+                        latlng,
+                        {
+                            pane: 'pointPane',
+
+                            radius: 4,
+
+                            fillColor: "#FFAA00",
+
+                            color: "#FFFFFF",
+
+                            weight: 1,
+
+                            fillOpacity: 1
+                        }
+                    );
+
+                },
+
+                onEachFeature: function (
+                    feature,
+                    layer
+                ) {
+
+                    layer.bindPopup(
+                        createFarmersMarketPopup(feature),
+                        {
+                            pane: 'popupTopPane'
+                        }
+                    );
+
+                }
+
+            }
+        );
+        // ========================================================
+        // PARKS
+        // Protective Factor
+        // ========================================================
+
+        var parks = L.geoJSON(
+            parksData,
+            {
+
+                pane: 'protectivePolygonPane',
+
+                style: {
+                    color: "#2E8B57",
+                    weight: 2,
+                    opacity: 1,
+                    fillColor: "#66C266",
+                    fillOpacity: 0.65
+                },
+
+                onEachFeature: function (
+                    feature,
+                    layer
+                ) {
+
+                    layer.bindPopup(
+                        createParkPopup(feature),
+                        {
+                            pane: 'popupTopPane'
+                        }
+                    );
+                    layer.on(
+                        'mouseover',
+                        function () {
+
+                            this.setStyle({
+                                fillOpacity: 0.85,
+                                weight: 3
+                            });
+
+                        }
+                    );
 
 
-                // ========================================================
-                // UPDATE LEGEND WHEN A LAYER IS TURNED OFF
-                // ========================================================
+                    layer.on(
+                        'mouseout',
+                        function () {
 
-                map.on('overlayremove', function () {
+                            this.setStyle({
+                                fillOpacity: 0.65,
+                                weight: 2
+                            });
 
-                    updateLegend();
+                        }
+                    );
 
-                });
+                }
+
+            }
+        );
+        // ========================================================
+        // SWIMMING POOLS
+        // Protective Factor
+        // ========================================================
+
+        var swimmingPools = L.geoJSON(
+            swimmingPoolsData,
+            {
+
+                pane: 'pointPane',
+
+                pointToLayer: function (
+                    feature,
+                    latlng
+                ) {
+
+                    return L.circleMarker(
+                        latlng,
+                        {
+                            pane: 'pointPane',
+                            radius: 4,
+                            fillColor: "#00BFFF",
+                            color: "#FFFFFF",
+                            weight: 1,
+                            fillOpacity: 1
+                        }
+                    );
+
+                },
+
+                onEachFeature: function (
+                    feature,
+                    layer
+                ) {
+
+                    layer.bindPopup(
+                        createSwimmingPoolPopup(feature),
+                        {
+                            pane: 'popupTopPane'
+                        }
+                    );
+
+                }
+
+            }
+        );
 
 
-                console.log(
-                    "Map layers and legend successfully created."
-                );
+        // ========================================================
+        // LIBRARIES
+        // Protective Factor
+        // ========================================================
+
+        var libraries = L.geoJSON(
+            librariesData,
+            {
+
+                pane: 'pointPane',
+
+                pointToLayer: function (
+                    feature,
+                    latlng
+                ) {
+
+                    return L.circleMarker(
+                        latlng,
+                        {
+                            pane: 'pointPane',
+                            radius: 4,
+                            fillColor: "#8A2BE2",
+                            color: "#FFFFFF",
+                            weight: 1,
+                            fillOpacity: 1
+                        }
+                    );
+
+                },
+
+                onEachFeature: function (
+                    feature,
+                    layer
+                ) {
+
+                    layer.bindPopup(
+                        createLibraryPopup(feature),
+                        {
+                            pane: 'popupTopPane'
+                        }
+                    );
+
+                }
+
+            }
+        );
+
+
+        // ========================================================
+        // SKATEPARKS
+        // Protective Factor
+        // ========================================================
+
+        var skateparks = L.geoJSON(
+            skateparksData,
+            {
+
+                pane: 'pointPane',
+
+                pointToLayer: function (
+                    feature,
+                    latlng
+                ) {
+
+                    return L.circleMarker(
+                        latlng,
+                        {
+                            pane: 'pointPane',
+                            radius: 4,
+                            fillColor: "#555555",
+                            color: "#FFFFFF",
+                            weight: 1,
+                            fillOpacity: 1
+                        }
+                    );
+
+                },
+
+                onEachFeature: function (
+                    feature,
+                    layer
+                ) {
+
+                    layer.bindPopup(
+                        createSkateparkPopup(feature),
+                        {
+                            pane: 'popupTopPane'
+                        }
+                    );
+
+                }
+
+            }
+        );
+
+        // ========================================================
+        // ADD INITIAL LAYERS TO MAP
+        // ========================================================
+
+        censusTracts.addTo(map);
+
+        countyBoundary.addTo(map);
+
+        schools.addTo(map);
+
+        traditionalSchools.addTo(map);
+
+        alternativeSchools.addTo(map);
+
+        fiveHighestCensusTracts.addTo(map);
+
+        neighborhoods.addTo(map);
+
+        // Recreation Centers and SUD Facilities
+        // are available in the layer control but
+        // are OFF by default.
+
+
+        if (censusTracts.getBounds().isValid()) {
+
+            map.fitBounds(
+                censusTracts.getBounds()
+            );
+
+        }
+
+
+        // ========================================================
+        // INITIAL NEIGHBORHOOD LABEL PLACEMENT
+        // ========================================================
+
+        setTimeout(
+            updateNeighborhoodLabels,
+            100
+        );
+
+
+        // ========================================================
+        // LAYER CONTROL
+        // ========================================================
+
+
+        // ========================================================
+        // LAYER CONTROL
+        // ========================================================
+
+        L.control.layers(
+
+            {
+                "OpenStreetMap": osm
+            },
+
+            {
+                "Census Tracts": censusTracts,
+                "Five Highest SVI Tracts": fiveHighestCensusTracts,
+                "County Boundary": countyBoundary,
+                "Neighborhoods": neighborhoods,
+                "Schools": schools,
+                "Traditional Schools": traditionalSchools,
+                "Alternative Schools": alternativeSchools,
+                "Parks": parks,
+                "Recreation Centers": recreationCenters,
+                "SUD Facilities": sudFacilities,
+                "Farmers Markets": farmersMarkets,
+                "Swimming Pools": swimmingPools,
+                "Libraries": libraries,
+                "Skateparks": skateparks
+            },
+
+            {
+                position: 'topleft',
+                collapsed: false
+            }
+
+        ).addTo(map);
+
+        // ========================================================
+        // LEGEND
+        // ========================================================
+
+        var legend = L.control({
+            position: 'bottomright'
+        });
+
+
+        legend.onAdd = function (map) {
+
+            var div = L.DomUtil.create(
+                'div',
+                'info legend'
+            );
+
+            return div;
+        };
+
+
+        legend.addTo(map);
+
+
+        // ========================================================
+        // UPDATE LEGEND
+        // Changes automatically when layers are turned
+        // on or off using the layer control.
+        // ========================================================
+
+        function updateLegend() {
+
+            var div = legend.getContainer();
+
+            div.innerHTML = '';
+
+
+            // ====================================================
+            // CENSUS TRACTS
+            // ====================================================
+
+            if (map.hasLayer(censusTracts)) {
+
+                div.innerHTML +=
+                    '<div class="legend-section">' +
+                    'Census Tracts - SVI Score' +
+                    '</div>';
+
+
+                div.innerHTML +=
+                    '<i style="background:#F5F500"></i>' +
+                    'Low<br>';
+
+
+                div.innerHTML +=
+                    '<i style="background:#F5B800"></i>' +
+                    'Low - Moderate<br>';
+
+
+                div.innerHTML +=
+                    '<i style="background:#F57A00"></i>' +
+                    'Moderate<br>';
+
+
+                div.innerHTML +=
+                    '<i style="background:#F53D00"></i>' +
+                    'Moderate - High<br>';
+
+
+                div.innerHTML +=
+                    '<i style="background:#F50000"></i>' +
+                    'High<br>';
+            }
+
+
+            // ====================================================
+            // FIVE HIGHEST SVI CENSUS TRACTS
+            // ====================================================
+
+            if (map.hasLayer(fiveHighestCensusTracts)) {
+
+
+                div.innerHTML +=
+                    '<i style="' +
+                    'background:#A80000;' +
+                    'border:1px solid #000000;' +
+                    'width:18px;' +
+                    'height:18px;' +
+                    '"></i>' +
+                    'Five Highest Census Tracts<br>';
+            }
+
+
+            // ====================================================
+            // SCHOOLS
+            // ====================================================
+
+            if (map.hasLayer(schools)) {
+
+                div.innerHTML +=
+                    '<div class="legend-section">' +
+                    'Schools — SRI Score' +
+                    '</div>';
+
+
+                // Low SRI
+
+                div.innerHTML +=
+                    '<i class="circle-symbol" ' +
+                    'style="' +
+                    'background:#F5F500;' +
+                    'border:1px solid #000000' +
+                    '"></i>' +
+                    'Low<br>';
+
+
+                // Low - Moderate
+
+                div.innerHTML +=
+                    '<i class="circle-symbol" ' +
+                    'style="' +
+                    'background:#F5B800;' +
+                    'border:1px solid #000000' +
+                    '"></i>' +
+                    'Low - Moderate<br>';
+
+
+                // Moderate
+
+                div.innerHTML +=
+                    '<i class="circle-symbol" ' +
+                    'style="' +
+                    'background:#F57A00;' +
+                    'border:1px solid #000000' +
+                    '"></i>' +
+                    'Moderate<br>';
+
+
+                // Moderate - High
+
+                div.innerHTML +=
+                    '<i class="circle-symbol" ' +
+                    'style="' +
+                    'background:#F53D00;' +
+                    'border:1px solid #000000' +
+                    '"></i>' +
+                    'Moderate - High<br>';
+
+
+                // High
+
+                div.innerHTML +=
+                    '<i class="circle-symbol" ' +
+                    'style="' +
+                    'background:#F50000;' +
+                    'border:1px solid #000000' +
+                    '"></i>' +
+                    'High<br>';
+
+            }
+
+
+            // ====================================================
+            // TRADITIONAL SCHOOLS
+            // ====================================================
+
+            // ====================================================
+            // TRADITIONAL SCHOOLS
+            // ====================================================
+
+            if (map.hasLayer(traditionalSchools)) {
+
+                div.innerHTML +=
+                    '<div class="legend-section">' +
+                    'School Types' +
+                    '</div>';
+
+
+                div.innerHTML +=
+                    '<span class="' +
+                    'school-rank-legend ' +
+                    'traditional-school-legend">' +
+                    '<span class="legend-letter">T</span>' +
+                    '</span>' +
+                    'Top 5 Traditional Schools<br>';
+            }
+
+
+            // ====================================================
+            // ALTERNATIVE SCHOOLS
+            // ====================================================
+
+            // ====================================================
+            // ALTERNATIVE SCHOOLS
+            // ====================================================
+
+            if (map.hasLayer(alternativeSchools)) {
+
+                if (!map.hasLayer(traditionalSchools)) {
+
+                    div.innerHTML +=
+                        '<div class="legend-section">' +
+                        'School Types' +
+                        '</div>';
+                }
+
+
+                div.innerHTML +=
+                    '<span class="' +
+                    'school-rank-legend ' +
+                    'alternative-school-legend">' +
+                    '<span class="legend-letter">A</span>' +
+                    '</span>' +
+                    'Top 5 Alternative Schools<br>';
+            }
+
+
+            // ====================================================
+            // COUNTY BOUNDARY
+            // ====================================================
+
+            if (map.hasLayer(countyBoundary)) {
+
+                div.innerHTML +=
+                    '<div class="legend-section">' +
+                    'Boundaries' +
+                    '</div>';
+
+
+                div.innerHTML +=
+                    '<i class="line-symbol" ' +
+                    'style="border-color:#000000; ' +
+                    'border-top-width:3px">' +
+                    '</i>' +
+                    'County Boundary<br>';
+            }
+
+
+            // ====================================================
+            // NEIGHBORHOODS
+            // ====================================================
+
+            if (map.hasLayer(neighborhoods)) {
+
+                if (!map.hasLayer(countyBoundary)) {
+
+                    div.innerHTML +=
+                        '<div class="legend-section">' +
+                        'Boundaries' +
+                        '</div>';
+                }
+
+
+                div.innerHTML +=
+                    '<i class="line-symbol" ' +
+                    'style="border-color:#000000; ' +
+                    'border-top-width:2px">' +
+                    '</i>' +
+                    'Neighborhood Boundary<br>';
+            }
+            // ====================================================
+            // PROTECTIVE LAYERS
+            // Show heading if ANY protective layer is active
+            // ====================================================
+
+            var hasProtectiveLayers =
+                map.hasLayer(parks) ||
+                map.hasLayer(recreationCenters) ||
+                map.hasLayer(sudFacilities) ||
+                map.hasLayer(farmersMarkets) ||
+                map.hasLayer(swimmingPools) ||
+                map.hasLayer(libraries) ||
+                map.hasLayer(skateparks);
+
+            if (hasProtectiveLayers) {
+
+                div.innerHTML +=
+                    '<div class="legend-section">' +
+                    'Protective Layers' +
+                    '</div>';
+            }
+            // ====================================================
+            // Parks
+            // Protective Layer
+            // ====================================================
+            if (map.hasLayer(parks)) {
+
+                div.innerHTML +=
+                    '<i style="' +
+                    'background:#66C266;' +
+                    'border:2px solid #2E8B57;' +
+                    'opacity:0.65;' +
+                    '"></i>' +
+                    'Parks<br>';
+            }
+            // ====================================================
+            // RECREATION CENTERS
+            // Protective Layer
+            // ====================================================
+
+            if (map.hasLayer(recreationCenters)) {
+
+                div.innerHTML +=
+                    '<i class="circle-symbol" ' +
+                    'style="' +
+                    'background:#4CE600;' +
+                    'border:1px solid #FFFFFF' +
+                    '"></i>' +
+                    'Recreation Centers<br>';
+            }
+
+
+            // ====================================================
+            // SUD FACILITIES
+            // Protective Layer
+            // ====================================================
+
+            if (map.hasLayer(sudFacilities)) {
+
+                div.innerHTML +=
+                    '<i class="circle-symbol" ' +
+                    'style="' +
+                    'background:#0070FF;' +
+                    'border:1px solid #FFFFFF' +
+                    '"></i>' +
+                    'SUD Facilities<br>';
+            }
+            // ====================================================
+            // FARMERS MARKETS
+            // Protective Layer
+            // ====================================================
+
+            if (map.hasLayer(farmersMarkets)) {
+
+                div.innerHTML +=
+                    '<i class="circle-symbol" ' +
+                    'style="' +
+                    'background:#FFAA00;' +
+                    'border:1px solid #FFFFFF' +
+                    '"></i>' +
+                    'Farmers Markets<br>';
+            }
+
+            if (map.hasLayer(swimmingPools)) {
+
+                div.innerHTML +=
+                    '<i class="circle-symbol" ' +
+                    'style="background:#00BFFF;' +
+                    'border:1px solid #FFFFFF"></i>' +
+                    'Swimming Pools<br>';
+            }
+
+
+            if (map.hasLayer(libraries)) {
+
+                div.innerHTML +=
+                    '<i class="circle-symbol" ' +
+                    'style="background:#8A2BE2;' +
+                    'border:1px solid #FFFFFF"></i>' +
+                    'Libraries<br>';
+            }
+
+
+            if (map.hasLayer(skateparks)) {
+
+                div.innerHTML +=
+                    '<i class="circle-symbol" ' +
+                    'style="background:#555555;' +
+                    'border:1px solid #FFFFFF"></i>' +
+                    'Skateparks<br>';
+            }
+
+
+            // ====================================================
+            // CENSUS TRACT BOUNDARY
+            // ====================================================
+            // This is always included with Census Tracts.
+            // It is intentionally not given its own legend
+            // symbol because the SVI colors already explain
+            // the Census Tract layer.
+            // ====================================================
+
+
+        }
+
+
+        // ========================================================
+        // INITIAL LEGEND
+        // Shows all layers that are currently displayed.
+        // ========================================================
+
+        updateLegend();
+
+
+        // ========================================================
+        // UPDATE LEGEND WHEN A LAYER IS TURNED ON
+        // ========================================================
+
+        map.on('overlayadd', function () {
+
+            updateLegend();
+
+        });
+
+
+        // ========================================================
+        // UPDATE LEGEND WHEN A LAYER IS TURNED OFF
+        // ========================================================
+
+        map.on('overlayremove', function () {
+
+            updateLegend();
+
+        });
+
+
+        console.log(
+            "Map layers and legend successfully created."
+        );
 
             })
 
@@ -4323,14 +4211,14 @@
             // ERROR HANDLING
             // ============================================================
 
-            .catch(function (error) {
+            .catch (function (error) {
 
-                console.error(
-                    "ERROR LOADING MAP DATA:",
-                    error
-                );
+            console.error(
+                "ERROR LOADING MAP DATA:",
+                error
+            );
 
-            });
+        });
 
     </script>
 
