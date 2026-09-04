@@ -126,6 +126,46 @@
         .neighborhood-label::before {
             display: none;
         }
+
+        /* ============================================================
+   TOP 5 SCHOOL RANK MARKERS
+   ============================================================ */
+
+        .top-school-marker {
+            width: 30px;
+            height: 30px;
+
+            background: #FFFFFF;
+
+            border: 3px solid #000000;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+
+            box-sizing: border-box;
+
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+
+            pointer-events: auto;
+        }
+
+
+        /* Traditional school rank number */
+        .traditional-school-marker {
+            color: #000000;
+        }
+
+
+        /* Alternative school rank number */
+        .alternative-school-marker {
+            color: #F50000;
+        }
     </style>
 </head>
 
@@ -3331,6 +3371,8 @@
                 // TRADITIONAL SCHOOLS
                 // ========================================================
 
+                var traditionalRank = 0;
+
                 var traditionalSchools = L.geoJSON(
                     traditionalSchoolsData,
                     {
@@ -3342,20 +3384,30 @@
                             latlng
                         ) {
 
-                            return L.circleMarker(
+                            traditionalRank += 1;
+
+                            var rankIcon = L.divIcon(
+                                {
+                                    className: '',
+
+                                    html:
+                                        '<div class="top-school-marker traditional-school-marker">' +
+                                        traditionalRank +
+                                        '</div>',
+
+                                    iconSize: [30, 30],
+
+                                    iconAnchor: [15, 15],
+
+                                    popupAnchor: [0, -18]
+                                }
+                            );
+
+                            return L.marker(
                                 latlng,
                                 {
                                     pane: 'pointPane',
-                                    radius: 6,
-
-                                    fillColor: "#008000",
-
-                                    color: "#FFFFFF",
-
-                                    weight: 1,
-
-                                    fillOpacity: 1
-
+                                    icon: rankIcon
                                 }
                             );
 
@@ -3382,6 +3434,20 @@
                 // ========================================================
                 // ALTERNATIVE SCHOOLS
                 // ========================================================
+                traditionalSchoolsData.features.sort(
+                    function (a, b) {
+                        return Number(b.properties.SRI_SCORE) -
+                            Number(a.properties.SRI_SCORE);
+                    }
+                );
+
+                alternativeSchoolsData.features.sort(
+                    function (a, b) {
+                        return Number(b.properties.SRI_SCORE) -
+                            Number(a.properties.SRI_SCORE);
+                    }
+                );
+                var alternativeRank = 0;
 
                 var alternativeSchools = L.geoJSON(
                     alternativeSchoolsData,
@@ -3394,20 +3460,30 @@
                             latlng
                         ) {
 
-                            return L.circleMarker(
+                            alternativeRank += 1;
+
+                            var rankIcon = L.divIcon(
+                                {
+                                    className: '',
+
+                                    html:
+                                        '<div class="top-school-marker alternative-school-marker">' +
+                                        alternativeRank +
+                                        '</div>',
+
+                                    iconSize: [30, 30],
+
+                                    iconAnchor: [15, 15],
+
+                                    popupAnchor: [0, -18]
+                                }
+                            );
+
+                            return L.marker(
                                 latlng,
                                 {
                                     pane: 'pointPane',
-                                    radius: 6,
-
-                                    fillColor: "#800080",
-
-                                    color: "#FFFFFF",
-
-                                    weight: 1,
-
-                                    fillOpacity: 1
-
+                                    icon: rankIcon
                                 }
                             );
 
@@ -3429,7 +3505,6 @@
 
                     }
                 );
-
 
                 // ========================================================
                 // RECREATION CENTERS
