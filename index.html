@@ -185,52 +185,59 @@
    TOP 5 SCHOOL LEGEND SYMBOLS
    ============================================================ */
 
-        .info.legend .school-rank-legend {
-            width: 18px !important;
-            height: 18px !important;
+        .school-rank-legend {
+            width: 20px;
+            height: 20px;
 
             background: #FFFFFF;
-
             border: 2px solid #000000;
             border-radius: 50%;
 
             box-sizing: border-box;
 
-            display: inline-flex !important;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
 
-            /* Override general legend <i> behavior */
-            float: left;
+            margin-right: 8px;
 
-            margin: 2px 8px 2px 1px !important;
+            vertical-align: middle;
 
-            opacity: 1;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 900;
+            line-height: 1;
+
+            /* Prevent other legend CSS from interfering */
+            float: none !important;
+            opacity: 1 !important;
         }
 
 
-        /* Number inside legend marker */
-        .school-rank-legend .rank-number {
+        /* Fine-tune the actual letter independently */
+        .school-rank-legend .legend-letter {
             display: block;
 
-            font-family: Arial, sans-serif;
-            font-size: 11px;
-            font-weight: 900;
-
-            line-height: 1;
+            width: 100%;
 
             text-align: center;
 
-            transform: translateY(-0.2px);
+            font: inherit;
+            line-height: 1;
+
+            /* Optical centering */
+            transform: translateY(-0.5px);
         }
 
 
-        .traditional-school-legend .rank-number {
+        /* Traditional */
+        .traditional-school-legend {
             color: #000000;
         }
 
 
-        .alternative-school-legend .rank-number {
+        /* Alternative */
+        .alternative-school-legend {
             color: #F50000;
         }
     </style>
@@ -4239,11 +4246,11 @@
 
 
                         div.innerHTML +=
-                            '<i class="' +
+                            '<span class="' +
                             'school-rank-legend ' +
                             'traditional-school-legend">' +
-                            '<span class="rank-number">1</span>' +
-                            '</i>' +
+                            '<span class="legend-letter">T</span>' +
+                            '</span>' +
                             'Top 5 Traditional Schools<br>';
                     }
 
@@ -4268,11 +4275,11 @@
 
 
                         div.innerHTML +=
-                            '<i class="' +
+                            '<span class="' +
                             'school-rank-legend ' +
                             'alternative-school-legend">' +
-                            '<span class="rank-number">1</span>' +
-                            '</i>' +
+                            '<span class="legend-letter">A</span>' +
+                            '</span>' +
                             'Top 5 Alternative Schools<br>';
                     }
 
