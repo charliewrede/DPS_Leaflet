@@ -2947,22 +2947,25 @@
 
                     }
                 );
-
-
                 // ========================================================
-                // CREATE TOP 5 UNIQUE SCHOOL SUBSETS
-                // ========================================================
-
-
-                // --------------------------------------------------------
-                // TRADITIONAL SCHOOL CANDIDATES
-                // --------------------------------------------------------
-
-
-                // ========================================================
-                // CREATE TOP 5 SCHOOL SUBSETS FROM MASTER SCHOOL DATA
+                // CHECK WHETHER SCHOOL IS IN-PERSON
+                // Online schools are excluded from Top 5 rankings.
                 // ========================================================
 
+                function isInPersonSchool(feature) {
+
+                    var name =
+                        (
+                            feature.properties.school_name ||
+                            ""
+                        )
+                            .toLowerCase()
+                            .trim();
+
+
+                    // Exclude any school whose name contains "online"
+                    return !name.includes("online");
+                }
 
                 // --------------------------------------------------------
                 // TOP 5 TRADITIONAL SCHOOLS
@@ -2974,20 +2977,11 @@
 
                             return (
                                 feature.properties.school_type ===
-                                "Traditional"
+                                "Traditional" &&
+                                isInPersonSchool(feature)
                             );
 
                         })
-                        .sort(function (a, b) {
-
-                            return (
-                                Number(b.properties.SRI_score) -
-                                Number(a.properties.SRI_score)
-                            );
-
-                        })
-                        .slice(0, 5);
-
 
                 // --------------------------------------------------------
                 // TOP 5 ALTERNATIVE / PATHWAY SCHOOLS
@@ -2999,19 +2993,11 @@
 
                             return (
                                 feature.properties.school_type ===
-                                "Alternative/Pathway"
+                                "Alternative/Pathway" &&
+                                isInPersonSchool(feature)
                             );
 
                         })
-                        .sort(function (a, b) {
-
-                            return (
-                                Number(b.properties.SRI_score) -
-                                Number(a.properties.SRI_score)
-                            );
-
-                        })
-                        .slice(0, 5);
 
 
                 // --------------------------------------------------------
@@ -3039,10 +3025,6 @@
                 };
 
 
-                var alternativeTop5Data = {
-                    type: "FeatureCollection",
-                    features: alternativeFeatures
-                };
                 // ========================================================
                 // TOP 5 TRADITIONAL SCHOOLS
                 // ========================================================
