@@ -132,12 +132,12 @@
    ============================================================ */
 
         .top-school-marker {
-            width: 30px;
-            height: 30px;
+            width: 18px;
+            height: 18px;
 
             background: #FFFFFF;
 
-            border: 3px solid #000000;
+            border: 2px solid #000000;
             border-radius: 50%;
 
             display: flex;
@@ -145,25 +145,65 @@
             justify-content: center;
 
             font-family: Arial, sans-serif;
-            font-size: 18px;
+
+            font-size: 12px;
             font-weight: 900;
+
+            line-height: 1;
 
             box-sizing: border-box;
 
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 
             pointer-events: auto;
         }
 
-
-        /* Traditional school rank number */
         .traditional-school-marker {
             color: #000000;
         }
 
-
-        /* Alternative school rank number */
         .alternative-school-marker {
+            color: #F50000;
+        }
+
+        /* ============================================================
+   TOP 5 SCHOOL LEGEND SYMBOLS
+   ============================================================ */
+
+        .school-rank-legend {
+            width: 22px !important;
+            height: 22px !important;
+
+            background: #FFFFFF;
+
+            border: 3px solid #000000;
+            border-radius: 50%;
+
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 900;
+
+            line-height: 1;
+
+            box-sizing: border-box;
+
+            margin:
+                0 8px 0 1px !important;
+
+            float: left;
+        }
+
+
+        .traditional-school-legend {
+            color: #000000;
+        }
+
+
+        .alternative-school-legend {
             color: #F50000;
         }
     </style>
@@ -219,6 +259,7 @@
         map.createPane('labelPane');
         map.createPane('popupTopPane');
         map.createPane('protectivePolygonPane');
+        map.createPane('topSchoolPane');
 
         map.getPane('labelPane').style.zIndex = 900;
         map.getPane('protectivePolygonPane').style.zIndex = 600;
@@ -229,6 +270,7 @@
         map.getPane('boundaryPane').style.zIndex = 700;
         map.getPane('pointPane').style.zIndex = 800;
         map.getPane('popupTopPane').style.zIndex = 1200;
+        map.getPane('topSchoolPane').style.zIndex = 1000;
 
         console.log(
             "Census z-index:",
@@ -3377,7 +3419,7 @@
                     traditionalSchoolsData,
                     {
 
-                        pane: 'pointPane',
+                        pane: 'topSchoolPane',
 
                         pointToLayer: function (
                             feature,
@@ -3395,18 +3437,18 @@
                                         traditionalRank +
                                         '</div>',
 
-                                    iconSize: [30, 30],
+                                    iconSize: [18, 18],
 
-                                    iconAnchor: [15, 15],
+                                    iconAnchor: [9, 9],
 
-                                    popupAnchor: [0, -18]
+                                    popupAnchor: [0, -11]
                                 }
                             );
 
                             return L.marker(
                                 latlng,
                                 {
-                                    pane: 'pointPane',
+                                    pane: 'topSchoolPane',
                                     icon: rankIcon
                                 }
                             );
@@ -3471,18 +3513,18 @@
                                         alternativeRank +
                                         '</div>',
 
-                                    iconSize: [30, 30],
+                                    iconSize: [18, 18],
 
-                                    iconAnchor: [15, 15],
+                                    iconAnchor: [9, 9],
 
-                                    popupAnchor: [0, -18]
+                                    popupAnchor: [0, -11]
                                 }
                             );
 
                             return L.marker(
                                 latlng,
                                 {
-                                    pane: 'pointPane',
+                                    pane: 'topSchoolPane',
                                     icon: rankIcon
                                 }
                             );
@@ -4125,6 +4167,10 @@
                     // TRADITIONAL SCHOOLS
                     // ====================================================
 
+                    // ====================================================
+                    // TRADITIONAL SCHOOLS
+                    // ====================================================
+
                     if (map.hasLayer(traditionalSchools)) {
 
                         div.innerHTML +=
@@ -4134,14 +4180,18 @@
 
 
                         div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#008000;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
+                            '<i class="' +
+                            'school-rank-legend ' +
+                            'traditional-school-legend">' +
+                            '1' +
+                            '</i>' +
                             'Top 5 Traditional Schools<br>';
                     }
 
+
+                    // ====================================================
+                    // ALTERNATIVE SCHOOLS
+                    // ====================================================
 
                     // ====================================================
                     // ALTERNATIVE SCHOOLS
@@ -4159,11 +4209,11 @@
 
 
                         div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#800080;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
+                            '<i class="' +
+                            'school-rank-legend ' +
+                            'alternative-school-legend">' +
+                            '1' +
+                            '</i>' +
                             'Top 5 Alternative Schools<br>';
                     }
 
