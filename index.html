@@ -556,7 +556,6 @@
         }
         // ============================================================
         // SCHOOL POPUP FUNCTION
-        // Shows only relevant, user-friendly school information
         // ============================================================
 
         function createSchoolPopup(feature) {
@@ -571,77 +570,59 @@
 
 
             // --------------------------------------------------------
-            // BASIC SCHOOL INFORMATION
+            // BASIC INFORMATION
             // --------------------------------------------------------
 
-            if (
-                p.school_n_1 !== null &&
-                p.school_n_1 !== undefined &&
-                p.school_n_1 !== ""
-            ) {
+            var displaySchoolName =
+                p.ranking_name ||
+                p.school_name;
+
+
+            if (displaySchoolName) {
+
                 popupContent +=
                     "<strong>School Name:</strong> " +
-                    p.school_n_1 +
+                    displaySchoolName +
                     "<br>";
             }
-            // --------------------------------------------------------
-            // SCHOOL RISK INDEX
-            // --------------------------------------------------------
 
-            if (
-                p.SRI_SCORE !== null &&
-                p.SRI_SCORE !== undefined
-            ) {
+
+            if (p.SRI_score !== null && p.SRI_score !== undefined) {
                 popupContent +=
                     "<strong>School Risk Index Score:</strong> " +
-                    Number(p.SRI_SCORE).toFixed(3) +
-                    "<br>";
-            }
-
-            if (
-                p.school_dis !== null &&
-                p.school_dis !== undefined &&
-                p.school_dis !== ""
-            ) {
-                popupContent +=
-                    "<strong>School District:</strong> " +
-                    p.school_dis +
+                    Number(p.SRI_score).toFixed(3) +
                     "<br>";
             }
 
 
-            if (
-                p.classifica !== null &&
-                p.classifica !== undefined &&
-                p.classifica !== ""
-            ) {
+            if (p.school_type) {
                 popupContent +=
                     "<strong>School Type:</strong> " +
-                    p.classifica +
+                    p.school_type +
                     "<br>";
             }
 
 
-            if (
-                p.school_lev !== null &&
-                p.school_lev !== undefined &&
-                p.school_lev !== ""
-            ) {
+            if (p.classification) {
+                popupContent +=
+                    "<strong>Classification:</strong> " +
+                    p.classification +
+                    "<br>";
+            }
+
+
+            if (p.school_level) {
                 popupContent +=
                     "<strong>School Level:</strong> " +
-                    p.school_lev +
+                    p.school_level +
                     "<br>";
             }
 
 
-            if (
-                p.grade_leve !== null &&
-                p.grade_leve !== undefined &&
-                p.grade_leve !== ""
-            ) {
+            if (p.grade_level) {
                 popupContent +=
                     "<strong>Grades Served:</strong> " +
-                    p.grade_leve +
+                    p.grade_level +
                     "<br>";
             }
 
@@ -650,58 +631,18 @@
             // LOCATION
             // --------------------------------------------------------
 
-            if (
-                p.address_li !== null &&
-                p.address_li !== undefined &&
-                p.address_li !== ""
-            ) {
-
+            if (p.address) {
                 popupContent +=
                     "<strong>Address:</strong> " +
-                    p.address_li;
-
-                if (
-                    p.city !== null &&
-                    p.city !== undefined &&
-                    p.city !== ""
-                ) {
-                    popupContent +=
-                        ", " +
-                        p.city;
-                }
-
-                if (
-                    p.state !== null &&
-                    p.state !== undefined &&
-                    p.state !== ""
-                ) {
-                    popupContent +=
-                        ", " +
-                        p.state;
-                }
-
-                if (
-                    p.zip !== null &&
-                    p.zip !== undefined &&
-                    p.zip !== ""
-                ) {
-                    popupContent +=
-                        " " +
-                        p.zip;
-                }
-
-                popupContent += "<br>";
+                    p.address +
+                    "<br>";
             }
 
 
-            if (
-                p.NBHD_NAME !== null &&
-                p.NBHD_NAME !== undefined &&
-                p.NBHD_NAME !== ""
-            ) {
+            if (p.neighborhood) {
                 popupContent +=
                     "<strong>Neighborhood:</strong> " +
-                    p.NBHD_NAME +
+                    p.neighborhood +
                     "<br>";
             }
 
@@ -711,255 +652,57 @@
             // --------------------------------------------------------
 
             if (
-                p.EP_STRATIO !== null &&
-                p.EP_STRATIO !== undefined
+                p.student_teacher_ratio !== null &&
+                p.student_teacher_ratio !== undefined
             ) {
                 popupContent +=
                     "<strong>Student-Teacher Ratio:</strong> " +
-                    Number(p.EP_STRATIO).toFixed(1) +
+                    Number(p.student_teacher_ratio).toFixed(1) +
                     ":1<br>";
             }
 
 
             if (
-                p.EP_ATTEND !== null &&
-                p.EP_ATTEND !== undefined
+                p.attendance_rate !== null &&
+                p.attendance_rate !== undefined
             ) {
                 popupContent +=
-                    "<strong>Attendance Concern:</strong> " +
-                    (Number(p.EP_ATTEND) * 100).toFixed(1) +
+                    "<strong>Attendance Rate:</strong> " +
+                    (Number(p.attendance_rate) * 100).toFixed(1) +
                     "%<br>";
             }
 
 
             if (
-                p.EP_CHRABSE !== null &&
-                p.EP_CHRABSE !== undefined
+                p.chronically_absent !== null &&
+                p.chronically_absent !== undefined
             ) {
                 popupContent +=
                     "<strong>Chronic Absenteeism:</strong> " +
-                    (Number(p.EP_CHRABSE) * 100).toFixed(1) +
+                    (Number(p.chronically_absent) * 100).toFixed(1) +
                     "%<br>";
             }
 
 
             if (
-                p.EP_TRUANCY !== null &&
-                p.EP_TRUANCY !== undefined
+                p.truancy_rate !== null &&
+                p.truancy_rate !== undefined
             ) {
                 popupContent +=
-                    "<strong>Truancy:</strong> " +
-                    (Number(p.EP_TRUANCY) * 100).toFixed(1) +
+                    "<strong>Truancy Rate:</strong> " +
+                    (Number(p.truancy_rate) * 100).toFixed(1) +
                     "%<br>";
             }
 
 
             if (
-                p.EP_PERF !== null &&
-                p.EP_PERF !== undefined
+                p.perf_rating !== null &&
+                p.perf_rating !== undefined
             ) {
                 popupContent +=
-                    "<strong>Academic Performance:</strong> " +
-                    (Number(p.EP_PERF) * 100).toFixed(1) +
+                    "<strong>Performance Rating:</strong> " +
+                    (Number(p.perf_rating) * 100).toFixed(1) +
                     "%<br>";
-            }
-
-
-            popupContent += "</div>";
-
-            return popupContent;
-        }
-        // ============================================================
-        // TRADITIONAL SCHOOL POPUP FUNCTION
-        // ============================================================
-
-        function createTraditionalSchoolPopup(feature) {
-
-            var p = feature.properties;
-
-            if (!p) {
-                return "<strong>No information available</strong>";
-            }
-
-            var popupContent = "<div>";
-
-            if (
-                p.school_n_1 !== null &&
-                p.school_n_1 !== undefined &&
-                p.school_n_1 !== ""
-            ) {
-                popupContent +=
-                    "<strong>School Name:</strong> " +
-                    p.school_n_1 +
-                    "<br>";
-            }
-
-            if (
-                p.school_dis !== null &&
-                p.school_dis !== undefined &&
-                p.school_dis !== ""
-            ) {
-                popupContent +=
-                    "<strong>School District:</strong> " +
-                    p.school_dis +
-                    "<br>";
-            }
-
-            if (
-                p.classifica !== null &&
-                p.classifica !== undefined &&
-                p.classifica !== ""
-            ) {
-                popupContent +=
-                    "<strong>School Type:</strong> " +
-                    p.classifica +
-                    "<br>";
-            }
-
-            if (
-                p.school_lev !== null &&
-                p.school_lev !== undefined &&
-                p.school_lev !== ""
-            ) {
-                popupContent +=
-                    "<strong>School Level:</strong> " +
-                    p.school_lev +
-                    "<br>";
-            }
-
-            if (
-                p.grade_leve !== null &&
-                p.grade_leve !== undefined &&
-                p.grade_leve !== ""
-            ) {
-                popupContent +=
-                    "<strong>Grades Served:</strong> " +
-                    p.grade_leve +
-                    "<br>";
-            }
-
-
-            // --------------------------------------------------------
-            // ADDRESS
-            // --------------------------------------------------------
-
-            if (
-                p.address_li !== null &&
-                p.address_li !== undefined &&
-                p.address_li !== ""
-            ) {
-
-                popupContent +=
-                    "<strong>Address:</strong> " +
-                    p.address_li;
-
-                if (
-                    p.city !== null &&
-                    p.city !== undefined &&
-                    p.city !== ""
-                ) {
-                    popupContent += ", " + p.city;
-                }
-
-                if (
-                    p.state !== null &&
-                    p.state !== undefined &&
-                    p.state !== ""
-                ) {
-                    popupContent += ", " + p.state;
-                }
-
-                if (
-                    p.zip !== null &&
-                    p.zip !== undefined &&
-                    p.zip !== ""
-                ) {
-                    popupContent += " " + p.zip;
-                }
-
-                popupContent += "<br>";
-            }
-
-
-            if (
-                p.NBHD_NAME !== null &&
-                p.NBHD_NAME !== undefined &&
-                p.NBHD_NAME !== ""
-            ) {
-                popupContent +=
-                    "<strong>Neighborhood:</strong> " +
-                    p.NBHD_NAME +
-                    "<br>";
-            }
-
-
-            // --------------------------------------------------------
-            // SCHOOL INDICATORS
-            // --------------------------------------------------------
-
-            if (
-                p.EP_STRATIO !== null &&
-                p.EP_STRATIO !== undefined
-            ) {
-                popupContent +=
-                    "<strong>Student-Teacher Ratio:</strong> " +
-                    Number(p.EP_STRATIO).toFixed(1) +
-                    ":1<br>";
-            }
-
-            if (
-                p.EP_ATTEND !== null &&
-                p.EP_ATTEND !== undefined
-            ) {
-                popupContent +=
-                    "<strong>Attendance Concern:</strong> " +
-                    (Number(p.EP_ATTEND) * 100).toFixed(1) +
-                    "%<br>";
-            }
-
-            if (
-                p.EP_CHRABSE !== null &&
-                p.EP_CHRABSE !== undefined
-            ) {
-                popupContent +=
-                    "<strong>Chronic Absenteeism:</strong> " +
-                    (Number(p.EP_CHRABSE) * 100).toFixed(1) +
-                    "%<br>";
-            }
-
-            if (
-                p.EP_TRUANCY !== null &&
-                p.EP_TRUANCY !== undefined
-            ) {
-                popupContent +=
-                    "<strong>Truancy:</strong> " +
-                    (Number(p.EP_TRUANCY) * 100).toFixed(1) +
-                    "%<br>";
-            }
-
-            if (
-                p.EP_PERF !== null &&
-                p.EP_PERF !== undefined
-            ) {
-                popupContent +=
-                    "<strong>Academic Performance:</strong> " +
-                    (Number(p.EP_PERF) * 100).toFixed(1) +
-                    "%<br>";
-            }
-
-
-            // --------------------------------------------------------
-            // SCHOOL RISK INDEX
-            // --------------------------------------------------------
-
-            if (
-                p.SRI_SCORE !== null &&
-                p.SRI_SCORE !== undefined
-            ) {
-                popupContent +=
-                    "<strong>School Risk Index Score:</strong> " +
-                    Number(p.SRI_SCORE).toFixed(3) +
-                    "<br>";
             }
 
 
@@ -970,204 +713,6 @@
 
 
 
-        // ============================================================
-        // ALTERNATIVE SCHOOL POPUP FUNCTION
-        // ============================================================
-
-        function createAlternativeSchoolPopup(feature) {
-
-            var p = feature.properties;
-
-            if (!p) {
-                return "<strong>No information available</strong>";
-            }
-
-            var popupContent = "<div>";
-
-            if (
-                p.school_n_1 !== null &&
-                p.school_n_1 !== undefined &&
-                p.school_n_1 !== ""
-            ) {
-                popupContent +=
-                    "<strong>School Name:</strong> " +
-                    p.school_n_1 +
-                    "<br>";
-            }
-
-            if (
-                p.school_dis !== null &&
-                p.school_dis !== undefined &&
-                p.school_dis !== ""
-            ) {
-                popupContent +=
-                    "<strong>School District:</strong> " +
-                    p.school_dis +
-                    "<br>";
-            }
-
-            if (
-                p.classifica !== null &&
-                p.classifica !== undefined &&
-                p.classifica !== ""
-            ) {
-                popupContent +=
-                    "<strong>School Type:</strong> " +
-                    p.classifica +
-                    "<br>";
-            }
-
-            if (
-                p.school_lev !== null &&
-                p.school_lev !== undefined &&
-                p.school_lev !== ""
-            ) {
-                popupContent +=
-                    "<strong>School Level:</strong> " +
-                    p.school_lev +
-                    "<br>";
-            }
-
-            if (
-                p.grade_leve !== null &&
-                p.grade_leve !== undefined &&
-                p.grade_leve !== ""
-            ) {
-                popupContent +=
-                    "<strong>Grades Served:</strong> " +
-                    p.grade_leve +
-                    "<br>";
-            }
-
-
-            // --------------------------------------------------------
-            // ADDRESS
-            // --------------------------------------------------------
-
-            if (
-                p.address_li !== null &&
-                p.address_li !== undefined &&
-                p.address_li !== ""
-            ) {
-
-                popupContent +=
-                    "<strong>Address:</strong> " +
-                    p.address_li;
-
-                if (
-                    p.city !== null &&
-                    p.city !== undefined &&
-                    p.city !== ""
-                ) {
-                    popupContent += ", " + p.city;
-                }
-
-                if (
-                    p.state !== null &&
-                    p.state !== undefined &&
-                    p.state !== ""
-                ) {
-                    popupContent += ", " + p.state;
-                }
-
-                if (
-                    p.zip !== null &&
-                    p.zip !== undefined &&
-                    p.zip !== ""
-                ) {
-                    popupContent += " " + p.zip;
-                }
-
-                popupContent += "<br>";
-            }
-
-
-            if (
-                p.NBHD_NAME !== null &&
-                p.NBHD_NAME !== undefined &&
-                p.NBHD_NAME !== ""
-            ) {
-                popupContent +=
-                    "<strong>Neighborhood:</strong> " +
-                    p.NBHD_NAME +
-                    "<br>";
-            }
-
-
-            // --------------------------------------------------------
-            // SCHOOL INDICATORS
-            // --------------------------------------------------------
-
-            if (
-                p.EP_STRATIO !== null &&
-                p.EP_STRATIO !== undefined
-            ) {
-                popupContent +=
-                    "<strong>Student-Teacher Ratio:</strong> " +
-                    Number(p.EP_STRATIO).toFixed(1) +
-                    ":1<br>";
-            }
-
-            if (
-                p.EP_ATTEND !== null &&
-                p.EP_ATTEND !== undefined
-            ) {
-                popupContent +=
-                    "<strong>Attendance Concern:</strong> " +
-                    (Number(p.EP_ATTEND) * 100).toFixed(1) +
-                    "%<br>";
-            }
-
-            if (
-                p.EP_CHRABSE !== null &&
-                p.EP_CHRABSE !== undefined
-            ) {
-                popupContent +=
-                    "<strong>Chronic Absenteeism:</strong> " +
-                    (Number(p.EP_CHRABSE) * 100).toFixed(1) +
-                    "%<br>";
-            }
-
-            if (
-                p.EP_TRUANCY !== null &&
-                p.EP_TRUANCY !== undefined
-            ) {
-                popupContent +=
-                    "<strong>Truancy:</strong> " +
-                    (Number(p.EP_TRUANCY) * 100).toFixed(1) +
-                    "%<br>";
-            }
-
-            if (
-                p.EP_PERF !== null &&
-                p.EP_PERF !== undefined
-            ) {
-                popupContent +=
-                    "<strong>Academic Performance:</strong> " +
-                    (Number(p.EP_PERF) * 100).toFixed(1) +
-                    "%<br>";
-            }
-
-
-            // --------------------------------------------------------
-            // SCHOOL RISK INDEX
-            // --------------------------------------------------------
-
-            if (
-                p.SRI_SCORE !== null &&
-                p.SRI_SCORE !== undefined
-            ) {
-                popupContent +=
-                    "<strong>School Risk Index Score:</strong> " +
-                    Number(p.SRI_SCORE).toFixed(3) +
-                    "<br>";
-            }
-
-
-            popupContent += "</div>";
-
-            return popupContent;
-        }
         // ============================================================
         // RECREATION CENTER POPUP FUNCTION
         // ============================================================
@@ -1940,42 +1485,6 @@
                 }),
 
 
-            // --------------------------------------------------------
-            // TRADITIONAL SCHOOLS
-            // --------------------------------------------------------
-
-            fetch('Data/Traditional_Schools.geojson')
-                .then(response => {
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            "Could not load Traditional_Schools.geojson: " +
-                            response.status
-                        );
-                    }
-
-                    return response.json();
-                }),
-
-
-            // --------------------------------------------------------
-            // ALTERNATIVE SCHOOLS
-            // --------------------------------------------------------
-
-            fetch('Data/Alternative_Schools.geojson')
-                .then(response => {
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            "Could not load Alternative_Schools.geojson: " +
-                            response.status
-                        );
-                    }
-
-                    return response.json();
-                }),
 
 
             // --------------------------------------------------------
@@ -2155,16 +1664,14 @@
                 var countyData = data[1];
                 var neighborhoodData = data[2];
                 var schoolsData = data[3];
-                var traditionalSchoolsData = data[4];
-                var alternativeSchoolsData = data[5];
-                var recreationData = data[6];
-                var sudData = data[7];
-                var highestData = data[8];
-                var farmersMarketsData = data[9];
-                var parksData = data[10];
-                var swimmingPoolsData = data[11];
-                var librariesData = data[12];
-                var skateparksData = data[13];
+                var recreationData = data[4];
+                var sudData = data[5];
+                var highestData = data[6];
+                var farmersMarketsData = data[7];
+                var parksData = data[8];
+                var swimmingPoolsData = data[9];
+                var librariesData = data[10];
+                var skateparksData = data[11];
 
 
                 console.log(
@@ -3395,12 +2902,13 @@
 
                 // ========================================================
                 // SCHOOLS
-                // Colored by SRI_SCORE
+                // Colored by School Risk Index
                 // ========================================================
 
                 var schools = L.geoJSON(
                     schoolsData,
                     {
+
                         pane: 'pointPane',
 
                         pointToLayer: function (
@@ -3412,10 +2920,11 @@
                                 latlng,
                                 {
                                     pane: 'pointPane',
+
                                     radius: 6,
 
                                     fillColor: getSchoolColor(
-                                        feature.properties.SRI_SCORE
+                                        feature.properties.SRI_score
                                     ),
 
                                     color: "#000000",
@@ -3423,7 +2932,6 @@
                                     weight: 1,
 
                                     fillOpacity: 1
-
                                 }
                             );
 
@@ -3446,15 +2954,344 @@
                     }
                 );
 
-
                 // ========================================================
-                // TRADITIONAL SCHOOLS
+                // SCHOOL CAMPUS NORMALIZATION FOR TOP-5 RANKINGS
+                //
+                // Treat Middle School and High School records from the
+                // same named campus as ONE ranked school.
+                //
+                // Examples:
+                //
+                // "Manual High School"
+                // "Manual Middle School"
+                //
+                // become:
+                //
+                // "Manual High/Middle School"
+                //
+                // This also works for future schools such as:
+                //
+                // "Example Academy High School"
+                // "Example Academy Middle School"
+                //
+                // become:
+                //
+                // "Example Academy High/Middle School"
+                // ========================================================
+
+
+                // --------------------------------------------------------
+                // REMOVE SCHOOL-LEVEL WORDING FROM THE END OF A NAME
+                // --------------------------------------------------------
+
+                function getSchoolCampusBaseName(feature) {
+
+                    var name =
+                        (feature.properties.school_name || "")
+                            .trim();
+
+
+                    // Remove common level endings so records from the same
+                    // campus get the same base name.
+
+                    var baseName =
+                        name
+                            .replace(
+                                /\s+(middle\s+school|high\s+school)$/i,
+                                ""
+                            )
+                            .replace(
+                                /\s+(middle|high)$/i,
+                                ""
+                            )
+                            .trim();
+
+
+                    return baseName;
+                }
+
+
+                // --------------------------------------------------------
+                // DETERMINE WHETHER RECORD IS MIDDLE OR HIGH SCHOOL
+                // --------------------------------------------------------
+
+                function getSchoolRankingLevel(feature) {
+
+                    var p =
+                        feature.properties || {};
+
+
+                    var schoolName =
+                        (p.school_name || "")
+                            .toLowerCase();
+
+
+                    var schoolLevel =
+                        (p.school_level || "")
+                            .toLowerCase();
+
+
+                    // Prefer explicit school_level field
+
+                    if (schoolLevel.includes("middle")) {
+                        return "middle";
+                    }
+
+                    if (schoolLevel.includes("high")) {
+                        return "high";
+                    }
+
+
+                    // Fall back to school name
+
+                    if (schoolName.includes("middle school")) {
+                        return "middle";
+                    }
+
+                    if (schoolName.includes("high school")) {
+                        return "high";
+                    }
+
+
+                    return "other";
+                }
+
+
+                // --------------------------------------------------------
+                // CREATE UNIQUE RANKED SCHOOL LIST
+                // --------------------------------------------------------
+
+                function getUniqueRankedSchools(
+                    features,
+                    limit
+                ) {
+
+                    var campusGroups = {};
+
+
+                    // ----------------------------------------------------
+                    // GROUP RECORDS BY CAMPUS NAME
+                    // ----------------------------------------------------
+
+                    features.forEach(function (feature) {
+
+                        var baseName =
+                            getSchoolCampusBaseName(
+                                feature
+                            );
+
+
+                        var key =
+                            baseName
+                                .toLowerCase()
+                                .replace(/\s+/g, " ")
+                                .trim();
+
+
+                        if (!campusGroups[key]) {
+
+                            campusGroups[key] = {
+                                baseName: baseName,
+                                features: [],
+                                levels: {}
+                            };
+
+                        }
+
+
+                        campusGroups[key]
+                            .features
+                            .push(feature);
+
+
+                        var level =
+                            getSchoolRankingLevel(
+                                feature
+                            );
+
+
+                        campusGroups[key]
+                            .levels[level] = true;
+
+                    });
+
+
+                    // ----------------------------------------------------
+                    // CREATE ONE FEATURE FOR EACH CAMPUS
+                    // ----------------------------------------------------
+
+                    var uniqueSchools = [];
+
+
+                    Object.keys(
+                        campusGroups
+                    ).forEach(function (key) {
+
+                        var group =
+                            campusGroups[key];
+
+
+                        // Sort records within campus by SRI.
+                        // Highest one becomes representative.
+
+                        group.features.sort(
+                            function (a, b) {
+
+                                return (
+                                    Number(
+                                        b.properties.SRI_score
+                                    ) -
+                                    Number(
+                                        a.properties.SRI_score
+                                    )
+                                );
+
+                            }
+                        );
+
+
+                        var representative =
+                            group.features[0];
+
+
+                        // -----------------------------------------------
+                        // MIDDLE + HIGH AT SAME CAMPUS
+                        // -----------------------------------------------
+
+                        if (
+                            group.levels.middle &&
+                            group.levels.high
+                        ) {
+
+                            representative.properties
+                                .ranking_name =
+                                group.baseName +
+                                " High/Middle School";
+
+                        }
+
+                        else {
+
+                            representative.properties
+                                .ranking_name =
+                                representative.properties
+                                    .school_name;
+
+                        }
+
+
+                        uniqueSchools.push(
+                            representative
+                        );
+
+                    });
+
+
+                    // ----------------------------------------------------
+                    // SORT UNIQUE CAMPUSES BY SRI
+                    // ----------------------------------------------------
+
+                    uniqueSchools.sort(
+                        function (a, b) {
+
+                            return (
+                                Number(
+                                    b.properties.SRI_score
+                                ) -
+                                Number(
+                                    a.properties.SRI_score
+                                )
+                            );
+
+                        }
+                    );
+
+
+                    // ----------------------------------------------------
+                    // RETURN TOP N UNIQUE SCHOOLS
+                    // ----------------------------------------------------
+
+                    return uniqueSchools.slice(
+                        0,
+                        limit
+                    );
+                }
+                // ========================================================
+                // CREATE TOP 5 UNIQUE SCHOOL SUBSETS
+                // ========================================================
+
+
+                // --------------------------------------------------------
+                // TRADITIONAL SCHOOL CANDIDATES
+                // --------------------------------------------------------
+
+                var traditionalCandidates =
+                    schoolsData.features.filter(
+                        function (feature) {
+
+                            return (
+                                feature.properties.school_type ===
+                                "Traditional"
+                            );
+
+                        }
+                    );
+
+
+                var traditionalFeatures =
+                    getUniqueRankedSchools(
+                        traditionalCandidates,
+                        5
+                    );
+
+
+                // --------------------------------------------------------
+                // ALTERNATIVE / PATHWAY SCHOOL CANDIDATES
+                // --------------------------------------------------------
+
+                var alternativeCandidates =
+                    schoolsData.features.filter(
+                        function (feature) {
+
+                            return (
+                                feature.properties.school_type ===
+                                "Alternative/Pathway"
+                            );
+
+                        }
+                    );
+
+
+                var alternativeFeatures =
+                    getUniqueRankedSchools(
+                        alternativeCandidates,
+                        5
+                    );
+
+
+                // --------------------------------------------------------
+                // BUILD FEATURE COLLECTIONS
+                // --------------------------------------------------------
+
+                var traditionalTop5Data = {
+                    type: "FeatureCollection",
+                    features: traditionalFeatures
+                };
+
+
+                var alternativeTop5Data = {
+                    type: "FeatureCollection",
+                    features: alternativeFeatures
+                };
+                // ========================================================
+                // TOP 5 TRADITIONAL SCHOOLS
                 // ========================================================
 
                 var traditionalRank = 0;
 
+
                 var traditionalSchools = L.geoJSON(
-                    traditionalSchoolsData,
+                    traditionalTop5Data,
                     {
 
                         pane: 'topSchoolPane',
@@ -3465,6 +3302,7 @@
                         ) {
 
                             traditionalRank += 1;
+
 
                             var rankIcon = L.divIcon(
                                 {
@@ -3485,6 +3323,7 @@
                                 }
                             );
 
+
                             return L.marker(
                                 latlng,
                                 {
@@ -3501,7 +3340,7 @@
                         ) {
 
                             layer.bindPopup(
-                                createTraditionalSchoolPopup(feature),
+                                createSchoolPopup(feature),
                                 {
                                     pane: 'popupTopPane'
                                 }
@@ -3512,30 +3351,18 @@
                     }
                 );
 
-
                 // ========================================================
-                // ALTERNATIVE SCHOOLS
+                // TOP 5 ALTERNATIVE / PATHWAY SCHOOLS
                 // ========================================================
-                traditionalSchoolsData.features.sort(
-                    function (a, b) {
-                        return Number(b.properties.SRI_SCORE) -
-                            Number(a.properties.SRI_SCORE);
-                    }
-                );
 
-                alternativeSchoolsData.features.sort(
-                    function (a, b) {
-                        return Number(b.properties.SRI_SCORE) -
-                            Number(a.properties.SRI_SCORE);
-                    }
-                );
                 var alternativeRank = 0;
 
+
                 var alternativeSchools = L.geoJSON(
-                    alternativeSchoolsData,
+                    alternativeTop5Data,
                     {
 
-                        pane: 'pointPane',
+                        pane: 'topSchoolPane',
 
                         pointToLayer: function (
                             feature,
@@ -3543,6 +3370,7 @@
                         ) {
 
                             alternativeRank += 1;
+
 
                             var rankIcon = L.divIcon(
                                 {
@@ -3563,6 +3391,7 @@
                                 }
                             );
 
+
                             return L.marker(
                                 latlng,
                                 {
@@ -3579,7 +3408,7 @@
                         ) {
 
                             layer.bindPopup(
-                                createAlternativeSchoolPopup(feature),
+                                createSchoolPopup(feature),
                                 {
                                     pane: 'popupTopPane'
                                 }
