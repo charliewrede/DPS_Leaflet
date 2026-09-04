@@ -2982,6 +2982,16 @@
                             );
 
                         })
+                        .sort(function (a, b) {
+
+                            return (
+                                Number(b.properties.SRI_score) -
+                                Number(a.properties.SRI_score)
+                            );
+
+                        })
+                        .slice(0, 5);
+
 
                 // --------------------------------------------------------
                 // TOP 5 ALTERNATIVE / PATHWAY SCHOOLS
@@ -2998,6 +3008,15 @@
                             );
 
                         })
+                        .sort(function (a, b) {
+
+                            return (
+                                Number(b.properties.SRI_score) -
+                                Number(a.properties.SRI_score)
+                            );
+
+                        })
+                        .slice(0, 5);
 
 
                 // --------------------------------------------------------
