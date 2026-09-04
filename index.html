@@ -35,6 +35,7 @@
         }
 
         .info.legend .legend-section {
+            clear: both;
             margin-top: 10px;
             margin-bottom: 4px;
             font-weight: bold;
@@ -232,6 +233,10 @@
             [39.7392, -104.9903],
             10
         );
+        // Keep popup widths readable
+        L.Popup.mergeOptions({
+            maxWidth: 350
+        });
 
 
         // ============================================================
@@ -3771,6 +3776,30 @@
                                 createParkPopup(feature),
                                 {
                                     pane: 'popupTopPane'
+                                }
+                            );
+                            layer.on(
+                                'mouseover',
+                                function () {
+
+                                    this.setStyle({
+                                        fillOpacity: 0.85,
+                                        weight: 3
+                                    });
+
+                                }
+                            );
+
+
+                            layer.on(
+                                'mouseout',
+                                function () {
+
+                                    this.setStyle({
+                                        fillOpacity: 0.65,
+                                        weight: 2
+                                    });
+
                                 }
                             );
 
