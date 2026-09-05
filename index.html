@@ -1314,6 +1314,254 @@
 
             return popupContent;
         }
+
+        // ============================================================
+        // AFTERSCHOOL PROGRAM POPUP FUNCTION
+        // ============================================================
+
+        function createAfterschoolPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p.Site_Name) {
+                popupContent +=
+                    "<strong>Program Site:</strong> " +
+                    p.Site_Name +
+                    "<br>";
+            }
+
+            if (p.Activity_Category) {
+                popupContent +=
+                    "<strong>Activity Category:</strong> " +
+                    p.Activity_Category +
+                    "<br>";
+            }
+
+            if (p.Organization) {
+                popupContent +=
+                    "<strong>Organization:</strong> " +
+                    p.Organization +
+                    "<br>";
+            }
+
+            if (p.Programs) {
+                popupContent +=
+                    "<strong>Programs:</strong> " +
+                    p.Programs +
+                    "<br>";
+            }
+
+            if (p.Program_Description) {
+                popupContent +=
+                    "<strong>Description:</strong> " +
+                    p.Program_Description +
+                    "<br>";
+            }
+
+            if (p.Cost) {
+                popupContent +=
+                    "<strong>Cost:</strong> " +
+                    p.Cost +
+                    "<br>";
+            }
+
+            if (p.Time_Availability) {
+                popupContent +=
+                    "<strong>When Available:</strong> " +
+                    p.Time_Availability +
+                    "<br>";
+            }
+
+            if (p.Food_Provided) {
+                popupContent +=
+                    "<strong>Food Provided:</strong> " +
+                    p.Food_Provided +
+                    "<br>";
+            }
+
+            if (p.Focus_Areas) {
+                popupContent +=
+                    "<strong>Focus Areas:</strong> " +
+                    p.Focus_Areas +
+                    "<br>";
+            }
+
+            if (p.Address) {
+
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.Address;
+
+                if (p.City) {
+                    popupContent += ", " + p.City;
+                }
+
+                if (p.State) {
+                    popupContent += ", " + p.State;
+                }
+
+                if (p.Zip) {
+                    popupContent += " " + p.Zip;
+                }
+
+                popupContent += "<br>";
+            }
+
+            if (p.Phone) {
+                popupContent +=
+                    "<strong>Phone:</strong> " +
+                    p.Phone +
+                    "<br>";
+            }
+
+            if (p.Email) {
+                popupContent +=
+                    "<strong>Email:</strong> " +
+                    p.Email +
+                    "<br>";
+            }
+
+            if (p.Website) {
+                popupContent +=
+                    '<strong>Website:</strong> ' +
+                    '<a href="' +
+                    p.Website +
+                    '" target="_blank" rel="noopener noreferrer">' +
+                    'View Website' +
+                    '</a><br>';
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+
+
+        // ============================================================
+        // AMPHITHEATER POPUP FUNCTION
+        // ============================================================
+
+        function createAmphitheaterPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p.Name) {
+                popupContent +=
+                    "<strong>Venue:</strong> " +
+                    p.Name +
+                    "<br>";
+            }
+
+            if (p.Type) {
+                popupContent +=
+                    "<strong>Type:</strong> " +
+                    p.Type +
+                    "<br>";
+            }
+
+            if (p.Capacity) {
+                popupContent +=
+                    "<strong>Capacity:</strong> " +
+                    p.Capacity +
+                    "<br>";
+            }
+
+            if (p.Address) {
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.Address +
+                    "<br>";
+            }
+
+            if (p.Phone) {
+                popupContent +=
+                    "<strong>Phone:</strong> " +
+                    p.Phone +
+                    "<br>";
+            }
+
+            if (p.Website) {
+                popupContent +=
+                    '<strong>Website:</strong> ' +
+                    '<a href="' +
+                    p.Website +
+                    '" target="_blank" rel="noopener noreferrer">' +
+                    'View Venue Website' +
+                    '</a><br>';
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+
+
+        // ============================================================
+        // HEALTH FACILITY POPUP FUNCTION
+        // ============================================================
+
+        function createHealthFacilityPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p["Facility Name"]) {
+                popupContent +=
+                    "<strong>Facility Name:</strong> " +
+                    p["Facility Name"] +
+                    "<br>";
+            }
+
+            if (p["Facility Type"]) {
+                popupContent +=
+                    "<strong>Facility Type:</strong> " +
+                    p["Facility Type"] +
+                    "<br>";
+            }
+
+            if (p["Address Full"]) {
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p["Address Full"] +
+                    "<br>";
+            }
+
+            if (p.Telephone) {
+                popupContent +=
+                    "<strong>Telephone:</strong> " +
+                    p.Telephone +
+                    "<br>";
+            }
+
+            if (p["Operating Status"]) {
+                popupContent +=
+                    "<strong>Operating Status:</strong> " +
+                    p["Operating Status"] +
+                    "<br>";
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+
         // ============================================================
         // SVI COLOR FUNCTION
         // ============================================================
@@ -1637,7 +1885,168 @@
                     }
 
                     return response.json();
+                }),
+            // --------------------------------------------------------
+            // YOUTH DEVELOPMENT
+            // --------------------------------------------------------
+
+            fetch('Data/Youth_Development.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Youth_Development.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            // --------------------------------------------------------
+            // SPORTS & FITNESS
+            // --------------------------------------------------------
+
+            fetch('Data/Sports_and_Fitness.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Sports_and_Fitness.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            // --------------------------------------------------------
+            // ARTS & MUSIC
+            // --------------------------------------------------------
+
+            fetch('Data/Arts_and_Music.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Arts_and_Music.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            // --------------------------------------------------------
+            // ACADEMIC & STEM
+            // --------------------------------------------------------
+
+            fetch('Data/Academic_and_STEM.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Academic_and_STEM.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            // --------------------------------------------------------
+            // MENTAL HEALTH & WELLNESS
+            // --------------------------------------------------------
+
+            fetch('Data/Mental_Health_and_Wellness.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Mental_Health_and_Wellness.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            // --------------------------------------------------------
+            // COMMUNITY SERVICES
+            // --------------------------------------------------------
+
+            fetch('Data/Community_Services.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Community_Services.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            // --------------------------------------------------------
+            // EARLY CHILDHOOD
+            // --------------------------------------------------------
+
+            fetch('Data/Early_Childhood.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Early_Childhood.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            // --------------------------------------------------------
+            // AMPHITHEATERS
+            // --------------------------------------------------------
+
+            fetch('Data/Amphitheaters.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Amphitheaters.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            // --------------------------------------------------------
+            // HEALTH FACILITIES
+            // --------------------------------------------------------
+
+            fetch('Data/Health_Facilities.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Health_Facilities.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
                 })
+
         ])
             // ============================================================
             // CREATE LEAFLET LAYERS
@@ -1666,6 +2075,15 @@
                 var swimmingPoolsData = data[9];
                 var librariesData = data[10];
                 var skateparksData = data[11];
+                var youthDevelopmentData = data[12];
+                var sportsFitnessData = data[13];
+                var artsMusicData = data[14];
+                var academicStemData = data[15];
+                var mentalHealthData = data[16];
+                var communityServicesData = data[17];
+                var earlyChildhoodData = data[18];
+                var amphitheatersData = data[19];
+                var healthFacilitiesData = data[20];
 
 
                 console.log(
@@ -2319,6 +2737,56 @@
                     collectPointObstacles(
                         skateparks
                     );
+                    collectPointObstacles(
+                        libraries
+                    );
+
+                    collectPointObstacles(
+                        skateparks
+                    );
+
+                    collectPointObstacles(
+                        youthDevelopment
+                    );
+
+                    collectPointObstacles(
+                        sportsFitness
+                    );
+
+                    collectPointObstacles(
+                        artsMusic
+                    );
+
+                    collectPointObstacles(
+                        academicStem
+                    );
+
+                    collectPointObstacles(
+                        mentalHealthWellness
+                    );
+
+                    collectPointObstacles(
+                        communityServices
+                    );
+
+                    collectPointObstacles(
+                        earlyChildhood
+                    );
+
+                    collectPointObstacles(
+                        amphitheaters
+                    );
+
+                    collectPointObstacles(
+                        healthFacilities
+                    );
+
+
+                    // ====================================================
+                    // TRACK LABELS ALREADY PLACED
+                    // ====================================================
+
+                    var occupiedBoxes = [];
 
 
 
@@ -3569,6 +4037,154 @@
                     }
                 );
 
+
+                // ========================================================
+                // CREATE PROTECTIVE POINT LAYER
+                // ========================================================
+
+                function createProtectivePointLayer(
+                    geojsonData,
+                    fillColor,
+                    popupFunction,
+                    radius
+                ) {
+
+                    return L.geoJSON(
+                        geojsonData,
+                        {
+
+                            pane: 'pointPane',
+
+                            pointToLayer: function (
+                                feature,
+                                latlng
+                            ) {
+
+                                return L.circleMarker(
+                                    latlng,
+                                    {
+                                        pane: 'pointPane',
+                                        radius: radius || 4,
+                                        fillColor: fillColor,
+                                        color: "#FFFFFF",
+                                        weight: 1,
+                                        fillOpacity: 1
+                                    }
+                                );
+
+                            },
+
+                            onEachFeature: function (
+                                feature,
+                                layer
+                            ) {
+
+                                layer.bindPopup(
+                                    popupFunction(feature),
+                                    {
+                                        pane: 'popupTopPane'
+                                    }
+                                );
+
+                            }
+
+                        }
+                    );
+                }
+
+
+                // ========================================================
+                // AFTERSCHOOL PROGRAM LAYERS
+                // ========================================================
+
+                var youthDevelopment =
+                    createProtectivePointLayer(
+                        youthDevelopmentData,
+                        "#1F78B4",
+                        createAfterschoolPopup,
+                        4
+                    );
+
+
+                var sportsFitness =
+                    createProtectivePointLayer(
+                        sportsFitnessData,
+                        "#33A02C",
+                        createAfterschoolPopup,
+                        4
+                    );
+
+
+                var artsMusic =
+                    createProtectivePointLayer(
+                        artsMusicData,
+                        "#E31A1C",
+                        createAfterschoolPopup,
+                        4
+                    );
+
+
+                var academicStem =
+                    createProtectivePointLayer(
+                        academicStemData,
+                        "#6A3D9A",
+                        createAfterschoolPopup,
+                        4
+                    );
+
+
+                var mentalHealthWellness =
+                    createProtectivePointLayer(
+                        mentalHealthData,
+                        "#FF7F00",
+                        createAfterschoolPopup,
+                        4
+                    );
+
+
+                var communityServices =
+                    createProtectivePointLayer(
+                        communityServicesData,
+                        "#B15928",
+                        createAfterschoolPopup,
+                        4
+                    );
+
+
+                var earlyChildhood =
+                    createProtectivePointLayer(
+                        earlyChildhoodData,
+                        "#FB9A99",
+                        createAfterschoolPopup,
+                        4
+                    );
+
+
+                // ========================================================
+                // AMPHITHEATERS
+                // ========================================================
+
+                var amphitheaters =
+                    createProtectivePointLayer(
+                        amphitheatersData,
+                        "#A6CEE3",
+                        createAmphitheaterPopup,
+                        4
+                    );
+
+
+                // ========================================================
+                // HEALTH FACILITIES
+                // ========================================================
+
+                var healthFacilities =
+                    createProtectivePointLayer(
+                        healthFacilitiesData,
+                        "#E7298A",
+                        createHealthFacilityPopup,
+                        4
+                    );
+
                 // ========================================================
                 // ADD INITIAL LAYERS TO MAP
                 // ========================================================
@@ -3640,7 +4256,16 @@
                         "Farmers Markets": farmersMarkets,
                         "Swimming Pools": swimmingPools,
                         "Libraries": libraries,
-                        "Skateparks": skateparks
+                        "Skateparks": skateparks,
+                        "Youth Development": youthDevelopment,
+                        "Sports & Fitness": sportsFitness,
+                        "Arts & Music": artsMusic,
+                        "Academic & STEM": academicStem,
+                        "Mental Health & Wellness": mentalHealthWellness,
+                        "Community Services": communityServices,
+                        "Early Childhood": earlyChildhood,
+                        "Amphitheaters": amphitheaters,
+                        "Health Facilities": healthFacilities
                     },
 
                     {
@@ -3921,7 +4546,16 @@
                         map.hasLayer(farmersMarkets) ||
                         map.hasLayer(swimmingPools) ||
                         map.hasLayer(libraries) ||
-                        map.hasLayer(skateparks);
+                        map.hasLayer(skateparks) ||
+                        map.hasLayer(youthDevelopment) ||
+                        map.hasLayer(sportsFitness) ||
+                        map.hasLayer(artsMusic) ||
+                        map.hasLayer(academicStem) ||
+                        map.hasLayer(mentalHealthWellness) ||
+                        map.hasLayer(communityServices) ||
+                        map.hasLayer(earlyChildhood) ||
+                        map.hasLayer(amphitheaters) ||
+                        map.hasLayer(healthFacilities);
 
                     if (hasProtectiveLayers) {
 
@@ -4020,7 +4654,104 @@
                             'border:1px solid #FFFFFF"></i>' +
                             'Skateparks<br>';
                     }
+                    if (map.hasLayer(skateparks)) {
 
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#555555;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Skateparks<br>';
+                    }
+
+
+                    if (map.hasLayer(youthDevelopment)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#1F78B4;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Youth Development<br>';
+                    }
+
+
+                    if (map.hasLayer(sportsFitness)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#33A02C;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Sports & Fitness<br>';
+                    }
+
+
+                    if (map.hasLayer(artsMusic)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#E31A1C;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Arts & Music<br>';
+                    }
+
+
+                    if (map.hasLayer(academicStem)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#6A3D9A;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Academic & STEM<br>';
+                    }
+
+
+                    if (map.hasLayer(mentalHealthWellness)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#FF7F00;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Mental Health & Wellness<br>';
+                    }
+
+
+                    if (map.hasLayer(communityServices)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#B15928;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Community Services<br>';
+                    }
+
+
+                    if (map.hasLayer(earlyChildhood)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#FB9A99;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Early Childhood<br>';
+                    }
+
+
+                    if (map.hasLayer(amphitheaters)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#A6CEE3;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Amphitheaters<br>';
+                    }
+
+
+                    if (map.hasLayer(healthFacilities)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#E7298A;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Health Facilities<br>';
+                    }
 
                     // ====================================================
                     // CENSUS TRACT BOUNDARY
