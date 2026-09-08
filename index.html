@@ -7,7 +7,7 @@
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.control.layers.tree@1.2.0/L.Control.Layers.Tree.css" />
     <style>
         #map {
             height: 600px;
@@ -254,7 +254,7 @@
     <!-- Leaflet JavaScript -->
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+    <script src="https://unpkg.com/leaflet.control.layers.tree@1.2.0/L.Control.Layers.Tree.js"></script>
 
     <script>
 
@@ -4227,52 +4227,159 @@
                 );
 
 
-                // ========================================================
-                // LAYER CONTROL
-                // ========================================================
+                var baseTree = [
+                    {
+                        label: "OpenStreetMap",
+                        layer: osm
+                    }
+                ];
 
 
-                // ========================================================
-                // LAYER CONTROL
-                // ========================================================
-
-                L.control.layers(
+                var overlayTree = [
 
                     {
-                        "OpenStreetMap": osm
+                        label: "Census Tracts",
+                        layer: censusTracts
                     },
 
                     {
-                        "Census Tracts": censusTracts,
-                        "Five Highest SVI Tracts": fiveHighestCensusTracts,
-                        "County Boundary": countyBoundary,
-                        "Neighborhoods": neighborhoods,
-                        "Schools": schools,
-                        "Traditional Schools": traditionalSchools,
-                        "Alternative Schools": alternativeSchools,
-                        "Parks": parks,
-                        "Recreation Centers": recreationCenters,
-                        "SUD Facilities": sudFacilities,
-                        "Farmers Markets": farmersMarkets,
-                        "Swimming Pools": swimmingPools,
-                        "Libraries": libraries,
-                        "Skateparks": skateparks,
-                        "Youth Development": youthDevelopment,
-                        "Sports & Fitness": sportsFitness,
-                        "Arts & Music": artsMusic,
-                        "Academic & STEM": academicStem,
-                        "Mental Health & Wellness": mentalHealthWellness,
-                        "Community Services": communityServices,
-                        "Early Childhood": earlyChildhood,
-                        "Amphitheaters": amphitheaters,
-                        "Health Facilities": healthFacilities
+                        label: "Five Highest SVI Tracts",
+                        layer: fiveHighestCensusTracts
                     },
 
                     {
-                        position: 'topleft',
-                        collapsed: false
+                        label: "County Boundary",
+                        layer: countyBoundary
+                    },
+
+                    {
+                        label: "Neighborhoods",
+                        layer: neighborhoods
+                    },
+
+                    {
+                        label: "Schools",
+                        layer: schools
+                    },
+
+                    {
+                        label: "Traditional Schools",
+                        layer: traditionalSchools
+                    },
+
+                    {
+                        label: "Alternative Schools",
+                        layer: alternativeSchools
+                    },
+
+                    {
+                        label: "Parks",
+                        layer: parks
+                    },
+
+                    {
+                        label: "Recreation Centers",
+                        layer: recreationCenters
+                    },
+
+                    {
+                        label: "SUD Facilities",
+                        layer: sudFacilities
+                    },
+
+                    {
+                        label: "Farmers Markets",
+                        layer: farmersMarkets
+                    },
+
+                    {
+                        label: "Swimming Pools",
+                        layer: swimmingPools
+                    },
+
+                    {
+                        label: "Libraries",
+                        layer: libraries
+                    },
+
+                    {
+                        label: "Skateparks",
+                        layer: skateparks
+                    },
+
+                    {
+                        label: "Afterschool Programs",
+
+                        selectAllCheckbox:
+                            "Toggle all Afterschool Programs",
+
+                        collapsed: true,
+
+                        children: [
+
+                            {
+                                label: "Youth Development",
+                                layer: youthDevelopment
+                            },
+
+                            {
+                                label: "Sports & Fitness",
+                                layer: sportsFitness
+                            },
+
+                            {
+                                label: "Arts & Music",
+                                layer: artsMusic
+                            },
+
+                            {
+                                label: "Academic & STEM",
+                                layer: academicStem
+                            },
+
+                            {
+                                label: "Mental Health & Wellness",
+                                layer: mentalHealthWellness
+                            },
+
+                            {
+                                label: "Community Services",
+                                layer: communityServices
+                            },
+
+                            {
+                                label: "Early Childhood",
+                                layer: earlyChildhood
+                            }
+
+                        ]
+                    },
+
+                    {
+                        label: "Amphitheaters",
+                        layer: amphitheaters
+                    },
+
+                    {
+                        label: "Health Facilities",
+                        layer: healthFacilities
                     }
 
+                ];
+
+
+                L.control.layers.tree(
+                    baseTree,
+                    overlayTree,
+                    {
+                        position: "topleft",
+                        collapsed: false,
+
+                        closedSymbol: "+",
+                        openedSymbol: "−",
+
+                        labelIsSelector: "both"
+                    }
                 ).addTo(map);
 
                 // ========================================================
