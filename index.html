@@ -27,6 +27,7 @@
             color: #333;
             max-height: 550px;
             overflow-y: auto;
+            overscroll-behavior: contain;
         }
 
         .info.legend h4 {
@@ -4880,6 +4881,10 @@
 
 
                 legend.addTo(map);
+
+                L.DomEvent.disableScrollPropagation(
+                    legend.getContainer()
+                );
 
 
                 // ========================================================
