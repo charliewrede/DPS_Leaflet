@@ -3,14 +3,30 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Denver Social Vulnerability Map</title>
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.control.layers.tree@1.2.0/L.Control.Layers.Tree.css" />
     <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
         #map {
-            height: 600px;
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            margin: 0;
+            padding: 0;
         }
 
         /* ============================================================
@@ -5250,6 +5266,14 @@
                             'border:1px solid #FFFFFF"></i>' +
                             'Skateparks<br>';
                     }
+                    if (map.hasLayer(amphitheaters)) {
+
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#A6CEE3;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Amphitheaters<br>';
+                    }
 
 
                     // ====================================================
@@ -5392,14 +5416,6 @@
                             '</div>';
                     }
 
-                    if (map.hasLayer(amphitheaters)) {
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="background:#A6CEE3;' +
-                            'border:1px solid #FFFFFF"></i>' +
-                            'Amphitheaters<br>';
-                    }
                     // ====================================================
                     // RECREATION COURT SURFACES
                     // ====================================================
