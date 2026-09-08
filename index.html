@@ -1506,7 +1506,93 @@
 
             return popupContent;
         }
+        // ============================================================
+        // RECREATION COURT POPUP FUNCTION
+        // ============================================================
 
+        function createCourtPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+
+            if (p.LOCATION) {
+
+                popupContent +=
+                    "<strong>Location:</strong> " +
+                    p.LOCATION +
+                    "<br>";
+            }
+
+
+            if (p.FEATURE) {
+
+                var featureName = p.FEATURE;
+
+                if (featureName === "Futsol Court") {
+                    featureName = "Futsal Court";
+                }
+
+                popupContent +=
+                    "<strong>Court Type:</strong> " +
+                    featureName +
+                    "<br>";
+            }
+
+
+            if (
+                p.COURT_NUM !== null &&
+                p.COURT_NUM !== undefined &&
+                p.COURT_NUM !== ""
+            ) {
+
+                popupContent +=
+                    "<strong>Court Number:</strong> " +
+                    p.COURT_NUM +
+                    "<br>";
+            }
+
+
+            if (p.SURFACE_TYPE) {
+
+                popupContent +=
+                    "<strong>Surface:</strong> " +
+                    p.SURFACE_TYPE +
+                    "<br>";
+            }
+
+
+            if (p.LIGHTS) {
+
+                popupContent +=
+                    "<strong>Lights:</strong> " +
+                    p.LIGHTS +
+                    "<br>";
+            }
+
+
+            if (
+                p.YEAR_BUILT !== null &&
+                p.YEAR_BUILT !== undefined &&
+                p.YEAR_BUILT !== ""
+            ) {
+
+                popupContent +=
+                    "<strong>Year Built:</strong> " +
+                    p.YEAR_BUILT +
+                    "<br>";
+            }
+
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
 
         // ============================================================
         // HEALTH FACILITY POPUP FUNCTION
@@ -1522,40 +1608,110 @@
 
             var popupContent = "<div>";
 
+
             if (p["Facility Name"]) {
+
                 popupContent +=
                     "<strong>Facility Name:</strong> " +
                     p["Facility Name"] +
                     "<br>";
             }
 
+
             if (p["Facility Type"]) {
+
                 popupContent +=
                     "<strong>Facility Type:</strong> " +
                     p["Facility Type"] +
                     "<br>";
             }
 
+
+            if (p["Map Symbol"]) {
+
+                popupContent +=
+                    "<strong>Health Service Category:</strong> " +
+                    p["Map Symbol"] +
+                    "<br>";
+            }
+
+
+            if (p["Facility Type Detail"]) {
+
+                var detail =
+                    p["Facility Type Detail"];
+
+                var detailDisplay = detail;
+
+                if (detail === "MEDICARE") {
+                    detailDisplay = "Medicare";
+                }
+
+                else if (detail === "MEDICAID") {
+                    detailDisplay = "Medicaid";
+                }
+
+                else if (detail === "MEDICARE/MEDICAID") {
+                    detailDisplay = "Medicare & Medicaid";
+                }
+
+                popupContent +=
+                    "<strong>Certification / Program:</strong> " +
+                    detailDisplay +
+                    "<br>";
+            }
+
+
             if (p["Address Full"]) {
+
                 popupContent +=
                     "<strong>Address:</strong> " +
                     p["Address Full"] +
                     "<br>";
             }
 
+
             if (p.Telephone) {
+
                 popupContent +=
                     "<strong>Telephone:</strong> " +
                     p.Telephone +
                     "<br>";
             }
 
+
+            if (
+                p["Licensed Beds Total"] !== null &&
+                p["Licensed Beds Total"] !== undefined &&
+                p["Licensed Beds Total"] !== "" &&
+                p["Licensed Beds Total"] !== false &&
+                Number(p["Licensed Beds Total"]) > 0
+            ) {
+
+                popupContent +=
+                    "<strong>Licensed Beds:</strong> " +
+                    p["Licensed Beds Total"] +
+                    "<br>";
+            }
+
+
+            if (p["CDPHE HFEMS Licensed"]) {
+
+                popupContent +=
+                    "<strong>License Status:</strong> " +
+                    p["CDPHE HFEMS Licensed"] +
+                    "<br>";
+            }
+
+
             if (p["Operating Status"]) {
+
                 popupContent +=
                     "<strong>Operating Status:</strong> " +
                     p["Operating Status"] +
                     "<br>";
             }
+
 
             popupContent += "</div>";
 
@@ -2045,6 +2201,128 @@
                     }
 
                     return response.json();
+                }),
+            fetch('Data/Basketball_Courts.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Basketball_Courts.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            fetch('Data/Tennis_Racquet_Courts.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Tennis_Racquet_Courts.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            fetch('Data/Pickleball.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Pickleball.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            fetch('Data/Other_Courts_and_Recreation.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Other_Courts_and_Recreation.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+            fetch('Data/Hospitals.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Hospitals.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            fetch('Data/Federally_Qualified_Health_Centers.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Federally_Qualified_Health_Centers.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            fetch('Data/Medicaid_Certified_or_Dual.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Medicaid_Certified_or_Dual.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            fetch('Data/Medicare_Certified_or_Dual.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Medicare_Certified_or_Dual.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            fetch('Data/Medicaid_Medicare_Dual.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Medicaid_Medicare_Dual.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
                 })
 
         ])
@@ -2084,6 +2362,16 @@
                 var earlyChildhoodData = data[18];
                 var amphitheatersData = data[19];
                 var healthFacilitiesData = data[20];
+                var basketballCourtsData = data[21];
+                var tennisRacquetCourtsData = data[22];
+                var pickleballCourtsData = data[23];
+                var otherCourtsData = data[24];
+
+                var hospitalsData = data[25];
+                var fqhcData = data[26];
+                var medicaidCertifiedData = data[27];
+                var medicareCertifiedData = data[28];
+                var medicaidMedicareDualData = data[29];
 
 
                 console.log(
@@ -2779,6 +3067,45 @@
 
                     collectPointObstacles(
                         healthFacilities
+                    );
+                    collectPointObstacles(
+                        basketballCourts
+                    );
+
+                    collectPointObstacles(
+                        tennisRacquetCourts
+                    );
+
+                    collectPointObstacles(
+                        pickleballCourts
+                    );
+
+                    collectPointObstacles(
+                        otherCourts
+                    );
+
+                    collectPointObstacles(
+                        healthFacilities
+                    );
+
+                    collectPointObstacles(
+                        hospitals
+                    );
+
+                    collectPointObstacles(
+                        federallyQualifiedHealthCenters
+                    );
+
+                    collectPointObstacles(
+                        medicaidCertified
+                    );
+
+                    collectPointObstacles(
+                        medicareCertified
+                    );
+
+                    collectPointObstacles(
+                        medicaidMedicareDual
                     );
 
 
@@ -4171,7 +4498,44 @@
                         createAmphitheaterPopup,
                         4
                     );
+                // ========================================================
+                // RECREATION COURT SURFACES
+                // ========================================================
 
+                var basketballCourts =
+                    createProtectivePointLayer(
+                        basketballCourtsData,
+                        "#D95F02",
+                        createCourtPopup,
+                        4
+                    );
+
+
+                var tennisRacquetCourts =
+                    createProtectivePointLayer(
+                        tennisRacquetCourtsData,
+                        "#1B9E77",
+                        createCourtPopup,
+                        4
+                    );
+
+
+                var pickleballCourts =
+                    createProtectivePointLayer(
+                        pickleballCourtsData,
+                        "#7570B3",
+                        createCourtPopup,
+                        4
+                    );
+
+
+                var otherCourts =
+                    createProtectivePointLayer(
+                        otherCourtsData,
+                        "#666666",
+                        createCourtPopup,
+                        4
+                    );
 
                 // ========================================================
                 // HEALTH FACILITIES
@@ -4181,6 +4545,54 @@
                     createProtectivePointLayer(
                         healthFacilitiesData,
                         "#E7298A",
+                        createHealthFacilityPopup,
+                        4
+                    );
+
+                // ========================================================
+                // HEALTH FACILITY SUBLAYERS
+                // ========================================================
+
+                var hospitals =
+                    createProtectivePointLayer(
+                        hospitalsData,
+                        "#C51B7D",
+                        createHealthFacilityPopup,
+                        4
+                    );
+
+
+                var federallyQualifiedHealthCenters =
+                    createProtectivePointLayer(
+                        fqhcData,
+                        "#E66101",
+                        createHealthFacilityPopup,
+                        4
+                    );
+
+
+                var medicaidCertified =
+                    createProtectivePointLayer(
+                        medicaidCertifiedData,
+                        "#1B9E77",
+                        createHealthFacilityPopup,
+                        4
+                    );
+
+
+                var medicareCertified =
+                    createProtectivePointLayer(
+                        medicareCertifiedData,
+                        "#7570B3",
+                        createHealthFacilityPopup,
+                        4
+                    );
+
+
+                var medicaidMedicareDual =
+                    createProtectivePointLayer(
+                        medicaidMedicareDualData,
+                        "#D95F02",
                         createHealthFacilityPopup,
                         4
                     );
@@ -4306,6 +4718,42 @@
                         label: "Skateparks",
                         layer: skateparks
                     },
+                    {
+                        label: "Amphitheaters",
+                        layer: amphitheaters
+                    },
+                    {
+                        label: "Recreation Court Surfaces",
+
+                        selectAllCheckbox:
+                            "Toggle all Recreation Court Surfaces",
+
+                        collapsed: true,
+
+                        children: [
+
+                            {
+                                label: "Basketball Courts",
+                                layer: basketballCourts
+                            },
+
+                            {
+                                label: "Tennis & Racquet Courts",
+                                layer: tennisRacquetCourts
+                            },
+
+                            {
+                                label: "Pickleball Courts",
+                                layer: pickleballCourts
+                            },
+
+                            {
+                                label: "Other Courts & Recreation",
+                                layer: otherCourts
+                            }
+
+                        ]
+                    },
 
                     {
                         label: "Afterschool Programs",
@@ -4356,15 +4804,44 @@
                     },
 
                     {
-                        label: "Amphitheaters",
-                        layer: amphitheaters
-                    },
-
-                    {
                         label: "Health Facilities",
-                        layer: healthFacilities
-                    }
 
+                        collapsed: true,
+
+                        children: [
+
+                            {
+                                label: "All Health Facilities",
+                                layer: healthFacilities
+                            },
+
+                            {
+                                label: "Hospitals",
+                                layer: hospitals
+                            },
+
+                            {
+                                label: "Federally Qualified Health Centers",
+                                layer: federallyQualifiedHealthCenters
+                            },
+
+                            {
+                                label: "Medicaid Certified",
+                                layer: medicaidCertified
+                            },
+
+                            {
+                                label: "Medicare Certified",
+                                layer: medicareCertified
+                            },
+
+                            {
+                                label: "Medicare & Medicaid",
+                                layer: medicaidMedicareDual
+                            }
+
+                        ]
+                    }
                 ];
 
 
@@ -4645,7 +5122,6 @@
                     // PROTECTIVE LAYERS
                     // Show heading if ANY protective layer is active
                     // ====================================================
-
                     var hasProtectiveLayers =
                         map.hasLayer(parks) ||
                         map.hasLayer(recreationCenters) ||
@@ -4662,7 +5138,16 @@
                         map.hasLayer(communityServices) ||
                         map.hasLayer(earlyChildhood) ||
                         map.hasLayer(amphitheaters) ||
-                        map.hasLayer(healthFacilities);
+                        map.hasLayer(basketballCourts) ||
+                        map.hasLayer(tennisRacquetCourts) ||
+                        map.hasLayer(pickleballCourts) ||
+                        map.hasLayer(otherCourts) ||
+                        map.hasLayer(healthFacilities) ||
+                        map.hasLayer(hospitals) ||
+                        map.hasLayer(federallyQualifiedHealthCenters) ||
+                        map.hasLayer(medicaidCertified) ||
+                        map.hasLayer(medicareCertified) ||
+                        map.hasLayer(medicaidMedicareDual);
 
                     if (hasProtectiveLayers) {
 
@@ -4752,15 +5237,6 @@
                             'Libraries<br>';
                     }
 
-
-                    if (map.hasLayer(skateparks)) {
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="background:#555555;' +
-                            'border:1px solid #FFFFFF"></i>' +
-                            'Skateparks<br>';
-                    }
                     if (map.hasLayer(skateparks)) {
 
                         div.innerHTML +=
@@ -4919,15 +5395,174 @@
                             'border:1px solid #FFFFFF"></i>' +
                             'Amphitheaters<br>';
                     }
+                    // ====================================================
+                    // RECREATION COURT SURFACES
+                    // ====================================================
+
+                    var hasRecreationCourts =
+                        map.hasLayer(basketballCourts) ||
+                        map.hasLayer(tennisRacquetCourts) ||
+                        map.hasLayer(pickleballCourts) ||
+                        map.hasLayer(otherCourts);
+
+
+                    if (hasRecreationCourts) {
+
+                        div.innerHTML +=
+                            '<div style="' +
+                            'font-weight:bold;' +
+                            'margin-top:6px;' +
+                            'margin-bottom:2px;' +
+                            'padding-left:4px;' +
+                            '">' +
+                            'Recreation Court Surfaces' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(basketballCourts)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#D95F02;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Basketball Courts' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(tennisRacquetCourts)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#1B9E77;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Tennis & Racquet Courts' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(pickleballCourts)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#7570B3;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Pickleball Courts' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(otherCourts)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#666666;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Other Courts & Recreation' +
+                            '</div>';
+                    }
+
+                    // ====================================================
+                    // HEALTH FACILITIES
+                    // ====================================================
+
+                    var hasHealthFacilities =
+                        map.hasLayer(healthFacilities) ||
+                        map.hasLayer(hospitals) ||
+                        map.hasLayer(federallyQualifiedHealthCenters) ||
+                        map.hasLayer(medicaidCertified) ||
+                        map.hasLayer(medicareCertified) ||
+                        map.hasLayer(medicaidMedicareDual);
+
+
+                    if (hasHealthFacilities) {
+
+                        div.innerHTML +=
+                            '<div style="' +
+                            'font-weight:bold;' +
+                            'margin-top:6px;' +
+                            'margin-bottom:2px;' +
+                            'padding-left:4px;' +
+                            '">' +
+                            'Health Facilities' +
+                            '</div>';
+                    }
 
 
                     if (map.hasLayer(healthFacilities)) {
 
                         div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
                             '<i class="circle-symbol" ' +
                             'style="background:#E7298A;' +
                             'border:1px solid #FFFFFF"></i>' +
-                            'Health Facilities<br>';
+                            'All Health Facilities' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(hospitals)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#C51B7D;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Hospitals' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(federallyQualifiedHealthCenters)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#E66101;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Federally Qualified Health Centers' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(medicaidCertified)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#1B9E77;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Medicaid Certified' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(medicareCertified)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#7570B3;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Medicare Certified' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(medicaidMedicareDual)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#D95F02;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Medicare & Medicaid' +
+                            '</div>';
                     }
 
                     // ====================================================
