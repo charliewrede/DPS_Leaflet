@@ -4771,75 +4771,145 @@
                     }
 
 
+                    // ====================================================
+                    // AFTERSCHOOL PROGRAMS
+                    // Show heading if ANY afterschool sublayer is active
+                    // ====================================================
+
+                    var hasAfterschoolPrograms =
+                        map.hasLayer(youthDevelopment) ||
+                        map.hasLayer(sportsFitness) ||
+                        map.hasLayer(artsMusic) ||
+                        map.hasLayer(academicStem) ||
+                        map.hasLayer(mentalHealthWellness) ||
+                        map.hasLayer(communityServices) ||
+                        map.hasLayer(earlyChildhood);
+
+
+                    if (hasAfterschoolPrograms) {
+
+                        div.innerHTML +=
+                            '<div style="' +
+                            'font-weight:bold;' +
+                            'margin-top:6px;' +
+                            'margin-bottom:2px;' +
+                            'padding-left:4px;' +
+                            '">' +
+                            'Afterschool Programs' +
+                            '</div>';
+                    }
+
+
+                    // ----------------------------------------------------
+                    // YOUTH DEVELOPMENT
+                    // ----------------------------------------------------
+
                     if (map.hasLayer(youthDevelopment)) {
 
                         div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
                             '<i class="circle-symbol" ' +
                             'style="background:#1F78B4;' +
                             'border:1px solid #FFFFFF"></i>' +
-                            'Youth Development<br>';
+                            'Youth Development' +
+                            '</div>';
                     }
 
+
+                    // ----------------------------------------------------
+                    // SPORTS & FITNESS
+                    // ----------------------------------------------------
 
                     if (map.hasLayer(sportsFitness)) {
 
                         div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
                             '<i class="circle-symbol" ' +
                             'style="background:#33A02C;' +
                             'border:1px solid #FFFFFF"></i>' +
-                            'Sports & Fitness<br>';
+                            'Sports & Fitness' +
+                            '</div>';
                     }
 
+
+                    // ----------------------------------------------------
+                    // ARTS & MUSIC
+                    // ----------------------------------------------------
 
                     if (map.hasLayer(artsMusic)) {
 
                         div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
                             '<i class="circle-symbol" ' +
                             'style="background:#E31A1C;' +
                             'border:1px solid #FFFFFF"></i>' +
-                            'Arts & Music<br>';
+                            'Arts & Music' +
+                            '</div>';
                     }
 
+
+                    // ----------------------------------------------------
+                    // ACADEMIC & STEM
+                    // ----------------------------------------------------
 
                     if (map.hasLayer(academicStem)) {
 
                         div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
                             '<i class="circle-symbol" ' +
                             'style="background:#6A3D9A;' +
                             'border:1px solid #FFFFFF"></i>' +
-                            'Academic & STEM<br>';
+                            'Academic & STEM' +
+                            '</div>';
                     }
 
+
+                    // ----------------------------------------------------
+                    // MENTAL HEALTH & WELLNESS
+                    // ----------------------------------------------------
 
                     if (map.hasLayer(mentalHealthWellness)) {
 
                         div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
                             '<i class="circle-symbol" ' +
                             'style="background:#FF7F00;' +
                             'border:1px solid #FFFFFF"></i>' +
-                            'Mental Health & Wellness<br>';
+                            'Mental Health & Wellness' +
+                            '</div>';
                     }
 
+
+                    // ----------------------------------------------------
+                    // COMMUNITY SERVICES
+                    // ----------------------------------------------------
 
                     if (map.hasLayer(communityServices)) {
 
                         div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
                             '<i class="circle-symbol" ' +
                             'style="background:#B15928;' +
                             'border:1px solid #FFFFFF"></i>' +
-                            'Community Services<br>';
+                            'Community Services' +
+                            '</div>';
                     }
 
+
+                    // ----------------------------------------------------
+                    // EARLY CHILDHOOD
+                    // ----------------------------------------------------
 
                     if (map.hasLayer(earlyChildhood)) {
 
                         div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
                             '<i class="circle-symbol" ' +
                             'style="background:#FB9A99;' +
                             'border:1px solid #FFFFFF"></i>' +
-                            'Early Childhood<br>';
+                            'Early Childhood' +
+                            '</div>';
                     }
-
 
                     if (map.hasLayer(amphitheaters)) {
 
