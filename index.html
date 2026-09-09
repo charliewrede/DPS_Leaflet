@@ -75,6 +75,21 @@ LAYER CONTROL
             font-weight: bold;
         }
 
+        .layer-toggle-fixed {
+            position: fixed !important;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+
+
+        .legend-toggle-fixed {
+            position: fixed !important;
+            right: 10px;
+            bottom: 10px;
+            z-index: 1000;
+        }
+
 
         .toggle-switch {
             position: relative;
@@ -5470,7 +5485,7 @@ LAYER CONTROL
                     );
                 var layerToggleControl =
                     L.control({
-                        position: 'topleft'
+                        position: 'topright'
                     });
 
 
