@@ -2912,7 +2912,199 @@ LAYER CONTROL
                     schoolsData.features.length
                 );
 
+                // ========================================================
+                // UNIVERSAL HOVER RESPONSE
+                // Applies hover interaction to non-boundary layers
+                // ========================================================
 
+                function addHoverResponse(layerGroup) {
+
+                    if (!layerGroup) {
+                        return;
+                    }
+
+
+                    layerGroup.eachLayer(function (layer) {
+
+                        // ====================================================
+                        // CIRCLE MARKERS / VECTOR POINTS
+                        // ====================================================
+
+                        if (
+                            typeof layer.setRadius === "function" &&
+                            typeof layer.getRadius === "function"
+                        ) {
+
+                            var originalRadius =
+                                layer.getRadius();
+
+
+                            layer.on(
+                                'mouseover',
+                                function () {
+
+                                    this.setRadius(
+                                        originalRadius + 2
+                                    );
+
+                                    this.setStyle({
+                                        weight: 2
+                                    });
+
+                                    if (this.bringToFront) {
+                                        this.bringToFront();
+                                    }
+
+                                }
+                            );
+
+
+                            layer.on(
+                                'mouseout',
+                                function () {
+
+                                    this.setRadius(
+                                        originalRadius
+                                    );
+
+                                    this.setStyle({
+                                        weight: 1
+                                    });
+
+                                }
+                            );
+
+                            return;
+                        }
+
+
+                        // ====================================================
+                        // POLYGON / PATH FEATURES
+                        // ====================================================
+
+                        if (
+                            typeof layer.setStyle === "function" &&
+                            layer.options
+                        ) {
+
+                            var originalWeight =
+                                layer.options.weight;
+
+                            var originalFillOpacity =
+                                layer.options.fillOpacity;
+
+
+                            layer.on(
+                                'mouseover',
+                                function () {
+
+                                    this.setStyle({
+
+                                        weight:
+                                            Math.max(
+                                                Number(originalWeight) || 1,
+                                                1
+                                            ) + 1,
+
+                                        fillOpacity:
+                                            originalFillOpacity !== undefined
+                                                ? Math.min(
+                                                    Number(originalFillOpacity) + 0.2,
+                                                    1
+                                                )
+                                                : undefined
+
+                                    });
+
+
+                                    if (this.bringToFront) {
+                                        this.bringToFront();
+                                    }
+
+                                }
+                            );
+
+
+                            layer.on(
+                                'mouseout',
+                                function () {
+
+                                    this.setStyle({
+
+                                        weight:
+                                            originalWeight,
+
+                                        fillOpacity:
+                                            originalFillOpacity
+
+                                    });
+
+                                }
+                            );
+
+                            return;
+                        }
+
+
+                        // ====================================================
+                        // STANDARD LEAFLET MARKERS / DIV ICONS
+                        // Includes Top 5 school markers
+                        // ====================================================
+
+                        if (
+                            typeof layer.getElement === "function"
+                        ) {
+
+                            layer.on(
+                                'mouseover',
+                                function () {
+
+                                    var el =
+                                        this.getElement();
+
+                                    if (el) {
+
+                                        el.style.transformOrigin =
+                                            'center center';
+
+                                        el.style.transform +=
+                                            ' scale(1.15)';
+
+                                        el.style.transition =
+                                            'transform 0.12s ease';
+
+                                    }
+
+                                }
+                            );
+
+
+                            layer.on(
+                                'mouseout',
+                                function () {
+
+                                    var el =
+                                        this.getElement();
+
+                                    if (el) {
+
+                                        el.style.transform =
+                                            el.style.transform
+                                                .replace(
+                                                    ' scale(1.15)',
+                                                    ''
+                                                );
+
+                                    }
+
+                                }
+                            );
+
+                        }
+
+                    });
+
+                }
                 // ========================================================
                 // CENSUS TRACTS
                 // ========================================================
@@ -4727,30 +4919,7 @@ LAYER CONTROL
                                     pane: 'popupTopPane'
                                 }
                             );
-                            layer.on(
-                                'mouseover',
-                                function () {
 
-                                    this.setStyle({
-                                        fillOpacity: 0.85,
-                                        weight: 3
-                                    });
-
-                                }
-                            );
-
-
-                            layer.on(
-                                'mouseout',
-                                function () {
-
-                                    this.setStyle({
-                                        fillOpacity: 0.65,
-                                        weight: 2
-                                    });
-
-                                }
-                            );
 
                         }
 
@@ -5169,7 +5338,137 @@ LAYER CONTROL
                     );
 
 
+                // ========================================================
+                // APPLY HOVER RESPONSE TO ALL NON-BOUNDARY LAYERS
+                // ========================================================
 
+                addHoverResponse(
+                    censusTracts
+                );
+
+                addHoverResponse(
+                    fiveHighestCensusTracts
+                );
+
+                addHoverResponse(
+                    schools
+                );
+
+                addHoverResponse(
+                    traditionalSchools
+                );
+
+                addHoverResponse(
+                    alternativeSchools
+                );
+
+                addHoverResponse(
+                    parks
+                );
+
+                addHoverResponse(
+                    recreationCenters
+                );
+
+                addHoverResponse(
+                    privateRecreationCenters
+                );
+
+                addHoverResponse(
+                    sudFacilities
+                );
+
+                addHoverResponse(
+                    farmersMarkets
+                );
+
+                addHoverResponse(
+                    groceryStores
+                );
+
+                addHoverResponse(
+                    foodAssistance
+                );
+
+                addHoverResponse(
+                    swimmingPools
+                );
+
+                addHoverResponse(
+                    libraries
+                );
+
+                addHoverResponse(
+                    skateparks
+                );
+
+                addHoverResponse(
+                    amphitheaters
+                );
+
+                addHoverResponse(
+                    artCulturalCenters
+                );
+
+                addHoverResponse(
+                    basketballCourts
+                );
+
+                addHoverResponse(
+                    tennisRacquetCourts
+                );
+
+                addHoverResponse(
+                    pickleballCourts
+                );
+
+                addHoverResponse(
+                    otherCourts
+                );
+
+                addHoverResponse(
+                    youthDevelopment
+                );
+
+                addHoverResponse(
+                    sportsFitness
+                );
+
+                addHoverResponse(
+                    artsMusic
+                );
+
+                addHoverResponse(
+                    academicStem
+                );
+
+                addHoverResponse(
+                    mentalHealthWellness
+                );
+
+                addHoverResponse(
+                    communityServices
+                );
+
+                addHoverResponse(
+                    earlyChildhood
+                );
+
+                addHoverResponse(
+                    healthFacilities
+                );
+
+                addHoverResponse(
+                    hospitals
+                );
+
+                addHoverResponse(
+                    federallyQualifiedHealthCenters
+                );
+
+                addHoverResponse(
+                    schoolBasedHealthCenters
+                );
 
                 // ========================================================
                 // ADD INITIAL LAYERS TO MAP
