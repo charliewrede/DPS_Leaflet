@@ -5466,23 +5466,38 @@ LAYER CONTROL
                 ];
 
 
-                L.control.layers.tree(
-                    baseTree,
-                    overlayTree,
-                    {
-                        position: "topleft",
-                        collapsed: false,
+                var layerTreeControl =
+                    L.control.layers.tree(
+                        baseTree,
+                        overlayTree,
+                        {
+                            position: "topleft",
+                            collapsed: false,
 
-                        closedSymbol: "+",
-                        openedSymbol: "−",
+                            closedSymbol: "+",
+                            openedSymbol: "−",
 
-                        labelIsSelector: "both"
-                    }
-                ).addTo(map);
-                var layerControlContainer =
-                    document.querySelector(
-                        '.leaflet-control-layers'
+                            labelIsSelector: "both"
+                        }
                     );
+
+
+                layerTreeControl.addTo(map);
+
+
+                var layerControlContainer =
+                    layerTreeControl.getContainer();
+
+
+                L.DomEvent.disableScrollPropagation(
+                    layerControlContainer
+                );
+
+
+                // ========================================================
+                // LAYER CONTROL TOGGLE
+                // ========================================================
+
                 var layerToggleControl =
                     L.control({
                         position: 'topright'
@@ -5494,7 +5509,7 @@ LAYER CONTROL
                     var container =
                         L.DomUtil.create(
                             'div',
-                            'control-toggle-switch'
+                            'control-toggle-switch layer-toggle-fixed'
                         );
 
 
@@ -5525,10 +5540,31 @@ LAYER CONTROL
                         'change',
                         function () {
 
-                            layerControlContainer.style.display =
-                                checkbox.checked
-                                    ? ''
-                                    : 'none';
+                            if (checkbox.checked) {
+
+                                layerControlContainer.style.visibility =
+                                    'visible';
+
+                                layerControlContainer.style.opacity =
+                                    '1';
+
+                                layerControlContainer.style.pointerEvents =
+                                    'auto';
+
+                            }
+
+                            else {
+
+                                layerControlContainer.style.visibility =
+                                    'hidden';
+
+                                layerControlContainer.style.opacity =
+                                    '0';
+
+                                layerControlContainer.style.pointerEvents =
+                                    'none';
+
+                            }
 
                         }
                     );
@@ -5584,7 +5620,7 @@ LAYER CONTROL
                     var container =
                         L.DomUtil.create(
                             'div',
-                            'control-toggle-switch'
+                            'control-toggle-switch legend-toggle-fixed'
                         );
 
 
@@ -5615,10 +5651,35 @@ LAYER CONTROL
                         'change',
                         function () {
 
-                            legend.getContainer().style.display =
-                                checkbox.checked
-                                    ? ''
-                                    : 'none';
+                            var legendContainer =
+                                legend.getContainer();
+
+
+                            if (checkbox.checked) {
+
+                                legendContainer.style.visibility =
+                                    'visible';
+
+                                legendContainer.style.opacity =
+                                    '1';
+
+                                legendContainer.style.pointerEvents =
+                                    'auto';
+
+                            }
+
+                            else {
+
+                                legendContainer.style.visibility =
+                                    'hidden';
+
+                                legendContainer.style.opacity =
+                                    '0';
+
+                                legendContainer.style.pointerEvents =
+                                    'none';
+
+                            }
 
                         }
                     );
