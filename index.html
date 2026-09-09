@@ -1534,6 +1534,382 @@ LAYER CONTROL
             return popupContent;
         }
         // ============================================================
+        // PRIVATE RECREATION CENTER POPUP
+        // ============================================================
+
+        function createPrivateRecreationPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p.Name) {
+                popupContent +=
+                    "<strong>Recreation Center:</strong> " +
+                    p.Name +
+                    "<br>";
+            }
+
+            if (p.Facility_Type) {
+                popupContent +=
+                    "<strong>Facility Type:</strong> " +
+                    p.Facility_Type +
+                    "<br>";
+            }
+
+            if (p.Address) {
+
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.Address;
+
+                if (p.City) {
+                    popupContent += ", " + p.City;
+                }
+
+                if (p.State) {
+                    popupContent += ", " + p.State;
+                }
+
+                if (p.Zip) {
+                    popupContent += " " + p.Zip;
+                }
+
+                popupContent += "<br>";
+            }
+
+            if (p.Phone) {
+                popupContent +=
+                    "<strong>Phone:</strong> " +
+                    p.Phone +
+                    "<br>";
+            }
+
+            if (p.Amenities_Programs) {
+                popupContent +=
+                    "<strong>Amenities & Programs:</strong> " +
+                    p.Amenities_Programs +
+                    "<br>";
+            }
+
+            if (p.Website) {
+                popupContent +=
+                    '<strong>Website:</strong> ' +
+                    '<a href="' +
+                    p.Website +
+                    '" target="_blank" rel="noopener noreferrer">' +
+                    'View Website' +
+                    '</a><br>';
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+
+
+        // ============================================================
+        // ART & CULTURAL CENTER POPUP
+        // ============================================================
+
+        function createArtCulturalPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p.Name) {
+                popupContent +=
+                    "<strong>Center:</strong> " +
+                    p.Name +
+                    "<br>";
+            }
+
+            if (p.Facility_Type) {
+                popupContent +=
+                    "<strong>Facility Type:</strong> " +
+                    p.Facility_Type +
+                    "<br>";
+            }
+
+            if (p.Operator) {
+                popupContent +=
+                    "<strong>Operator:</strong> " +
+                    p.Operator +
+                    "<br>";
+            }
+
+            if (p.Address) {
+
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.Address;
+
+                if (p.City) {
+                    popupContent += ", " + p.City;
+                }
+
+                if (p.State) {
+                    popupContent += ", " + p.State;
+                }
+
+                if (p.Zip) {
+                    popupContent += " " + p.Zip;
+                }
+
+                popupContent += "<br>";
+            }
+
+            if (p.Phone) {
+                popupContent +=
+                    "<strong>Phone:</strong> " +
+                    p.Phone +
+                    "<br>";
+            }
+
+            if (p.Amenities_Programs) {
+                popupContent +=
+                    "<strong>Programs & Activities:</strong> " +
+                    p.Amenities_Programs +
+                    "<br>";
+            }
+
+            if (p.Website) {
+                popupContent +=
+                    '<strong>Website:</strong> ' +
+                    '<a href="' +
+                    p.Website +
+                    '" target="_blank" rel="noopener noreferrer">' +
+                    'View Website' +
+                    '</a><br>';
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+
+
+        // ============================================================
+        // SCHOOL-BASED HEALTH CENTER POPUP
+        // ============================================================
+
+        function createSchoolHealthPopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p.Name) {
+                popupContent +=
+                    "<strong>Health Center:</strong> " +
+                    p.Name +
+                    "<br>";
+            }
+
+            if (p.School_Campus) {
+                popupContent +=
+                    "<strong>School Campus:</strong> " +
+                    p.School_Campus +
+                    "<br>";
+            }
+
+            if (p.Operator) {
+                popupContent +=
+                    "<strong>Operator:</strong> " +
+                    p.Operator +
+                    "<br>";
+            }
+
+            if (p.Address) {
+
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p.Address;
+
+                if (p.City) {
+                    popupContent += ", " + p.City;
+                }
+
+                if (p.State) {
+                    popupContent += ", " + p.State;
+                }
+
+                if (p.Zip) {
+                    popupContent += " " + p.Zip;
+                }
+
+                popupContent += "<br>";
+            }
+
+            if (p.Clinic_Phone) {
+                popupContent +=
+                    "<strong>Clinic Phone:</strong> " +
+                    p.Clinic_Phone +
+                    "<br>";
+            }
+
+            if (p.Hours) {
+                popupContent +=
+                    "<strong>Hours:</strong> " +
+                    p.Hours +
+                    "<br>";
+            }
+
+            if (p.Services) {
+                popupContent +=
+                    "<strong>Services:</strong> " +
+                    p.Services +
+                    "<br>";
+            }
+
+            if (
+                p.Dental !== null &&
+                p.Dental !== undefined
+            ) {
+                popupContent +=
+                    "<strong>Dental Services:</strong> " +
+                    (p.Dental ? "Yes" : "No") +
+                    "<br>";
+            }
+
+            if (p.Website) {
+                popupContent +=
+                    '<strong>Website:</strong> ' +
+                    '<a href="' +
+                    p.Website +
+                    '" target="_blank" rel="noopener noreferrer">' +
+                    'View Health Center Information' +
+                    '</a><br>';
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+
+
+        // ============================================================
+        // GROCERY STORE POPUP
+        // ============================================================
+
+        function createGroceryStorePopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p.Name) {
+                popupContent +=
+                    "<strong>Store:</strong> " +
+                    p.Name +
+                    "<br>";
+            }
+
+            if (p.Type) {
+                popupContent +=
+                    "<strong>Store Type:</strong> " +
+                    p.Type +
+                    "<br>";
+            }
+
+            if (p["Address Full"]) {
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p["Address Full"] +
+                    "<br>";
+            }
+
+            if (p.SNAP) {
+                popupContent +=
+                    "<strong>SNAP:</strong> " +
+                    p.SNAP +
+                    "<br>";
+            }
+
+            if (p.WIC) {
+                popupContent +=
+                    "<strong>WIC:</strong> " +
+                    p.WIC +
+                    "<br>";
+            }
+
+            if (p.DUFB) {
+                popupContent +=
+                    "<strong>Double Up Food Bucks:</strong> " +
+                    p.DUFB +
+                    "<br>";
+            }
+
+            if (p.Status) {
+                popupContent +=
+                    "<strong>Status:</strong> " +
+                    p.Status +
+                    "<br>";
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+
+
+        // ============================================================
+        // FOOD ASSISTANCE POPUP
+        // ============================================================
+
+        function createFoodAssistancePopup(feature) {
+
+            var p = feature.properties;
+
+            if (!p) {
+                return "<strong>No information available</strong>";
+            }
+
+            var popupContent = "<div>";
+
+            if (p["Food Pantry Name"]) {
+                popupContent +=
+                    "<strong>Food Assistance Site:</strong> " +
+                    p["Food Pantry Name"] +
+                    "<br>";
+            }
+
+            if (p.Type) {
+                popupContent +=
+                    "<strong>Type:</strong> " +
+                    p.Type +
+                    "<br>";
+            }
+
+            if (p["Full Address"]) {
+                popupContent +=
+                    "<strong>Address:</strong> " +
+                    p["Full Address"] +
+                    "<br>";
+            }
+
+            popupContent += "</div>";
+
+            return popupContent;
+        }
+        // ============================================================
         // RECREATION COURT POPUP FUNCTION
         // ============================================================
 
@@ -1620,6 +1996,7 @@ LAYER CONTROL
 
             return popupContent;
         }
+
 
         // ============================================================
         // HEALTH FACILITY POPUP FUNCTION
@@ -2309,14 +2686,12 @@ LAYER CONTROL
 
                     return response.json();
                 }),
-
-
-            fetch('Data/Medicaid_Certified_or_Dual.geojson')
+            fetch('Data/Denver_Private_Rec_Centers.geojson')
                 .then(response => {
 
                     if (!response.ok) {
                         throw new Error(
-                            "Could not load Medicaid_Certified_or_Dual.geojson: " +
+                            "Could not load Denver_Private_Rec_Centers.geojson: " +
                             response.status
                         );
                     }
@@ -2325,12 +2700,12 @@ LAYER CONTROL
                 }),
 
 
-            fetch('Data/Medicare_Certified_or_Dual.geojson')
+            fetch('Data/Denver_Art_Cultural_Centers.geojson')
                 .then(response => {
 
                     if (!response.ok) {
                         throw new Error(
-                            "Could not load Medicare_Certified_or_Dual.geojson: " +
+                            "Could not load Denver_Art_Cultural_Centers.geojson: " +
                             response.status
                         );
                     }
@@ -2339,12 +2714,40 @@ LAYER CONTROL
                 }),
 
 
-            fetch('Data/Medicaid_Medicare_Dual.geojson')
+            fetch('Data/School_Based_Health_Centers.geojson')
                 .then(response => {
 
                     if (!response.ok) {
                         throw new Error(
-                            "Could not load Medicaid_Medicare_Dual.geojson: " +
+                            "Could not load School_Based_Health_Centers.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            fetch('Data/Grocery_Stores.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Grocery_Stores.geojson: " +
+                            response.status
+                        );
+                    }
+
+                    return response.json();
+                }),
+
+
+            fetch('Data/Food_Assistance.geojson')
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load Food_Assistance.geojson: " +
                             response.status
                         );
                     }
@@ -2396,11 +2799,12 @@ LAYER CONTROL
 
                 var hospitalsData = data[25];
                 var fqhcData = data[26];
-                var medicaidCertifiedData = data[27];
-                var medicareCertifiedData = data[28];
-                var medicaidMedicareDualData = data[29];
 
-
+                var privateRecreationData = data[27];
+                var artCulturalCentersData = data[28];
+                var schoolBasedHealthData = data[29];
+                var groceryStoresData = data[30];
+                var foodAssistanceData = data[31];
                 console.log(
                     "Census tract features:",
                     censusData.features.length
@@ -3122,17 +3526,24 @@ LAYER CONTROL
                     collectPointObstacles(
                         federallyQualifiedHealthCenters
                     );
-
                     collectPointObstacles(
-                        medicaidCertified
+                        privateRecreationCenters
                     );
 
                     collectPointObstacles(
-                        medicareCertified
+                        artCulturalCenters
                     );
 
                     collectPointObstacles(
-                        medicaidMedicareDual
+                        schoolBasedHealthCenters
+                    );
+
+                    collectPointObstacles(
+                        groceryStores
+                    );
+
+                    collectPointObstacles(
+                        foodAssistance
                     );
 
 
@@ -4596,33 +5007,72 @@ LAYER CONTROL
                         createHealthFacilityPopup,
                         4
                     );
+                // ========================================================
+                // PRIVATE RECREATION CENTERS
+                // ========================================================
 
-
-                var medicaidCertified =
+                var privateRecreationCenters =
                     createProtectivePointLayer(
-                        medicaidCertifiedData,
-                        "#1B9E77",
-                        createHealthFacilityPopup,
+                        privateRecreationData,
+                        "#228B22",
+                        createPrivateRecreationPopup,
                         4
                     );
 
 
-                var medicareCertified =
+                // ========================================================
+                // ART & CULTURAL CENTERS
+                // ========================================================
+
+                var artCulturalCenters =
                     createProtectivePointLayer(
-                        medicareCertifiedData,
-                        "#7570B3",
-                        createHealthFacilityPopup,
+                        artCulturalCentersData,
+                        "#C71585",
+                        createArtCulturalPopup,
                         4
                     );
 
 
-                var medicaidMedicareDual =
+                // ========================================================
+                // SCHOOL-BASED HEALTH CENTERS
+                // ========================================================
+
+                var schoolBasedHealthCenters =
                     createProtectivePointLayer(
-                        medicaidMedicareDualData,
-                        "#D95F02",
-                        createHealthFacilityPopup,
+                        schoolBasedHealthData,
+                        "#00A6A6",
+                        createSchoolHealthPopup,
                         4
                     );
+
+
+                // ========================================================
+                // GROCERY STORES
+                // ========================================================
+
+                var groceryStores =
+                    createProtectivePointLayer(
+                        groceryStoresData,
+                        "#7CB342",
+                        createGroceryStorePopup,
+                        4
+                    );
+
+
+                // ========================================================
+                // FOOD ASSISTANCE
+                // ========================================================
+
+                var foodAssistance =
+                    createProtectivePointLayer(
+                        foodAssistanceData,
+                        "#8B4513",
+                        createFoodAssistancePopup,
+                        4
+                    );
+
+
+
 
                 // ========================================================
                 // ADD INITIAL LAYERS TO MAP
@@ -4717,18 +5167,8 @@ LAYER CONTROL
                     },
 
                     {
-                        label: "Recreation Centers",
-                        layer: recreationCenters
-                    },
-
-                    {
                         label: "SUD Facilities",
                         layer: sudFacilities
-                    },
-
-                    {
-                        label: "Farmers Markets",
-                        layer: farmersMarkets
                     },
 
                     {
@@ -4749,6 +5189,56 @@ LAYER CONTROL
                         label: "Amphitheaters",
                         layer: amphitheaters
                     },
+                    {
+                        label: "Art & Cultural Centers",
+                        layer: artCulturalCenters
+                    },
+                    {
+                        label: "Recreation Centers",
+
+                        collapsed: true,
+
+                        children: [
+
+                            {
+                                label: "Public Recreation Centers",
+                                layer: recreationCenters
+                            },
+
+                            {
+                                label: "Private Recreation Centers",
+                                layer: privateRecreationCenters
+                            }
+
+                        ]
+                    },
+
+                    {
+                        label: "Food Access",
+
+                        collapsed: true,
+
+                        children: [
+
+                            {
+                                label: "Farmers Markets",
+                                layer: farmersMarkets
+                            },
+
+                            {
+                                label: "Grocery Stores",
+                                layer: groceryStores
+                            },
+
+                            {
+                                label: "Food Assistance",
+                                layer: foodAssistance
+                            }
+
+                        ]
+                    },
+
+
                     {
                         label: "Recreation Court Surfaces",
 
@@ -4853,18 +5343,8 @@ LAYER CONTROL
                             },
 
                             {
-                                label: "Medicaid Certified",
-                                layer: medicaidCertified
-                            },
-
-                            {
-                                label: "Medicare Certified",
-                                layer: medicareCertified
-                            },
-
-                            {
-                                label: "Medicare & Medicaid",
-                                layer: medicaidMedicareDual
+                                label: "School-Based Health Centers",
+                                layer: schoolBasedHealthCenters
                             }
 
                         ]
@@ -5168,11 +5648,15 @@ LAYER CONTROL
                     var hasProtectiveLayers =
                         map.hasLayer(parks) ||
                         map.hasLayer(recreationCenters) ||
+                        map.hasLayer(privateRecreationCenters) ||
                         map.hasLayer(sudFacilities) ||
                         map.hasLayer(farmersMarkets) ||
+                        map.hasLayer(groceryStores) ||
+                        map.hasLayer(foodAssistance) ||
                         map.hasLayer(swimmingPools) ||
                         map.hasLayer(libraries) ||
                         map.hasLayer(skateparks) ||
+                        map.hasLayer(artCulturalCenters) ||
                         map.hasLayer(youthDevelopment) ||
                         map.hasLayer(sportsFitness) ||
                         map.hasLayer(artsMusic) ||
@@ -5188,9 +5672,7 @@ LAYER CONTROL
                         map.hasLayer(healthFacilities) ||
                         map.hasLayer(hospitals) ||
                         map.hasLayer(federallyQualifiedHealthCenters) ||
-                        map.hasLayer(medicaidCertified) ||
-                        map.hasLayer(medicareCertified) ||
-                        map.hasLayer(medicaidMedicareDual);
+                        map.hasLayer(schoolBasedHealthCenters);
 
                     if (hasProtectiveLayers) {
 
@@ -5213,22 +5695,14 @@ LAYER CONTROL
                             '"></i>' +
                             'Parks<br>';
                     }
-                    // ====================================================
-                    // RECREATION CENTERS
-                    // Protective Layer
-                    // ====================================================
-
-                    if (map.hasLayer(recreationCenters)) {
+                    if (map.hasLayer(artCulturalCenters)) {
 
                         div.innerHTML +=
                             '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#4CE600;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
-                            'Recreation Centers<br>';
+                            'style="background:#C71585;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Art & Cultural Centers<br>';
                     }
-
 
                     // ====================================================
                     // SUD FACILITIES
@@ -5245,22 +5719,6 @@ LAYER CONTROL
                             '"></i>' +
                             'SUD Facilities<br>';
                     }
-                    // ====================================================
-                    // FARMERS MARKETS
-                    // Protective Layer
-                    // ====================================================
-
-                    if (map.hasLayer(farmersMarkets)) {
-
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#FFAA00;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
-                            'Farmers Markets<br>';
-                    }
-
                     if (map.hasLayer(swimmingPools)) {
 
                         div.innerHTML +=
@@ -5296,7 +5754,116 @@ LAYER CONTROL
                             'border:1px solid #FFFFFF"></i>' +
                             'Amphitheaters<br>';
                     }
+                    if (map.hasLayer(artCulturalCenters)) {
 
+                        div.innerHTML +=
+                            '<i class="circle-symbol" ' +
+                            'style="background:#C71585;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Art & Cultural Centers<br>';
+                    }
+                    var hasFoodAccess =
+                        map.hasLayer(farmersMarkets) ||
+                        map.hasLayer(groceryStores) ||
+                        map.hasLayer(foodAssistance);
+
+
+                    if (hasFoodAccess) {
+
+                        div.innerHTML +=
+                            '<div style="' +
+                            'font-weight:bold;' +
+                            'margin-top:6px;' +
+                            'margin-bottom:2px;' +
+                            'padding-left:4px;' +
+                            '">' +
+                            'Food Access' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(farmersMarkets)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#FFAA00;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Farmers Markets' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(groceryStores)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#7CB342;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Grocery Stores' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(foodAssistance)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#8B4513;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Food Assistance' +
+                            '</div>';
+                    }
+
+
+                    // ====================================================
+                    // RECREATION CENTERS
+                    // Protective Layer
+                    // ====================================================
+
+                    var hasRecreationCenters =
+                        map.hasLayer(recreationCenters) ||
+                        map.hasLayer(privateRecreationCenters);
+
+
+                    if (hasRecreationCenters) {
+
+                        div.innerHTML +=
+                            '<div style="' +
+                            'font-weight:bold;' +
+                            'margin-top:6px;' +
+                            'margin-bottom:2px;' +
+                            'padding-left:4px;' +
+                            '">' +
+                            'Recreation Centers' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(recreationCenters)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#4CE600;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Public Recreation Centers' +
+                            '</div>';
+                    }
+
+
+                    if (map.hasLayer(privateRecreationCenters)) {
+
+                        div.innerHTML +=
+                            '<div style="padding-left:14px;">' +
+                            '<i class="circle-symbol" ' +
+                            'style="background:#228B22;' +
+                            'border:1px solid #FFFFFF"></i>' +
+                            'Private Recreation Centers' +
+                            '</div>';
+                    }
 
                     // ====================================================
                     // AFTERSCHOOL PROGRAMS
@@ -5510,17 +6077,11 @@ LAYER CONTROL
                             '</div>';
                     }
 
-                    // ====================================================
-                    // HEALTH FACILITIES
-                    // ====================================================
-
                     var hasHealthFacilities =
                         map.hasLayer(healthFacilities) ||
                         map.hasLayer(hospitals) ||
                         map.hasLayer(federallyQualifiedHealthCenters) ||
-                        map.hasLayer(medicaidCertified) ||
-                        map.hasLayer(medicareCertified) ||
-                        map.hasLayer(medicaidMedicareDual);
+                        map.hasLayer(schoolBasedHealthCenters);
 
 
                     if (hasHealthFacilities) {
@@ -5573,38 +6134,14 @@ LAYER CONTROL
                     }
 
 
-                    if (map.hasLayer(medicaidCertified)) {
+                    if (map.hasLayer(schoolBasedHealthCenters)) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
                             '<i class="circle-symbol" ' +
-                            'style="background:#1B9E77;' +
+                            'style="background:#00A6A6;' +
                             'border:1px solid #FFFFFF"></i>' +
-                            'Medicaid Certified' +
-                            '</div>';
-                    }
-
-
-                    if (map.hasLayer(medicareCertified)) {
-
-                        div.innerHTML +=
-                            '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#7570B3;' +
-                            'border:1px solid #FFFFFF"></i>' +
-                            'Medicare Certified' +
-                            '</div>';
-                    }
-
-
-                    if (map.hasLayer(medicaidMedicareDual)) {
-
-                        div.innerHTML +=
-                            '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#D95F02;' +
-                            'border:1px solid #FFFFFF"></i>' +
-                            'Medicare & Medicaid' +
+                            'School-Based Health Centers' +
                             '</div>';
                     }
 

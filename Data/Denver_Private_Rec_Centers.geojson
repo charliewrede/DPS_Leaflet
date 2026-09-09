@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "Denver_Private_Rec_Centers",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Name": "Southwest Family YMCA", "Address": "5181 W Kenyon Ave", "City": "Denver", "State": "CO", "Zip": 80236, "County": "Denver", "Latitude": 39.6513, "Longitude": -105.0519, "Phone": "(720) 524-2758", "Website": "https://denverymca.org/node/474", "Facility_Type": "YMCA", "Amenities_Programs": "Pool; Gym; Indoor Track; Youth Sports; Swim Lessons; Before/After School Care; Preschool; Summer Camp; Group Fitness; Personal Training; Racquetball; Pickleball; Sauna; Food Pantry; Teen Programs" }, "geometry": { "type": "Point", "coordinates": [ -105.0519, 39.6513 ] } },
+{ "type": "Feature", "properties": { "Name": "University Hills - Schlessman Family YMCA", "Address": "3901 E Yale Ave", "City": "Denver", "State": "CO", "Zip": 80210, "County": "Denver", "Latitude": 39.6677, "Longitude": -104.9416, "Phone": "(720) 524-2755", "Website": "https://denverymca.org/locations/university-hills-schlessman-ymca", "Facility_Type": "YMCA", "Amenities_Programs": "Pool; Warm Water Pool; Gym; Youth Sports; Swim Lessons; Before/After School Care; Early Childhood Education; Summer Camp; Group Fitness; Personal Training; Racquetball; Pickleball; Sauna; Whirlpool; Teen Programs" }, "geometry": { "type": "Point", "coordinates": [ -104.9416, 39.6677 ] } },
+{ "type": "Feature", "properties": { "Name": "Staenberg-Loup Jewish Community Center (JCC Denver)", "Address": "350 S Dahlia St", "City": "Denver", "State": "CO", "Zip": 80246, "County": "Denver", "Latitude": 39.7096, "Longitude": -104.9299, "Phone": "(303) 399-2660", "Website": "https://www.jccdenver.org", "Facility_Type": "Community Center", "Amenities_Programs": "Pool; Outdoor Pool; Gym; Youth Sports; Swim Lessons; Early Learning School; Summer Camp; Group Fitness; Personal Training; Pickleball; Tennis; Steam Room; Hot Tub; Theater/Arts; Ceramics; STEM Programs; Music; Cooking Classes; Social Services" }, "geometry": { "type": "Point", "coordinates": [ -104.9299, 39.7096 ] } }
+]
+}
