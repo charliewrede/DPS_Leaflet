@@ -2205,12 +2205,22 @@ LAYER CONTROL
 
             if (p["Address Full"]) {
 
+                var formattedAddress =
+                    String(p["Address Full"])
+                        .toLowerCase()
+                        .replace(
+                            /\b\w/g,
+                            function (letter) {
+                                return letter.toUpperCase();
+                            }
+                        );
+
+
                 popupContent +=
                     "<strong>Address:</strong> " +
-                    p["Address Full"] +
+                    formattedAddress +
                     "<br>";
             }
-
 
             if (p.Telephone) {
 
@@ -5759,14 +5769,13 @@ LAYER CONTROL
                     {
                         label: "Health Facilities",
 
+                        selectAllCheckbox:
+                            "Toggle all Health Facilities",
+
                         collapsed: true,
 
                         children: [
 
-                            {
-                                label: "All Health Facilities",
-                                layer: healthFacilities
-                            },
 
                             {
                                 label: "Hospitals",
@@ -6143,8 +6152,10 @@ LAYER CONTROL
 
                         div.innerHTML +=
                             '<div class="legend-section">' +
-                            'Census Tracts - SVI Score' +
+                            'Census Tracts' +
                             '</div>';
+                        div.innerHTML +=
+                            'Social Vulnerability Index Score<br>';
 
 
                         div.innerHTML +=
