@@ -59,6 +59,85 @@ LAYER CONTROL
             background: #f4f4f4;
         }
 
+        .control-toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+
+            padding: 6px 10px;
+
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+
+            width: 34px;
+            height: 18px;
+        }
+
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+
+        .toggle-slider {
+            position: absolute;
+
+            cursor: pointer;
+
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            background: #BBBBBB;
+
+            border-radius: 18px;
+
+            transition: 0.2s;
+        }
+
+
+        .toggle-slider::before {
+            content: "";
+
+            position: absolute;
+
+            width: 14px;
+            height: 14px;
+
+            left: 2px;
+            bottom: 2px;
+
+            background: white;
+
+            border-radius: 50%;
+
+            transition: 0.2s;
+        }
+
+
+        .toggle-switch input:checked+.toggle-slider {
+            background: #4CAF50;
+        }
+
+
+        .toggle-switch input:checked+.toggle-slider::before {
+            transform: translateX(16px);
+        }
+
         /* ============================================================
         LEGEND
         ============================================================ */
@@ -5397,58 +5476,50 @@ LAYER CONTROL
 
                 layerToggleControl.onAdd = function () {
 
-                    var button =
+                    var container =
                         L.DomUtil.create(
-                            'button',
-                            'control-toggle-button'
+                            'div',
+                            'control-toggle-switch'
                         );
 
-                    button.innerHTML =
-                        'Hide Layers';
+
+                    container.innerHTML =
+                        '<span>Layers</span>' +
+                        '<label class="toggle-switch">' +
+                        '<input type="checkbox" checked>' +
+                        '<span class="toggle-slider"></span>' +
+                        '</label>';
 
 
                     L.DomEvent.disableClickPropagation(
-                        button
+                        container
                     );
 
                     L.DomEvent.disableScrollPropagation(
-                        button
+                        container
                     );
 
 
-                    L.DomEvent.on(
-                        button,
-                        'click',
+                    var checkbox =
+                        container.querySelector(
+                            'input'
+                        );
+
+
+                    checkbox.addEventListener(
+                        'change',
                         function () {
 
-                            if (
-                                layerControlContainer.style.display ===
-                                'none'
-                            ) {
-
-                                layerControlContainer.style.display =
-                                    '';
-
-                                button.innerHTML =
-                                    'Hide Layers';
-
-                            }
-
-                            else {
-
-                                layerControlContainer.style.display =
-                                    'none';
-
-                                button.innerHTML =
-                                    'Show Layers';
-
-                            }
+                            layerControlContainer.style.display =
+                                checkbox.checked
+                                    ? ''
+                                    : 'none';
 
                         }
                     );
 
 
-                    return button;
+                    return container;
                 };
 
 
@@ -5495,62 +5566,50 @@ LAYER CONTROL
 
                 legendToggleControl.onAdd = function () {
 
-                    var button =
+                    var container =
                         L.DomUtil.create(
-                            'button',
-                            'control-toggle-button'
+                            'div',
+                            'control-toggle-switch'
                         );
 
-                    button.innerHTML =
-                        'Hide Legend';
+
+                    container.innerHTML =
+                        '<span>Legend</span>' +
+                        '<label class="toggle-switch">' +
+                        '<input type="checkbox" checked>' +
+                        '<span class="toggle-slider"></span>' +
+                        '</label>';
 
 
                     L.DomEvent.disableClickPropagation(
-                        button
+                        container
                     );
 
                     L.DomEvent.disableScrollPropagation(
-                        button
+                        container
                     );
 
 
-                    L.DomEvent.on(
-                        button,
-                        'click',
+                    var checkbox =
+                        container.querySelector(
+                            'input'
+                        );
+
+
+                    checkbox.addEventListener(
+                        'change',
                         function () {
 
-                            var legendContainer =
-                                legend.getContainer();
-
-
-                            if (
-                                legendContainer.style.display ===
-                                'none'
-                            ) {
-
-                                legendContainer.style.display =
-                                    '';
-
-                                button.innerHTML =
-                                    'Hide Legend';
-
-                            }
-
-                            else {
-
-                                legendContainer.style.display =
-                                    'none';
-
-                                button.innerHTML =
-                                    'Show Legend';
-
-                            }
+                            legend.getContainer().style.display =
+                                checkbox.checked
+                                    ? ''
+                                    : 'none';
 
                         }
                     );
 
 
-                    return button;
+                    return container;
                 };
 
 
