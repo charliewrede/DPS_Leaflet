@@ -77,11 +77,13 @@ LAYER CONTROL
 
         .layer-toggle-fixed {
             position: fixed !important;
+
             top: 10px;
-            right: 10px;
+            left: 55px;
+            right: auto;
+
             z-index: 1000;
         }
-
 
         .legend-toggle-fixed {
             position: fixed !important;
@@ -724,7 +726,7 @@ LAYER CONTROL
 
             if (p.SRI_score !== null && p.SRI_score !== undefined) {
                 popupContent +=
-                    "<strong>School Risk Index Score:</strong> " +
+                    "<strong>School Risk Index (SRI) Score:</strong> " +
                     Number(p.SRI_score).toFixed(3) +
                     "<br>";
             }
@@ -734,14 +736,6 @@ LAYER CONTROL
                 popupContent +=
                     "<strong>School Type:</strong> " +
                     p.school_type +
-                    "<br>";
-            }
-
-
-            if (p.classification) {
-                popupContent +=
-                    "<strong>Classification:</strong> " +
-                    p.classification +
                     "<br>";
             }
 
@@ -5500,7 +5494,7 @@ LAYER CONTROL
 
                 var layerToggleControl =
                     L.control({
-                        position: 'topright'
+                        position: 'topleft'
                     });
 
 
@@ -5542,26 +5536,14 @@ LAYER CONTROL
 
                             if (checkbox.checked) {
 
-                                layerControlContainer.style.visibility =
-                                    'visible';
-
-                                layerControlContainer.style.opacity =
-                                    '1';
-
-                                layerControlContainer.style.pointerEvents =
-                                    'auto';
+                                layerControlContainer.style.display =
+                                    '';
 
                             }
 
                             else {
 
-                                layerControlContainer.style.visibility =
-                                    'hidden';
-
-                                layerControlContainer.style.opacity =
-                                    '0';
-
-                                layerControlContainer.style.pointerEvents =
+                                layerControlContainer.style.display =
                                     'none';
 
                             }
@@ -5609,6 +5591,8 @@ LAYER CONTROL
                 L.DomEvent.disableScrollPropagation(
                     legend.getContainer()
                 );
+
+
                 var legendToggleControl =
                     L.control({
                         position: 'bottomright'
