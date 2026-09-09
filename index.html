@@ -730,17 +730,55 @@ LAYER CONTROL
 
 
             if (p.school_level) {
+
+                var schoolLevel =
+                    String(p.school_level)
+                        .trim()
+                        .toLowerCase();
+
+
+                if (schoolLevel === "high") {
+
+                    schoolLevel =
+                        "High School";
+
+                }
+
+                else if (schoolLevel === "middle") {
+
+                    schoolLevel =
+                        "Middle School";
+
+                }
+
+                else if (schoolLevel === "elementary") {
+
+                    schoolLevel =
+                        "Elementary School";
+
+                }
+
+                else {
+
+                    schoolLevel =
+                        schoolLevel
+                            .split(" ")
+                            .map(function (word) {
+
+                                return (
+                                    word.charAt(0).toUpperCase() +
+                                    word.slice(1)
+                                );
+
+                            })
+                            .join(" ");
+
+                }
+
+
                 popupContent +=
                     "<strong>School Level:</strong> " +
-                    p.school_level +
-                    "<br>";
-            }
-
-
-            if (p.grade_level) {
-                popupContent +=
-                    "<strong>Grades Served:</strong> " +
-                    p.grade_level +
+                    schoolLevel +
                     "<br>";
             }
 
@@ -773,12 +811,14 @@ LAYER CONTROL
                 p.student_teacher_ratio !== null &&
                 p.student_teacher_ratio !== undefined
             ) {
+
                 popupContent +=
                     "<strong>Student-Teacher Ratio:</strong> " +
-                    Number(p.student_teacher_ratio).toFixed(1) +
+                    Math.round(
+                        Number(p.student_teacher_ratio)
+                    ) +
                     ":1<br>";
             }
-
 
             if (
                 p.attendance_rate !== null &&
