@@ -87,8 +87,11 @@ LAYER CONTROL
 
         .legend-toggle-fixed {
             position: fixed !important;
+
+            top: 10px;
             right: 10px;
-            bottom: 10px;
+            bottom: auto;
+
             z-index: 1000;
         }
 
@@ -5558,13 +5561,6 @@ LAYER CONTROL
 
                 layerToggleControl.addTo(map);
 
-                if (layerControlContainer) {
-
-                    L.DomEvent.disableScrollPropagation(
-                        layerControlContainer
-                    );
-
-                }
 
                 // ========================================================
                 // LEGEND
