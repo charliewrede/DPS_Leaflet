@@ -75,23 +75,9 @@ LAYER CONTROL
             font-weight: bold;
         }
 
-        .layer-toggle-fixed {
-            position: fixed !important;
-
-            top: 10px;
-            left: 55px;
-            right: auto;
-
-            z-index: 1000;
-        }
-
+        .layer-toggle-fixed,
         .legend-toggle-fixed {
             position: fixed !important;
-
-            top: 10px;
-            right: 10px;
-            bottom: auto;
-
             z-index: 1000;
         }
 
@@ -5539,14 +5525,26 @@ LAYER CONTROL
 
                             if (checkbox.checked) {
 
-                                layerControlContainer.style.display =
-                                    '';
+                                layerControlContainer.style.visibility =
+                                    'visible';
+
+                                layerControlContainer.style.opacity =
+                                    '1';
+
+                                layerControlContainer.style.pointerEvents =
+                                    'auto';
 
                             }
 
                             else {
 
-                                layerControlContainer.style.display =
+                                layerControlContainer.style.visibility =
+                                    'hidden';
+
+                                layerControlContainer.style.opacity =
+                                    '0';
+
+                                layerControlContainer.style.pointerEvents =
                                     'none';
 
                             }
@@ -5670,8 +5668,121 @@ LAYER CONTROL
 
 
                 legendToggleControl.addTo(map);
+                function positionControlToggles() {
+
+                    var gap = 4;
 
 
+                    // ====================================================
+                    // LAYER CONTROL TOGGLE
+                    // ====================================================
+
+                    var layerToggle =
+                        document.querySelector(
+                            '.layer-toggle-fixed'
+                        );
+
+
+                    if (
+                        layerToggle &&
+                        layerControlContainer
+                    ) {
+
+                        var toggleHeight =
+                            layerToggle.offsetHeight;
+
+
+                        // Keep enough space above the layer control
+                        layerControlContainer.style.marginTop =
+                            (
+                                toggleHeight +
+                                gap +
+                                10
+                            ) +
+                            'px';
+
+
+                        var layerBox =
+                            layerControlContainer
+                                .getBoundingClientRect();
+
+
+                        layerToggle.style.top =
+                            (
+                                layerBox.top -
+                                toggleHeight -
+                                gap
+                            ) +
+                            'px';
+
+
+                        layerToggle.style.left =
+                            layerBox.left + 'px';
+
+
+                        layerToggle.style.right =
+                            'auto';
+
+                    }
+
+
+                    // ====================================================
+                    // LEGEND TOGGLE
+                    // ====================================================
+
+                    var legendToggle =
+                        document.querySelector(
+                            '.legend-toggle-fixed'
+                        );
+
+
+                    var legendContainer =
+                        legend.getContainer();
+
+
+                    if (
+                        legendToggle &&
+                        legendContainer
+                    ) {
+
+                        var legendBox =
+                            legendContainer
+                                .getBoundingClientRect();
+
+
+                        var legendToggleHeight =
+                            legendToggle.offsetHeight;
+
+
+                        legendToggle.style.top =
+                            (
+                                legendBox.top -
+                                legendToggleHeight -
+                                gap
+                            ) +
+                            'px';
+
+
+                        legendToggle.style.right =
+                            (
+                                window.innerWidth -
+                                legendBox.right
+                            ) +
+                            'px';
+
+
+                        legendToggle.style.left =
+                            'auto';
+
+                    }
+
+                }
+
+
+                window.addEventListener(
+                    'resize',
+                    positionControlToggles
+                );
                 // ========================================================
                 // UPDATE LEGEND
                 // Changes automatically when layers are turned
@@ -6431,7 +6542,7 @@ LAYER CONTROL
                 // ========================================================
 
                 updateLegend();
-
+                positionControlToggles();
 
                 // ========================================================
                 // UPDATE LEGEND WHEN A LAYER IS TURNED ON
