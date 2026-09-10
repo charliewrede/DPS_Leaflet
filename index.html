@@ -2274,15 +2274,32 @@ LAYER CONTROL
         // SVI COLOR FUNCTION
         // ============================================================
 
-        function getColor(value) {
+        function getColor(
+            value,
+            feature
+        ) {
+
+            if (
+                feature &&
+                feature.properties &&
+                feature.properties.isTopFiveSVI
+            ) {
+
+                return "#A80000";
+
+            }
+
 
             if (
                 value === null ||
                 value === undefined ||
                 isNaN(value)
             ) {
+
                 return "#808080";
+
             }
+
 
             if (value > 0.8) return "#F50000";
             if (value > 0.6) return "#F53D00";
@@ -2325,7 +2342,8 @@ LAYER CONTROL
             return {
 
                 fillColor: getColor(
-                    feature.properties.SVI
+                    feature.properties.SVI,
+                    feature
                 ),
 
                 weight: 0.25,
@@ -2475,38 +2493,7 @@ LAYER CONTROL
                 }),
 
 
-            // --------------------------------------------------------
-            // FIVE HIGHEST SVI CENSUS TRACTS
-            // --------------------------------------------------------
 
-            //     fetch('Data/Five_Highest_Census_Tracts.geojson')
-            //         .then(response => {
-
-            //             if (!response.ok) {
-
-            //                 throw new Error(
-            //                     "Could not load Five_Highest_Census_Tracts.geojson: " +
-            //                     response.status
-            //                 );
-            //             }
-
-            //             return response.json();
-            //         })
-
-            // ])
-            fetch('Data/Five_Highest_Census_Tracts.geojson?v=2')
-                .then(response => {
-                    console.log("FETCHED FIVE HIGHEST FROM:", response.url);
-
-                    if (!response.ok) {
-                        throw new Error(
-                            "Could not load Five_Highest_Census_Tracts.geojson: " +
-                            response.status
-                        );
-                    }
-
-                    return response.json();
-                }),
             // --------------------------------------------------------
             // FARMERS MARKETS
             // --------------------------------------------------------
@@ -2925,34 +2912,36 @@ LAYER CONTROL
                 var schoolsData = data[3];
                 var recreationData = data[4];
                 var sudData = data[5];
-                var highestData = data[6];
-                var farmersMarketsData = data[7];
-                var parksData = data[8];
-                var swimmingPoolsData = data[9];
-                var librariesData = data[10];
-                var skateparksData = data[11];
-                var youthDevelopmentData = data[12];
-                var sportsFitnessData = data[13];
-                var artsMusicData = data[14];
-                var academicStemData = data[15];
-                var mentalHealthData = data[16];
-                var communityServicesData = data[17];
-                var earlyChildhoodData = data[18];
-                var amphitheatersData = data[19];
-                var healthFacilitiesData = data[20];
-                var basketballCourtsData = data[21];
-                var tennisRacquetCourtsData = data[22];
-                var pickleballCourtsData = data[23];
-                var otherCourtsData = data[24];
+                var farmersMarketsData = data[6];
+                var parksData = data[7];
+                var swimmingPoolsData = data[8];
+                var librariesData = data[9];
+                var skateparksData = data[10];
 
-                var hospitalsData = data[25];
-                var fqhcData = data[26];
+                var youthDevelopmentData = data[11];
+                var sportsFitnessData = data[12];
+                var artsMusicData = data[13];
+                var academicStemData = data[14];
+                var mentalHealthData = data[15];
+                var communityServicesData = data[16];
+                var earlyChildhoodData = data[17];
 
-                var privateRecreationData = data[27];
-                var artCulturalCentersData = data[28];
-                var schoolBasedHealthData = data[29];
-                var groceryStoresData = data[30];
-                var foodAssistanceData = data[31];
+                var amphitheatersData = data[18];
+                var healthFacilitiesData = data[19];
+
+                var basketballCourtsData = data[20];
+                var tennisRacquetCourtsData = data[21];
+                var pickleballCourtsData = data[22];
+                var otherCourtsData = data[23];
+
+                var hospitalsData = data[24];
+                var fqhcData = data[25];
+
+                var privateRecreationData = data[26];
+                var artCulturalCentersData = data[27];
+                var schoolBasedHealthData = data[28];
+                var groceryStoresData = data[29];
+                var foodAssistanceData = data[30];
                 console.log(
                     "Census tract features:",
                     censusData.features.length
@@ -3181,6 +3170,42 @@ LAYER CONTROL
                             );
 
                         }
+
+                    }
+                );
+                // ========================================================
+                // IDENTIFY FIVE HIGHEST SVI CENSUS TRACTS
+                // Derived automatically from the master Census dataset
+                // ========================================================
+
+                var topFiveSVIFeatures =
+                    censusData.features
+                        .filter(function (feature) {
+
+                            var svi =
+                                Number(
+                                    feature.properties.SVI
+                                );
+
+                            return !isNaN(svi);
+
+                        })
+                        .sort(function (a, b) {
+
+                            return (
+                                Number(b.properties.SVI) -
+                                Number(a.properties.SVI)
+                            );
+
+                        })
+                        .slice(0, 5);
+
+
+                topFiveSVIFeatures.forEach(
+                    function (feature) {
+
+                        feature.properties.isTopFiveSVI =
+                            true;
 
                     }
                 );
@@ -4849,46 +4874,7 @@ LAYER CONTROL
                 );
 
 
-                // ========================================================
-                // FIVE HIGHEST SVI CENSUS TRACTS
-                // ========================================================
 
-                var fiveHighestCensusTracts = L.geoJSON(
-                    highestData,
-                    {
-
-                        pane: 'highlightPane',
-
-                        style: {
-
-                            color: "#A80000",
-
-                            weight: 3,
-
-                            opacity: 1,
-
-                            fillColor: "#A80000",
-
-                            fillOpacity: 1
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createCensusPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
                 // ========================================================
                 // FARMERS MARKETS
                 // Protective Factor
@@ -5397,9 +5383,6 @@ LAYER CONTROL
                     censusTracts
                 );
 
-                addHoverResponse(
-                    fiveHighestCensusTracts
-                );
 
                 addHoverResponse(
                     schools
@@ -5535,8 +5518,6 @@ LAYER CONTROL
 
                 alternativeSchools.addTo(map);
 
-                fiveHighestCensusTracts.addTo(map);
-
                 neighborhoods.addTo(map);
 
                 // Recreation Centers and SUD Facilities
@@ -5571,11 +5552,6 @@ LAYER CONTROL
                     {
                         label: "Census Tracts",
                         layer: censusTracts
-                    },
-
-                    {
-                        label: "Five Highest SVI Tracts",
-                        layer: fiveHighestCensusTracts
                     },
 
                     {
@@ -5637,7 +5613,8 @@ LAYER CONTROL
                     },
                     {
                         label: "Recreation Centers",
-
+                        selectAllCheckbox:
+                            "Toggle all Recreation Centers",
                         collapsed: true,
 
                         children: [
@@ -5657,6 +5634,8 @@ LAYER CONTROL
 
                     {
                         label: "Food Access",
+                        selectAllCheckbox:
+                            "Toggle all Food Access",
 
                         collapsed: true,
 
@@ -6177,24 +6156,13 @@ LAYER CONTROL
                         div.innerHTML +=
                             '<i style="background:#F50000"></i>' +
                             'High<br>';
-                    }
-
-
-                    // ====================================================
-                    // FIVE HIGHEST SVI CENSUS TRACTS
-                    // ====================================================
-
-                    if (map.hasLayer(fiveHighestCensusTracts)) {
-
 
                         div.innerHTML +=
                             '<i style="' +
                             'background:#A80000;' +
-                            'border:1px solid #000000;' +
-                            'width:18px;' +
-                            'height:18px;' +
+                            'border:1px solid #000000' +
                             '"></i>' +
-                            'Five Highest Census Tracts<br>';
+                            'Five Highest SVI Tracts<br>';
                     }
 
 
