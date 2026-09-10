@@ -3146,36 +3146,8 @@ LAYER CONTROL
 
                 }
                 // ========================================================
-                // CENSUS TRACTS
-                // ========================================================
-
-                var censusTracts = L.geoJSON(
-                    censusData,
-                    {
-
-                        pane: 'censusPane',
-
-                        style: censusStyle,
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createCensusPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
-                // ========================================================
                 // IDENTIFY FIVE HIGHEST SVI CENSUS TRACTS
-                // Derived automatically from the master Census dataset
+                // Must happen BEFORE the Census Tracts layer is created
                 // ========================================================
 
                 var topFiveSVIFeatures =
@@ -3204,12 +3176,40 @@ LAYER CONTROL
                 topFiveSVIFeatures.forEach(
                     function (feature) {
 
-                        feature.properties.isTopFiveSVI =
-                            true;
+                        feature.properties.isTopFiveSVI = true;
 
                     }
                 );
 
+
+                // ========================================================
+                // CENSUS TRACTS
+                // ========================================================
+
+                var censusTracts = L.geoJSON(
+                    censusData,
+                    {
+
+                        pane: 'censusPane',
+
+                        style: censusStyle,
+
+                        onEachFeature: function (
+                            feature,
+                            layer
+                        ) {
+
+                            layer.bindPopup(
+                                createCensusPopup(feature),
+                                {
+                                    pane: 'popupTopPane'
+                                }
+                            );
+
+                        }
+
+                    }
+                );
 
                 // ========================================================
                 // COUNTY BOUNDARY
