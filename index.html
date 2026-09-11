@@ -7,391 +7,470 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.control.layers.tree@1.2.0/L.Control.Layers.Tree.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-    <style>
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
+    html,
+    body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    }
 
-        #map {
-            position: fixed;
-            top: 0;
-            left: 0;
+    #map {
+    position: fixed;
+    top: 0;
+    left: 0;
 
-            width: 100vw;
-            height: 100vh;
+    width: 100vw;
+    height: 100vh;
 
-            margin: 0;
-            padding: 0;
-        }
+    margin: 0;
+    padding: 0;
+    }
 
-        /* ============================================================
-LAYER CONTROL
-============================================================ */
+    /* ============================================================
+    LAYER CONTROL
+    ============================================================ */
 
-        .leaflet-control-layers {
-            max-height: 45vh;
-            overflow-y: auto;
-            overscroll-behavior: contain;
-            background: rgba(255, 255, 255, 0.95);
-        }
+    .leaflet-control-layers {
+    max-height: 45vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: rgba(255, 255, 255, 0.95);
+    }
 
-        .control-toggle-button {
-            background: rgba(255, 255, 255, 0.95);
-            border: 2px solid rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
+    .control-toggle-button {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
 
-            padding: 6px 10px;
+    padding: 6px 10px;
 
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            font-weight: bold;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
 
-            cursor: pointer;
+    cursor: pointer;
 
-            box-shadow: none;
-        }
+    box-shadow: none;
+    }
 
-        .control-toggle-button:hover {
-            background: #f4f4f4;
-        }
+    .control-toggle-button:hover {
+    background: #f4f4f4;
+    }
 
-        .control-toggle-switch {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+    .control-toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-            background: rgba(255, 255, 255, 0.95);
-            border: 2px solid rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
 
-            padding: 6px 10px;
+    padding: 6px 10px;
 
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            font-weight: bold;
-        }
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    }
 
-        .layer-toggle-fixed,
-        .legend-toggle-fixed {
-            position: fixed !important;
-            z-index: 1000;
-        }
+    .layer-toggle-fixed,
+    .legend-toggle-fixed {
+    position: fixed !important;
+    z-index: 1000;
+    }
 
 
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
+    .toggle-switch {
+    position: relative;
+    display: inline-block;
 
-            width: 34px;
-            height: 18px;
-        }
+    width: 34px;
+    height: 18px;
+    }
 
 
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+    .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
 
 
-        .toggle-slider {
-            position: absolute;
+    .toggle-slider {
+    position: absolute;
 
-            cursor: pointer;
+    cursor: pointer;
 
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
-            background: #BBBBBB;
+    background: #BBBBBB;
 
-            border-radius: 18px;
+    border-radius: 18px;
 
-            transition: 0.2s;
-        }
+    transition: 0.2s;
+    }
 
 
-        .toggle-slider::before {
-            content: "";
+    .toggle-slider::before {
+    content: "";
 
-            position: absolute;
+    position: absolute;
 
-            width: 14px;
-            height: 14px;
+    width: 14px;
+    height: 14px;
 
-            left: 2px;
-            bottom: 2px;
+    left: 2px;
+    bottom: 2px;
 
-            background: white;
+    background: white;
 
-            border-radius: 50%;
+    border-radius: 50%;
 
-            transition: 0.2s;
-        }
+    transition: 0.2s;
+    }
 
 
-        .toggle-switch input:checked+.toggle-slider {
-            background: #4CAF50;
-        }
+    .toggle-switch input:checked+.toggle-slider {
+    background: #4CAF50;
+    }
 
 
-        .toggle-switch input:checked+.toggle-slider::before {
-            transform: translateX(16px);
-        }
+    .toggle-switch input:checked+.toggle-slider::before {
+    transform: translateX(16px);
+    }
 
-        /* ============================================================
-        LEGEND
-        ============================================================ */
+    /* ============================================================
+    LEGEND
+    ============================================================ */
 
-        .info.legend {
-            padding: 10px 12px;
-            background: white;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            line-height: 22px;
-            color: #333;
-            max-height: 45vh;
-            overflow-y: auto;
-            overscroll-behavior: contain;
-        }
+    .info.legend {
+    padding: 10px 12px;
+    background: white;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    line-height: 22px;
+    color: #333;
+    max-height: 45vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    }
 
-        .info.legend h4 {
-            margin: 0 0 6px 0;
-            font-size: 15px;
-        }
+    .info.legend h4 {
+    margin: 0 0 6px 0;
+    font-size: 15px;
+    }
 
-        .info.legend .legend-section {
-            clear: both;
-            margin-top: 10px;
-            margin-bottom: 4px;
-            font-weight: bold;
-        }
+    .info.legend .legend-section {
+    clear: both;
+    margin-top: 10px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    }
 
-        /* Square symbols */
+    /* Square symbols */
 
-        .info.legend i {
-            width: 18px;
-            height: 18px;
-            float: left;
-            margin-right: 8px;
-            opacity: 1;
-        }
+    .info.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 1;
+    }
 
-        /* Circle symbols */
+    /* Circle symbols */
 
-        .info.legend .circle-symbol {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin: 3px 8px 0 3px;
-        }
+    .info.legend .circle-symbol {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 3px 8px 0 3px;
+    }
 
-        /* Line symbols */
+    /* Line symbols */
 
-        .info.legend .line-symbol {
-            width: 20px;
-            height: 0;
-            margin-top: 10px;
-            border-top: 3px solid;
-            background: none;
-        }
+    .info.legend .line-symbol {
+    width: 20px;
+    height: 0;
+    margin-top: 10px;
+    border-top: 3px solid;
+    background: none;
+    }
 
-        /* Polygon symbol */
+    /* Polygon symbol */
 
-        .info.legend .polygon-symbol {
-            width: 18px;
-            height: 18px;
-            margin-right: 8px;
-        }
+    .info.legend .polygon-symbol {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    }
 
-        /* ============================================================
-   NEIGHBORHOOD LABELS
-   ============================================================ */
+    /* ============================================================
+    NEIGHBORHOOD LABELS
+    ============================================================ */
 
-        .neighborhood-label {
-            background: transparent;
-            border: none;
-            box-shadow: none;
+    .neighborhood-label {
+    background: transparent;
+    border: none;
+    box-shadow: none;
 
-            color: #000000;
+    color: #000000;
 
-            font-family: Arial, sans-serif !important;
-            font-weight: 900 !important;
-            font-style: normal !important;
+    font-family: Arial, sans-serif !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
 
-            white-space: normal;
+    white-space: normal;
 
-            text-align: center;
+    text-align: center;
 
-            line-height: 1.05;
+    line-height: 1.05;
 
-            pointer-events: none;
+    pointer-events: none;
 
-            transition:
-                font-size 0.15s ease,
-                opacity 0.15s ease;
-        }
+    transition:
+    font-size 0.15s ease,
+    opacity 0.15s ease;
+    }
 
 
-        /* Force ALL text inside neighborhood labels to stay bold */
-        .neighborhood-label,
-        .neighborhood-label *,
-        .leaflet-tooltip.neighborhood-label,
-        .leaflet-tooltip.neighborhood-label * {
-            font-family: Arial, sans-serif !important;
-            font-weight: 900 !important;
-            font-style: normal !important;
-        }
+    /* Force ALL text inside neighborhood labels to stay bold */
+    .neighborhood-label,
+    .neighborhood-label *,
+    .leaflet-tooltip.neighborhood-label,
+    .leaflet-tooltip.neighborhood-label * {
+    font-family: Arial, sans-serif !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+    }
 
 
-        /* Slightly reinforce very small text */
-        .neighborhood-label {
-            -webkit-text-stroke: 0.15px currentColor;
-        }
+    /* Slightly reinforce very small text */
+    .neighborhood-label {
+    -webkit-text-stroke: 0.15px currentColor;
+    }
 
 
-        .neighborhood-label::before {
-            display: none;
-        }
+    .neighborhood-label::before {
+    display: none;
+    }
 
-        /* ============================================================
-   TOP 5 SCHOOL RANK MARKERS
-   ============================================================ */
+    /* ============================================================
+    TOP 5 SCHOOL RANK MARKERS
+    ============================================================ */
 
-        .top-school-marker {
-            width: 18px;
-            height: 18px;
+    .top-school-marker {
+    width: 18px;
+    height: 18px;
 
-            background: #FFFFFF;
+    background: #FFFFFF;
 
-            border: 2px solid #000000;
-            border-radius: 50%;
+    border: 2px solid #000000;
+    border-radius: 50%;
 
-            box-sizing: border-box;
+    box-sizing: border-box;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 
-            pointer-events: auto;
-        }
+    pointer-events: auto;
+    }
 
 
-        /* Number inside map marker */
-        .top-school-marker .rank-number {
-            display: block;
+    /* Number inside map marker */
+    .top-school-marker .rank-number {
+    display: block;
 
-            font-family: Arial, sans-serif;
-            font-size: 11px;
-            font-weight: 900;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 900;
 
-            line-height: 1;
+    line-height: 1;
 
-            text-align: center;
+    text-align: center;
 
-            /* Optical correction for Arial numerals */
-            transform: translateY(-0.2px);
-        }
+    /* Optical correction for Arial numerals */
+    transform: translateY(-0.2px);
+    }
 
 
-        .traditional-school-marker .rank-number {
-            color: #000000;
-        }
+    .traditional-school-marker .rank-number {
+    color: #000000;
+    }
 
 
-        .alternative-school-marker .rank-number {
-            color: #F50000;
-        }
+    .alternative-school-marker .rank-number {
+    color: #F50000;
+    }
 
 
 
-        /* ============================================================
-   TOP 5 SCHOOL LEGEND SYMBOLS
-   ============================================================ */
+    /* ============================================================
+    TOP 5 SCHOOL LEGEND SYMBOLS
+    ============================================================ */
 
-        .school-rank-legend {
-            width: 20px;
-            height: 20px;
+    .school-rank-legend {
+    width: 20px;
+    height: 20px;
 
-            background: #FFFFFF;
-            border: 2px solid #000000;
-            border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #000000;
+    border-radius: 50%;
 
-            box-sizing: border-box;
+    box-sizing: border-box;
 
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
-            margin-right: 8px;
+    margin-right: 8px;
 
-            vertical-align: middle;
+    vertical-align: middle;
 
-            font-family: Arial, sans-serif;
-            font-size: 13px;
-            font-weight: 900;
-            line-height: 1;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1;
 
-            /* Prevent other legend CSS from interfering */
-            float: none !important;
-            opacity: 1 !important;
-        }
+    /* Prevent other legend CSS from interfering */
+    float: none !important;
+    opacity: 1 !important;
+    }
 
 
-        /* Fine-tune the actual letter independently */
-        .school-rank-legend .legend-letter {
-            display: block;
+    /* Fine-tune the actual letter independently */
+    .school-rank-legend .legend-letter {
+    display: block;
 
-            width: 100%;
+    width: 100%;
 
-            text-align: center;
+    text-align: center;
 
-            font: inherit;
-            line-height: 1;
+    font: inherit;
+    line-height: 1;
 
-            /* Optical centering */
-            transform: translateY(-0.5px);
-        }
+    /* Optical centering */
+    transform: translateY(-0.5px);
+    }
 
 
-        /* Traditional */
-        .traditional-school-legend {
-            color: #000000;
-        }
+    /* Traditional */
+    .traditional-school-legend {
+    color: #000000;
+    }
 
 
-        /* Alternative */
-        .alternative-school-legend {
-            color: #F50000;
-        }
+    /* Alternative */
+    .alternative-school-legend {
+    color: #F50000;
+    }
 
-        /* ============================================================
-ADDRESS SEARCH
-============================================================ */
+    /* ============================================================
+    ADDRESS SEARCH
+    ============================================================ */
 
-        .leaflet-control-geocoder {
-            font-family: Arial, sans-serif;
-            font-size: 13px;
-        }
+    .address-search-control {
+    position: relative;
 
-        .leaflet-control-geocoder-form input {
-            width: 260px;
-            padding: 6px 8px;
-        }
+    width: 320px;
 
-        .address-search-marker {
-            z-index: 1100;
-        }
+    background: #FFFFFF;
+
+    border-radius: 4px;
+
+    box-shadow:
+    0 1px 5px rgba(0, 0, 0, 0.65);
+
+    font-family: Arial, sans-serif;
+    }
+
+
+    .address-search-input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 9px 12px;
+
+    border: none;
+
+    border-radius: 4px;
+
+    outline: none;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 14px;
+
+    background: #FFFFFF;
+    }
+
+
+    .address-search-results {
+    display: none;
+
+    position: absolute;
+
+    top: calc(100% + 2px);
+
+    left: 0;
+
+    width: 100%;
+
+    max-height: 250px;
+
+    overflow-y: auto;
+
+    background: #FFFFFF;
+
+    border-radius: 4px;
+
+    box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.35);
+
+    z-index: 2000;
+    }
+
+
+    .address-search-result {
+    padding: 9px 12px;
+
+    border-bottom:
+    1px solid #DDDDDD;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    line-height: 1.3;
+    }
+
+
+    .address-search-result:last-child {
+    border-bottom: none;
+    }
+
+
+    .address-search-result:hover {
+    background: #F2F2F2;
+    }
+
+
+    .address-search-status {
+    padding: 9px 12px;
+
+    font-size: 13px;
+
+    color: #555555;
+    }
     </style>
 </head>
 
@@ -407,8 +486,6 @@ ADDRESS SEARCH
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.control.layers.tree@1.2.0/L.Control.Layers.Tree.js"></script>
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
     <script>
 
         // ============================================================
@@ -435,108 +512,504 @@ ADDRESS SEARCH
                 attribution: '&copy; OpenStreetMap contributors'
             }
         ).addTo(map);
+
         // ============================================================
-        // ADDRESS SEARCH
-        // Searches Denver and the surrounding metro area
+        // GEOAPIFY ADDRESS SEARCH
         // ============================================================
 
-        var denverSearchBounds = L.latLngBounds(
-            [39.45, -105.35],
-            [40.10, -104.55]
-        );
+        var geoapifyApiKey =
+            "b6a94e57cd704f0183f26b5b58ad5d78";
 
 
-        var searchResultMarker = null;
+        var addressSearchMarker =
+            null;
 
 
-        var addressGeocoder =
-            L.Control.Geocoder.nominatim({
-                geocodingQueryParams: {
-                    countrycodes: "us",
-                    viewbox:
-                        "-105.35,40.10,-104.55,39.45",
-                    bounded: 1
+        var addressSearchTimeout =
+            null;
+
+
+        var addressSearchController =
+            null;
+
+
+        // Approximate Denver metro search area
+        var denverMetroBounds =
+            L.latLngBounds(
+                [39.45, -105.35],
+                [40.10, -104.55]
+            );
+
+
+        // ============================================================
+        // CREATE SEARCH CONTROL
+        // ============================================================
+
+        var AddressSearchControl =
+            L.Control.extend({
+
+                options: {
+                    position: "topright"
+                },
+
+
+                onAdd: function () {
+
+                    var container =
+                        L.DomUtil.create(
+                            "div",
+                            "address-search-control"
+                        );
+
+
+                    var input =
+                        L.DomUtil.create(
+                            "input",
+                            "address-search-input",
+                            container
+                        );
+
+
+                    input.type =
+                        "text";
+
+                    input.placeholder =
+                        "Search address near Denver...";
+
+                    input.autocomplete =
+                        "off";
+
+
+                    var resultsContainer =
+                        L.DomUtil.create(
+                            "div",
+                            "address-search-results",
+                            container
+                        );
+
+
+                    L.DomEvent.disableClickPropagation(
+                        container
+                    );
+
+                    L.DomEvent.disableScrollPropagation(
+                        container
+                    );
+
+
+                    // ====================================================
+                    // INPUT EVENT
+                    // ====================================================
+
+                    input.addEventListener(
+                        "input",
+                        function () {
+
+                            var searchText =
+                                input.value.trim();
+
+
+                            clearTimeout(
+                                addressSearchTimeout
+                            );
+
+
+                            if (
+                                searchText.length < 3
+                            ) {
+
+                                resultsContainer.innerHTML =
+                                    "";
+
+                                resultsContainer.style.display =
+                                    "none";
+
+                                return;
+                            }
+
+
+                            addressSearchTimeout =
+                                setTimeout(
+                                    function () {
+
+                                        searchGeoapify(
+                                            searchText,
+                                            resultsContainer,
+                                            input
+                                        );
+
+                                    },
+                                    250
+                                );
+
+                        }
+                    );
+
+
+                    // Hide suggestions when clicking outside
+                    document.addEventListener(
+                        "click",
+                        function (event) {
+
+                            if (
+                                !container.contains(
+                                    event.target
+                                )
+                            ) {
+
+                                resultsContainer.style.display =
+                                    "none";
+
+                            }
+
+                        }
+                    );
+
+
+                    return container;
+
                 }
+
             });
 
 
-        var addressSearchControl =
-            L.Control.geocoder({
-                position: "topright",
-
-                geocoder:
-                    addressGeocoder,
-
-                defaultMarkGeocode:
-                    false,
-
-                collapsed:
-                    false,
-
-                placeholder:
-                    "Search address near Denver..."
-            });
+        new AddressSearchControl()
+            .addTo(map);
 
 
-        addressSearchControl
-            .on(
-                "markgeocode",
-                function (event) {
+        // ============================================================
+        // SEARCH GEOAPIFY
+        // ============================================================
 
-                    var result =
-                        event.geocode;
+        function searchGeoapify(
+            searchText,
+            resultsContainer,
+            input
+        ) {
 
-                    var location =
-                        result.center;
+            // Cancel previous request if user keeps typing
+            if (
+                addressSearchController
+            ) {
+
+                addressSearchController.abort();
+
+            }
+
+
+            addressSearchController =
+                new AbortController();
+
+
+            resultsContainer.innerHTML =
+                '<div class="address-search-status">' +
+                'Searching...' +
+                '</div>';
+
+            resultsContainer.style.display =
+                "block";
+
+
+            var url =
+                "https://api.geoapify.com/v1/geocode/autocomplete" +
+                "?text=" +
+                encodeURIComponent(
+                    searchText
+                ) +
+
+                "&format=json" +
+
+                "&limit=6" +
+
+                "&filter=" +
+                encodeURIComponent(
+                    "rect:-105.35,39.45,-104.55,40.10"
+                ) +
+
+                "&bias=" +
+                encodeURIComponent(
+                    "proximity:-104.9903,39.7392"
+                ) +
+
+                "&lang=en" +
+
+                "&apiKey=" +
+                encodeURIComponent(
+                    geoapifyApiKey
+                );
+
+
+            fetch(
+                url,
+                {
+                    signal:
+                        addressSearchController.signal
+                }
+            )
+
+                .then(function (response) {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Geoapify request failed."
+                        );
+
+                    }
+
+
+                    return response.json();
+
+                })
+
+
+                .then(function (results) {
+
+                    displayAddressResults(
+                        results,
+                        resultsContainer,
+                        input
+                    );
+
+                })
+
+
+                .catch(function (error) {
+
+                    if (
+                        error.name ===
+                        "AbortError"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    console.error(
+                        "Address search error:",
+                        error
+                    );
+
+
+                    resultsContainer.innerHTML =
+                        '<div class="address-search-status">' +
+                        'Unable to load address results.' +
+                        '</div>';
+
+                });
+
+        }
+
+
+        // ============================================================
+        // DISPLAY ADDRESS RESULTS
+        // ============================================================
+
+        function displayAddressResults(
+            results,
+            resultsContainer,
+            input
+        ) {
+
+            resultsContainer.innerHTML =
+                "";
+
+
+            if (
+                !results ||
+                results.length === 0
+            ) {
+
+                resultsContainer.innerHTML =
+                    '<div class="address-search-status">' +
+                    'No nearby addresses found.' +
+                    '</div>';
+
+                resultsContainer.style.display =
+                    "block";
+
+                return;
+
+            }
+
+
+            results.forEach(
+                function (result) {
+
+                    var latitude =
+                        Number(
+                            result.lat
+                        );
+
+                    var longitude =
+                        Number(
+                            result.lon
+                        );
 
 
                     if (
-                        !denverSearchBounds.contains(
-                            location
-                        )
+                        isNaN(latitude) ||
+                        isNaN(longitude)
                     ) {
 
-                        alert(
-                            "Please search for an address in or near the Denver metro area."
-                        );
-
                         return;
+
                     }
 
 
-                    if (searchResultMarker) {
-
-                        map.removeLayer(
-                            searchResultMarker
+                    var resultItem =
+                        L.DomUtil.create(
+                            "div",
+                            "address-search-result",
+                            resultsContainer
                         );
 
-                    }
+
+                    resultItem.textContent =
+                        result.formatted;
 
 
-                    searchResultMarker =
-                        L.marker(
-                            location,
-                            {
-                                pane:
-                                    "pointPane"
-                            }
-                        )
-                            .addTo(map)
-                            .bindPopup(
-                                "<strong>Search Result</strong><br>" +
-                                result.name
-                            )
-                            .openPopup();
+                    resultItem.addEventListener(
+                        "click",
+                        function () {
 
+                            selectAddressResult(
+                                result,
+                                latitude,
+                                longitude,
+                                input,
+                                resultsContainer
+                            );
 
-                    map.setView(
-                        location,
-                        16
+                        }
                     );
 
                 }
-            )
-            .addTo(map);
+            );
+
+
+            resultsContainer.style.display =
+                "block";
+
+        }
+
+
+        // ============================================================
+        // SELECT ADDRESS
+        // ============================================================
+
+        function selectAddressResult(
+            result,
+            latitude,
+            longitude,
+            input,
+            resultsContainer
+        ) {
+
+            var location =
+                L.latLng(
+                    latitude,
+                    longitude
+                );
+
+
+            if (
+                !denverMetroBounds.contains(
+                    location
+                )
+            ) {
+
+                alert(
+                    "Please select an address in or near the Denver metro area."
+                );
+
+                return;
+
+            }
+
+
+            input.value =
+                result.formatted;
+
+
+            resultsContainer.style.display =
+                "none";
+
+
+            if (
+                addressSearchMarker
+            ) {
+
+                map.removeLayer(
+                    addressSearchMarker
+                );
+
+            }
+
+
+            addressSearchMarker =
+                L.marker(
+                    location,
+                    {
+                        pane:
+                            "pointPane"
+                    }
+                )
+                    .addTo(map)
+                    .bindPopup(
+                        "<strong>Search Result</strong><br>" +
+                        escapeAddressText(
+                            result.formatted
+                        )
+                    )
+                    .openPopup();
+
+
+            map.setView(
+                location,
+                16
+            );
+
+        }
+
+
+        // ============================================================
+        // ESCAPE SEARCH RESULT TEXT
+        // ============================================================
+
+        function escapeAddressText(
+            value
+        ) {
+
+            return String(value)
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
 
 
         // ============================================================
