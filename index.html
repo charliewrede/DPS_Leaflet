@@ -7,6 +7,7 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.control.layers.tree@1.2.0/L.Control.Layers.Tree.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <style>
         html,
         body {
@@ -373,6 +374,24 @@ LAYER CONTROL
         .alternative-school-legend {
             color: #F50000;
         }
+
+        /* ============================================================
+ADDRESS SEARCH
+============================================================ */
+
+        .leaflet-control-geocoder {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+        }
+
+        .leaflet-control-geocoder-form input {
+            width: 260px;
+            padding: 6px 8px;
+        }
+
+        .address-search-marker {
+            z-index: 1100;
+        }
     </style>
 </head>
 
@@ -388,6 +407,7 @@ LAYER CONTROL
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.control.layers.tree@1.2.0/L.Control.Layers.Tree.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
     <script>
 
@@ -415,6 +435,108 @@ LAYER CONTROL
                 attribution: '&copy; OpenStreetMap contributors'
             }
         ).addTo(map);
+        // ============================================================
+        // ADDRESS SEARCH
+        // Searches Denver and the surrounding metro area
+        // ============================================================
+
+        var denverSearchBounds = L.latLngBounds(
+            [39.45, -105.35],
+            [40.10, -104.55]
+        );
+
+
+        var searchResultMarker = null;
+
+
+        var addressGeocoder =
+            L.Control.Geocoder.nominatim({
+                geocodingQueryParams: {
+                    countrycodes: "us",
+                    viewbox:
+                        "-105.35,40.10,-104.55,39.45",
+                    bounded: 1
+                }
+            });
+
+
+        var addressSearchControl =
+            L.Control.geocoder({
+                position: "topright",
+
+                geocoder:
+                    addressGeocoder,
+
+                defaultMarkGeocode:
+                    false,
+
+                collapsed:
+                    false,
+
+                placeholder:
+                    "Search address near Denver..."
+            });
+
+
+        addressSearchControl
+            .on(
+                "markgeocode",
+                function (event) {
+
+                    var result =
+                        event.geocode;
+
+                    var location =
+                        result.center;
+
+
+                    if (
+                        !denverSearchBounds.contains(
+                            location
+                        )
+                    ) {
+
+                        alert(
+                            "Please search for an address in or near the Denver metro area."
+                        );
+
+                        return;
+                    }
+
+
+                    if (searchResultMarker) {
+
+                        map.removeLayer(
+                            searchResultMarker
+                        );
+
+                    }
+
+
+                    searchResultMarker =
+                        L.marker(
+                            location,
+                            {
+                                pane:
+                                    "pointPane"
+                            }
+                        )
+                            .addTo(map)
+                            .bindPopup(
+                                "<strong>Search Result</strong><br>" +
+                                result.name
+                            )
+                            .openPopup();
+
+
+                    map.setView(
+                        location,
+                        16
+                    );
+
+                }
+            )
+            .addTo(map);
 
 
         // ============================================================
