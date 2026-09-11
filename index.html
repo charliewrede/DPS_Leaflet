@@ -8,470 +8,667 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.control.layers.tree@1.2.0/L.Control.Layers.Tree.css" />
     <style>
-    html,
-    body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    }
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
 
-    #map {
-    position: fixed;
-    top: 0;
-    left: 0;
+        #map {
+            position: fixed;
+            top: 0;
+            left: 0;
 
-    width: 100vw;
-    height: 100vh;
+            width: 100vw;
+            height: 100vh;
 
-    margin: 0;
-    padding: 0;
-    }
+            margin: 0;
+            padding: 0;
+        }
 
-    /* ============================================================
+        /* ============================================================
     LAYER CONTROL
     ============================================================ */
 
-    .leaflet-control-layers {
-    max-height: 45vh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    background: rgba(255, 255, 255, 0.95);
-    }
+        .leaflet-control-layers {
+            max-height: 45vh;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            background: rgba(255, 255, 255, 0.95);
+        }
 
-    .control-toggle-button {
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
+        .control-toggle-button {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
 
-    padding: 6px 10px;
+            padding: 6px 10px;
 
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-    font-weight: bold;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            font-weight: bold;
 
-    cursor: pointer;
+            cursor: pointer;
 
-    box-shadow: none;
-    }
+            box-shadow: none;
+        }
 
-    .control-toggle-button:hover {
-    background: #f4f4f4;
-    }
+        .control-toggle-button:hover {
+            background: #f4f4f4;
+        }
 
-    .control-toggle-switch {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+        .control-toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
 
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
 
-    padding: 6px 10px;
+            padding: 6px 10px;
 
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    }
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+        }
 
-    .layer-toggle-fixed,
-    .legend-toggle-fixed {
-    position: fixed !important;
-    z-index: 1000;
-    }
-
-
-    .toggle-switch {
-    position: relative;
-    display: inline-block;
-
-    width: 34px;
-    height: 18px;
-    }
+        .layer-toggle-fixed,
+        .legend-toggle-fixed {
+            position: fixed !important;
+            z-index: 1000;
+        }
 
 
-    .toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-    }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+
+            width: 34px;
+            height: 18px;
+        }
 
 
-    .toggle-slider {
-    position: absolute;
-
-    cursor: pointer;
-
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    background: #BBBBBB;
-
-    border-radius: 18px;
-
-    transition: 0.2s;
-    }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
 
-    .toggle-slider::before {
-    content: "";
+        .toggle-slider {
+            position: absolute;
 
-    position: absolute;
+            cursor: pointer;
 
-    width: 14px;
-    height: 14px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
 
-    left: 2px;
-    bottom: 2px;
+            background: #BBBBBB;
 
-    background: white;
+            border-radius: 18px;
 
-    border-radius: 50%;
-
-    transition: 0.2s;
-    }
-
-
-    .toggle-switch input:checked+.toggle-slider {
-    background: #4CAF50;
-    }
+            transition: 0.2s;
+        }
 
 
-    .toggle-switch input:checked+.toggle-slider::before {
-    transform: translateX(16px);
-    }
+        .toggle-slider::before {
+            content: "";
 
-    /* ============================================================
+            position: absolute;
+
+            width: 14px;
+            height: 14px;
+
+            left: 2px;
+            bottom: 2px;
+
+            background: white;
+
+            border-radius: 50%;
+
+            transition: 0.2s;
+        }
+
+
+        .toggle-switch input:checked+.toggle-slider {
+            background: #4CAF50;
+        }
+
+
+        .toggle-switch input:checked+.toggle-slider::before {
+            transform: translateX(16px);
+        }
+
+        /* ============================================================
     LEGEND
     ============================================================ */
 
-    .info.legend {
-    padding: 10px 12px;
-    background: white;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    line-height: 22px;
-    color: #333;
-    max-height: 45vh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    }
+        .info.legend {
+            padding: 10px 12px;
+            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            line-height: 22px;
+            color: #333;
+            max-height: 45vh;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
 
-    .info.legend h4 {
-    margin: 0 0 6px 0;
-    font-size: 15px;
-    }
+        .info.legend h4 {
+            margin: 0 0 6px 0;
+            font-size: 15px;
+        }
 
-    .info.legend .legend-section {
-    clear: both;
-    margin-top: 10px;
-    margin-bottom: 4px;
-    font-weight: bold;
-    }
+        .info.legend .legend-section {
+            clear: both;
+            margin-top: 10px;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
 
-    /* Square symbols */
+        /* Square symbols */
 
-    .info.legend i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-right: 8px;
-    opacity: 1;
-    }
+        .info.legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 1;
+        }
 
-    /* Circle symbols */
+        /* Circle symbols */
 
-    .info.legend .circle-symbol {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin: 3px 8px 0 3px;
-    }
+        .info.legend .circle-symbol {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 3px 8px 0 3px;
+        }
 
-    /* Line symbols */
+        /* Line symbols */
 
-    .info.legend .line-symbol {
-    width: 20px;
-    height: 0;
-    margin-top: 10px;
-    border-top: 3px solid;
-    background: none;
-    }
+        .info.legend .line-symbol {
+            width: 20px;
+            height: 0;
+            margin-top: 10px;
+            border-top: 3px solid;
+            background: none;
+        }
 
-    /* Polygon symbol */
+        /* Polygon symbol */
 
-    .info.legend .polygon-symbol {
-    width: 18px;
-    height: 18px;
-    margin-right: 8px;
-    }
+        .info.legend .polygon-symbol {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+        }
 
-    /* ============================================================
+        /* ============================================================
+PROTECTIVE POINT SYMBOLS
+============================================================ */
+
+        .protective-div-icon {
+            background: transparent !important;
+            border: none !important;
+        }
+
+
+        .protective-marker-shape {
+            position: relative;
+
+            width: 16px;
+            height: 16px;
+
+            background: #FFFFFF;
+
+            clip-path: var(--shape-path);
+
+            filter:
+                drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+        }
+
+
+        .protective-marker-shape::after {
+            content: "";
+
+            position: absolute;
+
+            inset: 2px;
+
+            background:
+                var(--marker-color);
+
+            clip-path:
+                var(--shape-path);
+        }
+
+
+        /* Legend version */
+
+        .protective-legend-symbol {
+            position: relative;
+
+            display: inline-block;
+
+            float: left;
+
+            width: 14px;
+            height: 14px;
+
+            margin:
+                4px 8px 0 2px;
+
+            background: #FFFFFF;
+
+            clip-path:
+                var(--shape-path);
+        }
+
+
+        .protective-legend-symbol::after {
+            content: "";
+
+            position: absolute;
+
+            inset: 2px;
+
+            background:
+                var(--marker-color);
+
+            clip-path:
+                var(--shape-path);
+        }
+
+
+        /* ============================================================
+SHAPES
+============================================================ */
+
+        /* Food Access */
+        .protective-shape-diamond {
+            --shape-path:
+                polygon(50% 0,
+                    100% 50%,
+                    50% 100%,
+                    0 50%);
+        }
+
+
+        /* Recreation Centers */
+        .protective-shape-square {
+            --shape-path:
+                polygon(0 0,
+                    100% 0,
+                    100% 100%,
+                    0 100%);
+        }
+
+
+        /* Recreation Courts */
+        .protective-shape-circle {
+            --shape-path:
+                circle(50%);
+        }
+
+
+        /* Afterschool Programs */
+        .protective-shape-triangle {
+            --shape-path:
+                polygon(50% 0,
+                    100% 100%,
+                    0 100%);
+        }
+
+
+        /* Health Facilities */
+        .protective-shape-cross {
+            --shape-path:
+                polygon(35% 0,
+                    65% 0,
+                    65% 35%,
+                    100% 35%,
+                    100% 65%,
+                    65% 65%,
+                    65% 100%,
+                    35% 100%,
+                    35% 65%,
+                    0 65%,
+                    0 35%,
+                    35% 35%);
+        }
+
+
+        /* Libraries */
+        .protective-shape-book {
+            --shape-path:
+                polygon(3% 10%,
+                    43% 15%,
+                    50% 22%,
+                    57% 15%,
+                    97% 10%,
+                    97% 90%,
+                    57% 85%,
+                    50% 92%,
+                    43% 85%,
+                    3% 90%);
+        }
+
+
+        /* Swimming Pools */
+        .protective-shape-drop {
+            --shape-path:
+                polygon(50% 0,
+                    72% 28%,
+                    88% 52%,
+                    92% 68%,
+                    84% 84%,
+                    70% 96%,
+                    50% 100%,
+                    30% 96%,
+                    16% 84%,
+                    8% 68%,
+                    12% 52%,
+                    28% 28%);
+        }
+
+
+        /* Skateparks */
+        .protective-shape-hexagon {
+            --shape-path:
+                polygon(25% 0,
+                    75% 0,
+                    100% 50%,
+                    75% 100%,
+                    25% 100%,
+                    0 50%);
+        }
+
+
+        /* Arts / Culture / Amphitheaters */
+        .protective-shape-star {
+            --shape-path:
+                polygon(50% 0,
+                    61% 35%,
+                    98% 35%,
+                    68% 57%,
+                    79% 94%,
+                    50% 72%,
+                    21% 94%,
+                    32% 57%,
+                    2% 35%,
+                    39% 35%);
+        }
+
+
+        /* ============================================================
     NEIGHBORHOOD LABELS
     ============================================================ */
 
-    .neighborhood-label {
-    background: transparent;
-    border: none;
-    box-shadow: none;
+        .neighborhood-label {
+            background: transparent;
+            border: none;
+            box-shadow: none;
 
-    color: #000000;
+            color: #000000;
 
-    font-family: Arial, sans-serif !important;
-    font-weight: 900 !important;
-    font-style: normal !important;
+            font-family: Arial, sans-serif !important;
+            font-weight: 900 !important;
+            font-style: normal !important;
 
-    white-space: normal;
+            white-space: normal;
 
-    text-align: center;
+            text-align: center;
 
-    line-height: 1.05;
+            line-height: 1.05;
 
-    pointer-events: none;
+            pointer-events: none;
 
-    transition:
-    font-size 0.15s ease,
-    opacity 0.15s ease;
-    }
-
-
-    /* Force ALL text inside neighborhood labels to stay bold */
-    .neighborhood-label,
-    .neighborhood-label *,
-    .leaflet-tooltip.neighborhood-label,
-    .leaflet-tooltip.neighborhood-label * {
-    font-family: Arial, sans-serif !important;
-    font-weight: 900 !important;
-    font-style: normal !important;
-    }
+            transition:
+                font-size 0.15s ease,
+                opacity 0.15s ease;
+        }
 
 
-    /* Slightly reinforce very small text */
-    .neighborhood-label {
-    -webkit-text-stroke: 0.15px currentColor;
-    }
+        /* Force ALL text inside neighborhood labels to stay bold */
+        .neighborhood-label,
+        .neighborhood-label *,
+        .leaflet-tooltip.neighborhood-label,
+        .leaflet-tooltip.neighborhood-label * {
+            font-family: Arial, sans-serif !important;
+            font-weight: 900 !important;
+            font-style: normal !important;
+        }
 
 
-    .neighborhood-label::before {
-    display: none;
-    }
+        /* Slightly reinforce very small text */
+        .neighborhood-label {
+            -webkit-text-stroke: 0.15px currentColor;
+        }
 
-    /* ============================================================
+
+        .neighborhood-label::before {
+            display: none;
+        }
+
+        /* ============================================================
     TOP 5 SCHOOL RANK MARKERS
     ============================================================ */
 
-    .top-school-marker {
-    width: 18px;
-    height: 18px;
+        .top-school-marker {
+            width: 18px;
+            height: 18px;
 
-    background: #FFFFFF;
+            background: #FFFFFF;
 
-    border: 2px solid #000000;
-    border-radius: 50%;
+            border: 2px solid #000000;
+            border-radius: 50%;
 
-    box-sizing: border-box;
+            box-sizing: border-box;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 
-    pointer-events: auto;
-    }
-
-
-    /* Number inside map marker */
-    .top-school-marker .rank-number {
-    display: block;
-
-    font-family: Arial, sans-serif;
-    font-size: 11px;
-    font-weight: 900;
-
-    line-height: 1;
-
-    text-align: center;
-
-    /* Optical correction for Arial numerals */
-    transform: translateY(-0.2px);
-    }
+            pointer-events: auto;
+        }
 
 
-    .traditional-school-marker .rank-number {
-    color: #000000;
-    }
+        /* Number inside map marker */
+        .top-school-marker .rank-number {
+            display: block;
+
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+
+            line-height: 1;
+
+            text-align: center;
+
+            /* Optical correction for Arial numerals */
+            transform: translateY(-0.2px);
+        }
 
 
-    .alternative-school-marker .rank-number {
-    color: #F50000;
-    }
+        .traditional-school-marker .rank-number {
+            color: #000000;
+        }
+
+
+        .alternative-school-marker .rank-number {
+            color: #F50000;
+        }
 
 
 
-    /* ============================================================
+        /* ============================================================
     TOP 5 SCHOOL LEGEND SYMBOLS
     ============================================================ */
 
-    .school-rank-legend {
-    width: 20px;
-    height: 20px;
+        .school-rank-legend {
+            width: 20px;
+            height: 20px;
 
-    background: #FFFFFF;
-    border: 2px solid #000000;
-    border-radius: 50%;
+            background: #FFFFFF;
+            border: 2px solid #000000;
+            border-radius: 50%;
 
-    box-sizing: border-box;
+            box-sizing: border-box;
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
 
-    margin-right: 8px;
+            margin-right: 8px;
 
-    vertical-align: middle;
+            vertical-align: middle;
 
-    font-family: Arial, sans-serif;
-    font-size: 13px;
-    font-weight: 900;
-    line-height: 1;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 900;
+            line-height: 1;
 
-    /* Prevent other legend CSS from interfering */
-    float: none !important;
-    opacity: 1 !important;
-    }
-
-
-    /* Fine-tune the actual letter independently */
-    .school-rank-legend .legend-letter {
-    display: block;
-
-    width: 100%;
-
-    text-align: center;
-
-    font: inherit;
-    line-height: 1;
-
-    /* Optical centering */
-    transform: translateY(-0.5px);
-    }
+            /* Prevent other legend CSS from interfering */
+            float: none !important;
+            opacity: 1 !important;
+        }
 
 
-    /* Traditional */
-    .traditional-school-legend {
-    color: #000000;
-    }
+        /* Fine-tune the actual letter independently */
+        .school-rank-legend .legend-letter {
+            display: block;
+
+            width: 100%;
+
+            text-align: center;
+
+            font: inherit;
+            line-height: 1;
+
+            /* Optical centering */
+            transform: translateY(-0.5px);
+        }
 
 
-    /* Alternative */
-    .alternative-school-legend {
-    color: #F50000;
-    }
+        /* Traditional */
+        .traditional-school-legend {
+            color: #000000;
+        }
 
-    /* ============================================================
+
+        /* Alternative */
+        .alternative-school-legend {
+            color: #F50000;
+        }
+
+        /* ============================================================
     ADDRESS SEARCH
     ============================================================ */
 
-    .address-search-control {
-    position: relative;
+        .address-search-control {
+            position: relative;
 
-    width: 320px;
+            width: 320px;
 
-    background: #FFFFFF;
+            background: #FFFFFF;
 
-    border-radius: 4px;
+            border-radius: 4px;
 
-    box-shadow:
-    0 1px 5px rgba(0, 0, 0, 0.65);
+            box-shadow:
+                0 1px 5px rgba(0, 0, 0, 0.65);
 
-    font-family: Arial, sans-serif;
-    }
-
-
-    .address-search-input {
-    width: 100%;
-
-    box-sizing: border-box;
-
-    padding: 9px 12px;
-
-    border: none;
-
-    border-radius: 4px;
-
-    outline: none;
-
-    font-family: Arial, sans-serif;
-
-    font-size: 14px;
-
-    background: #FFFFFF;
-    }
+            font-family: Arial, sans-serif;
+        }
 
 
-    .address-search-results {
-    display: none;
+        .address-search-input {
+            width: 100%;
 
-    position: absolute;
+            box-sizing: border-box;
 
-    top: calc(100% + 2px);
+            padding: 9px 12px;
 
-    left: 0;
+            border: none;
 
-    width: 100%;
+            border-radius: 4px;
 
-    max-height: 250px;
+            outline: none;
 
-    overflow-y: auto;
+            font-family: Arial, sans-serif;
 
-    background: #FFFFFF;
+            font-size: 14px;
 
-    border-radius: 4px;
-
-    box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.35);
-
-    z-index: 2000;
-    }
+            background: #FFFFFF;
+        }
 
 
-    .address-search-result {
-    padding: 9px 12px;
+        .address-search-results {
+            display: none;
 
-    border-bottom:
-    1px solid #DDDDDD;
+            position: absolute;
 
-    cursor: pointer;
+            top: calc(100% + 2px);
 
-    font-size: 13px;
+            left: 0;
 
-    line-height: 1.3;
-    }
+            width: 100%;
+
+            max-height: 250px;
+
+            overflow-y: auto;
+
+            background: #FFFFFF;
+
+            border-radius: 4px;
+
+            box-shadow:
+                0 2px 6px rgba(0, 0, 0, 0.35);
+
+            z-index: 2000;
+        }
 
 
-    .address-search-result:last-child {
-    border-bottom: none;
-    }
+        .address-search-result {
+            padding: 9px 12px;
+
+            border-bottom:
+                1px solid #DDDDDD;
+
+            cursor: pointer;
+
+            font-size: 13px;
+
+            line-height: 1.3;
+        }
 
 
-    .address-search-result:hover {
-    background: #F2F2F2;
-    }
+        .address-search-result:last-child {
+            border-bottom: none;
+        }
 
 
-    .address-search-status {
-    padding: 9px 12px;
+        .address-search-result:hover {
+            background: #F2F2F2;
+        }
 
-    font-size: 13px;
 
-    color: #555555;
-    }
+        .address-search-status {
+            padding: 9px 12px;
+
+            font-size: 13px;
+
+            color: #555555;
+        }
     </style>
 </head>
 
@@ -5369,105 +5566,26 @@
                 // ========================================================
                 // RECREATION CENTERS
                 // ========================================================
-
-                var recreationCenters = L.geoJSON(
-                    recreationData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-                                    radius: 4,
-
-                                    fillColor: "#4CE600",
-
-                                    color: "#FFFFFF",
-
-                                    weight: 1,
-
-                                    fillOpacity: 1
-
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createRecreationPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
+                var recreationCenters =
+                    createProtectivePointLayer(
+                        recreationData,
+                        "#4CE600",
+                        createRecreationPopup,
+                        "square"
+                    );
 
 
                 // ========================================================
                 // SUD FACILITIES
                 // ========================================================
 
-                var sudFacilities = L.geoJSON(
-                    sudData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-                                    radius: 4,
-
-                                    fillColor: "#0070FF",
-
-                                    color: "#FFFFFF",
-
-                                    weight: 1,
-
-                                    fillOpacity: 1
-
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createSUDPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
+                var sudFacilities =
+                    createProtectivePointLayer(
+                        sudData,
+                        "#0070FF",
+                        createSUDPopup,
+                        "cross"
+                    );
 
 
 
@@ -5475,53 +5593,14 @@
                 // FARMERS MARKETS
                 // Protective Factor
                 // ========================================================
+                var farmersMarkets =
+                    createProtectivePointLayer(
+                        farmersMarketsData,
+                        "#FFAA00",
+                        createFarmersMarketPopup,
+                        "diamond"
+                    );
 
-                var farmersMarkets = L.geoJSON(
-                    farmersMarketsData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-
-                                    radius: 4,
-
-                                    fillColor: "#FFAA00",
-
-                                    color: "#FFFFFF",
-
-                                    weight: 1,
-
-                                    fillOpacity: 1
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createFarmersMarketPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
                 // ========================================================
                 // PARKS
                 // Protective Factor
@@ -5563,95 +5642,26 @@
                 // Protective Factor
                 // ========================================================
 
-                var swimmingPools = L.geoJSON(
-                    swimmingPoolsData,
-                    {
 
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-                                    radius: 4,
-                                    fillColor: "#00BFFF",
-                                    color: "#FFFFFF",
-                                    weight: 1,
-                                    fillOpacity: 1
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createSwimmingPoolPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
-
+                var swimmingPools =
+                    createProtectivePointLayer(
+                        swimmingPoolsData,
+                        "#00BFFF",
+                        createSwimmingPoolPopup,
+                        "drop"
+                    );
 
                 // ========================================================
                 // LIBRARIES
                 // Protective Factor
                 // ========================================================
-
-                var libraries = L.geoJSON(
-                    librariesData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-                                    radius: 4,
-                                    fillColor: "#8A2BE2",
-                                    color: "#FFFFFF",
-                                    weight: 1,
-                                    fillOpacity: 1
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createLibraryPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
+                var libraries =
+                    createProtectivePointLayer(
+                        librariesData,
+                        "#8A2BE2",
+                        createLibraryPopup,
+                        "book"
+                    );
 
 
                 // ========================================================
@@ -5659,80 +5669,83 @@
                 // Protective Factor
                 // ========================================================
 
-                var skateparks = L.geoJSON(
-                    skateparksData,
-                    {
-
-                        pane: 'pointPane',
-
-                        pointToLayer: function (
-                            feature,
-                            latlng
-                        ) {
-
-                            return L.circleMarker(
-                                latlng,
-                                {
-                                    pane: 'pointPane',
-                                    radius: 4,
-                                    fillColor: "#555555",
-                                    color: "#FFFFFF",
-                                    weight: 1,
-                                    fillOpacity: 1
-                                }
-                            );
-
-                        },
-
-                        onEachFeature: function (
-                            feature,
-                            layer
-                        ) {
-
-                            layer.bindPopup(
-                                createSkateparkPopup(feature),
-                                {
-                                    pane: 'popupTopPane'
-                                }
-                            );
-
-                        }
-
-                    }
-                );
+                var skateparks =
+                    createProtectivePointLayer(
+                        skateparksData,
+                        "#555555",
+                        createSkateparkPopup,
+                        "hexagon"
+                    );
 
 
                 // ========================================================
                 // CREATE PROTECTIVE POINT LAYER
                 // ========================================================
 
+                function createProtectiveMarkerIcon(
+                    fillColor,
+                    shape
+                ) {
+
+                    return L.divIcon({
+                        className:
+                            "protective-div-icon",
+
+                        html:
+                            '<div class="' +
+                            'protective-marker-shape ' +
+                            'protective-shape-' +
+                            shape +
+                            '" ' +
+                            'style="' +
+                            '--marker-color:' +
+                            fillColor +
+                            ';">' +
+                            '</div>',
+
+                        iconSize:
+                            [16, 16],
+
+                        iconAnchor:
+                            [8, 8],
+
+                        popupAnchor:
+                            [0, -8]
+                    });
+
+                }
+
+
                 function createProtectivePointLayer(
                     geojsonData,
                     fillColor,
                     popupFunction,
-                    radius
+                    shape
                 ) {
 
                     return L.geoJSON(
                         geojsonData,
                         {
 
-                            pane: 'pointPane',
+                            pane:
+                                'pointPane',
 
                             pointToLayer: function (
                                 feature,
                                 latlng
                             ) {
 
-                                return L.circleMarker(
+                                return L.marker(
                                     latlng,
                                     {
-                                        pane: 'pointPane',
-                                        radius: radius || 4,
-                                        fillColor: fillColor,
-                                        color: "#FFFFFF",
-                                        weight: 1,
-                                        fillOpacity: 1
+                                        pane:
+                                            'pointPane',
+
+                                        icon:
+                                            createProtectiveMarkerIcon(
+                                                fillColor,
+                                                shape
+                                            )
                                     }
                                 );
 
@@ -5744,9 +5757,12 @@
                             ) {
 
                                 layer.bindPopup(
-                                    popupFunction(feature),
+                                    popupFunction(
+                                        feature
+                                    ),
                                     {
-                                        pane: 'popupTopPane'
+                                        pane:
+                                            'popupTopPane'
                                     }
                                 );
 
@@ -5754,8 +5770,8 @@
 
                         }
                     );
-                }
 
+                }
 
                 // ========================================================
                 // AFTERSCHOOL PROGRAM LAYERS
@@ -5766,7 +5782,7 @@
                         youthDevelopmentData,
                         "#1F78B4",
                         createAfterschoolPopup,
-                        4
+                        "triangle"
                     );
 
 
@@ -5784,7 +5800,7 @@
                         artsMusicData,
                         "#E31A1C",
                         createAfterschoolPopup,
-                        4
+                        "triangle"
                     );
 
 
@@ -5793,7 +5809,7 @@
                         academicStemData,
                         "#6A3D9A",
                         createAfterschoolPopup,
-                        4
+                        "triangle"
                     );
 
 
@@ -5802,7 +5818,7 @@
                         mentalHealthData,
                         "#FF7F00",
                         createAfterschoolPopup,
-                        4
+                        "triangle"
                     );
 
 
@@ -5811,7 +5827,7 @@
                         communityServicesData,
                         "#B15928",
                         createAfterschoolPopup,
-                        4
+                        "triangle"
                     );
 
 
@@ -5820,7 +5836,7 @@
                         earlyChildhoodData,
                         "#FB9A99",
                         createAfterschoolPopup,
-                        4
+                        "triangle"
                     );
 
 
@@ -5833,7 +5849,7 @@
                         amphitheatersData,
                         "#A6CEE3",
                         createAmphitheaterPopup,
-                        4
+                        "star"
                     );
                 // ========================================================
                 // RECREATION COURT SURFACES
@@ -5844,7 +5860,7 @@
                         basketballCourtsData,
                         "#D95F02",
                         createCourtPopup,
-                        4
+                        "circle"
                     );
 
 
@@ -5853,7 +5869,7 @@
                         tennisRacquetCourtsData,
                         "#1B9E77",
                         createCourtPopup,
-                        4
+                        "circle"
                     );
 
 
@@ -5862,7 +5878,7 @@
                         pickleballCourtsData,
                         "#7570B3",
                         createCourtPopup,
-                        4
+                        "circle"
                     );
 
 
@@ -5871,7 +5887,7 @@
                         otherCourtsData,
                         "#666666",
                         createCourtPopup,
-                        4
+                        "circle"
                     );
 
                 // ========================================================
@@ -5883,7 +5899,7 @@
                         healthFacilitiesData,
                         "#E7298A",
                         createHealthFacilityPopup,
-                        4
+                        "cross"
                     );
 
                 // ========================================================
@@ -5895,7 +5911,7 @@
                         hospitalsData,
                         "#C51B7D",
                         createHealthFacilityPopup,
-                        4
+                        "cross"
                     );
 
 
@@ -5904,7 +5920,7 @@
                         fqhcData,
                         "#E66101",
                         createHealthFacilityPopup,
-                        4
+                        "cross"
                     );
                 // ========================================================
                 // PRIVATE RECREATION CENTERS
@@ -5915,7 +5931,7 @@
                         privateRecreationData,
                         "#228B22",
                         createPrivateRecreationPopup,
-                        4
+                        "square"
                     );
 
 
@@ -5928,7 +5944,7 @@
                         artCulturalCentersData,
                         "#C71585",
                         createArtCulturalPopup,
-                        4
+                        "star"
                     );
 
 
@@ -5954,7 +5970,7 @@
                         groceryStoresData,
                         "#7CB342",
                         createGroceryStorePopup,
-                        4
+                        "diamond"
                     );
 
 
@@ -5967,7 +5983,7 @@
                         foodAssistanceData,
                         "#8B4513",
                         createFoodAssistancePopup,
-                        4
+                        "diamond"
                     );
 
 
@@ -6702,29 +6718,74 @@
                     'resize',
                     positionControlToggles
                 );
-                // ========================================================
-                // UPDATE LEGEND
-                // Changes automatically when layers are turned
-                // on or off using the layer control.
-                // ========================================================
+                function protectiveLegendSymbol(
+                    fillColor,
+                    shape
+                ) {
 
+                    return (
+                        '<span class="' +
+                        'protective-legend-symbol ' +
+                        'protective-shape-' +
+                        shape +
+                        '" ' +
+                        'style="' +
+                        '--marker-color:' +
+                        fillColor +
+                        ';">' +
+                        '</span>'
+                    );
+
+                }
                 function updateLegend() {
 
-                    var div = legend.getContainer();
+                    var div =
+                        legend.getContainer();
 
-                    div.innerHTML = '';
+                    div.innerHTML =
+                        "";
 
 
-                    // ====================================================
+                    // ========================================================
+                    // HELPER FOR PROTECTIVE POINT SYMBOLS
+                    // ========================================================
+
+                    function protectiveLegendSymbol(
+                        fillColor,
+                        shape
+                    ) {
+
+                        return (
+                            '<span class="' +
+                            'protective-legend-symbol ' +
+                            'protective-shape-' +
+                            shape +
+                            '" ' +
+                            'style="' +
+                            '--marker-color:' +
+                            fillColor +
+                            ';">' +
+                            '</span>'
+                        );
+
+                    }
+
+
+                    // ========================================================
                     // CENSUS TRACTS
-                    // ====================================================
+                    // ========================================================
 
-                    if (map.hasLayer(censusTracts)) {
+                    if (
+                        map.hasLayer(
+                            censusTracts
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div class="legend-section">' +
                             'Census Tracts' +
                             '</div>';
+
                         div.innerHTML +=
                             'Social Vulnerability Index (SVI) Score<br>';
 
@@ -6753,17 +6814,23 @@
                             '<i style="background:#F50000"></i>' +
                             'High<br>';
 
+
                         div.innerHTML +=
                             '<i style="background:#A80000"></i>' +
                             'Five Highest SVI Tracts<br>';
+
                     }
 
 
-                    // ====================================================
+                    // ========================================================
                     // SCHOOLS
-                    // ====================================================
+                    // ========================================================
 
-                    if (map.hasLayer(schools)) {
+                    if (
+                        map.hasLayer(
+                            schools
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div class="legend-section">' +
@@ -6772,7 +6839,7 @@
 
                         div.innerHTML +=
                             'School Risk Index (SRI) Score<br>';
-                        // Low SRI
+
 
                         div.innerHTML +=
                             '<i class="circle-symbol" ' +
@@ -6783,8 +6850,6 @@
                             'Low<br>';
 
 
-                        // Low - Moderate
-
                         div.innerHTML +=
                             '<i class="circle-symbol" ' +
                             'style="' +
@@ -6793,8 +6858,6 @@
                             '"></i>' +
                             'Low - Moderate<br>';
 
-
-                        // Moderate
 
                         div.innerHTML +=
                             '<i class="circle-symbol" ' +
@@ -6805,8 +6868,6 @@
                             'Moderate<br>';
 
 
-                        // Moderate - High
-
                         div.innerHTML +=
                             '<i class="circle-symbol" ' +
                             'style="' +
@@ -6815,8 +6876,6 @@
                             '"></i>' +
                             'Moderate - High<br>';
 
-
-                        // High
 
                         div.innerHTML +=
                             '<i class="circle-symbol" ' +
@@ -6829,21 +6888,32 @@
                     }
 
 
-                    // ====================================================
-                    // TRADITIONAL SCHOOLS
-                    // ====================================================
+                    // ========================================================
+                    // TOP 5 SCHOOL TYPES
+                    // ========================================================
 
-                    // ====================================================
-                    // TRADITIONAL SCHOOLS
-                    // ====================================================
-
-                    if (map.hasLayer(traditionalSchools)) {
+                    if (
+                        map.hasLayer(
+                            traditionalSchools
+                        ) ||
+                        map.hasLayer(
+                            alternativeSchools
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div class="legend-section">' +
                             'School Types' +
                             '</div>';
 
+                    }
+
+
+                    if (
+                        map.hasLayer(
+                            traditionalSchools
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<span class="' +
@@ -6852,27 +6922,15 @@
                             '<span class="legend-letter">T</span>' +
                             '</span>' +
                             'Top 5 Traditional Schools<br>';
+
                     }
 
 
-                    // ====================================================
-                    // ALTERNATIVE SCHOOLS
-                    // ====================================================
-
-                    // ====================================================
-                    // ALTERNATIVE SCHOOLS
-                    // ====================================================
-
-                    if (map.hasLayer(alternativeSchools)) {
-
-                        if (!map.hasLayer(traditionalSchools)) {
-
-                            div.innerHTML +=
-                                '<div class="legend-section">' +
-                                'School Types' +
-                                '</div>';
-                        }
-
+                    if (
+                        map.hasLayer(
+                            alternativeSchools
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<span class="' +
@@ -6881,68 +6939,89 @@
                             '<span class="legend-letter">A</span>' +
                             '</span>' +
                             'Top 5 Alternative Schools<br>';
+
                     }
 
 
-                    // ====================================================
-                    // COUNTY BOUNDARY
-                    // ====================================================
+                    // ========================================================
+                    // BOUNDARIES
+                    // ========================================================
 
-                    if (map.hasLayer(countyBoundary)) {
+                    if (
+                        map.hasLayer(
+                            countyBoundary
+                        ) ||
+                        map.hasLayer(
+                            neighborhoods
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div class="legend-section">' +
                             'Boundaries' +
                             '</div>';
 
+                    }
+
+
+                    if (
+                        map.hasLayer(
+                            countyBoundary
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<i class="line-symbol" ' +
-                            'style="border-color:#000000; ' +
-                            'border-top-width:3px">' +
-                            '</i>' +
+                            'style="' +
+                            'border-color:#000000;' +
+                            'border-top-width:3px' +
+                            '"></i>' +
                             'County Boundary<br>';
+
                     }
 
 
-                    // ====================================================
-                    // NEIGHBORHOODS
-                    // ====================================================
-
-                    if (map.hasLayer(neighborhoods)) {
-
-                        if (!map.hasLayer(countyBoundary)) {
-
-                            div.innerHTML +=
-                                '<div class="legend-section">' +
-                                'Boundaries' +
-                                '</div>';
-                        }
-
+                    if (
+                        map.hasLayer(
+                            neighborhoods
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<i class="line-symbol" ' +
-                            'style="border-color:#000000; ' +
-                            'border-top-width:2px">' +
-                            '</i>' +
+                            'style="' +
+                            'border-color:#000000;' +
+                            'border-top-width:2px' +
+                            '"></i>' +
                             'Neighborhood Boundary<br>';
+
                     }
-                    // ====================================================
+
+
+                    // ========================================================
                     // PROTECTIVE LAYERS
-                    // Show heading if ANY protective layer is active
-                    // ====================================================
+                    // ========================================================
+
                     var hasProtectiveLayers =
+
                         map.hasLayer(parks) ||
+
                         map.hasLayer(recreationCenters) ||
                         map.hasLayer(privateRecreationCenters) ||
+
                         map.hasLayer(sudFacilities) ||
+
                         map.hasLayer(farmersMarkets) ||
                         map.hasLayer(groceryStores) ||
                         map.hasLayer(foodAssistance) ||
+
                         map.hasLayer(swimmingPools) ||
                         map.hasLayer(libraries) ||
                         map.hasLayer(skateparks) ||
+
+                        map.hasLayer(amphitheaters) ||
                         map.hasLayer(artCulturalCenters) ||
+
                         map.hasLayer(youthDevelopment) ||
                         map.hasLayer(sportsFitness) ||
                         map.hasLayer(artsMusic) ||
@@ -6950,28 +7029,43 @@
                         map.hasLayer(mentalHealthWellness) ||
                         map.hasLayer(communityServices) ||
                         map.hasLayer(earlyChildhood) ||
-                        map.hasLayer(amphitheaters) ||
+
                         map.hasLayer(basketballCourts) ||
                         map.hasLayer(tennisRacquetCourts) ||
                         map.hasLayer(pickleballCourts) ||
                         map.hasLayer(otherCourts) ||
+
                         map.hasLayer(healthFacilities) ||
                         map.hasLayer(hospitals) ||
-                        map.hasLayer(federallyQualifiedHealthCenters) ||
-                        map.hasLayer(schoolBasedHealthCenters);
+                        map.hasLayer(
+                            federallyQualifiedHealthCenters
+                        ) ||
+                        map.hasLayer(
+                            schoolBasedHealthCenters
+                        );
 
-                    if (hasProtectiveLayers) {
+
+                    if (
+                        hasProtectiveLayers
+                    ) {
 
                         div.innerHTML +=
                             '<div class="legend-section">' +
                             'Protective Layers' +
                             '</div>';
+
                     }
-                    // ====================================================
-                    // Parks
-                    // Protective Layer
-                    // ====================================================
-                    if (map.hasLayer(parks)) {
+
+
+                    // ========================================================
+                    // PARKS
+                    // ========================================================
+
+                    if (
+                        map.hasLayer(
+                            parks
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<i style="' +
@@ -6980,81 +7074,154 @@
                             'opacity:0.65;' +
                             '"></i>' +
                             'Parks<br>';
-                    }
-                    if (map.hasLayer(artCulturalCenters)) {
 
-                        div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="background:#C71585;' +
-                            'border:1px solid #FFFFFF"></i>' +
-                            'Art & Cultural Centers<br>';
                     }
 
-                    // ====================================================
+
+                    // ========================================================
                     // SUD FACILITIES
-                    // Protective Layer
-                    // ====================================================
+                    // Cross
+                    // ========================================================
 
-                    if (map.hasLayer(sudFacilities)) {
+                    if (
+                        map.hasLayer(
+                            sudFacilities
+                        )
+                    ) {
 
                         div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="' +
-                            'background:#0070FF;' +
-                            'border:1px solid #FFFFFF' +
-                            '"></i>' +
+                            protectiveLegendSymbol(
+                                "#0070FF",
+                                "cross"
+                            ) +
                             'SUD Facilities<br>';
+
                     }
-                    if (map.hasLayer(swimmingPools)) {
+
+
+                    // ========================================================
+                    // SWIMMING POOLS
+                    // Drop
+                    // ========================================================
+
+                    if (
+                        map.hasLayer(
+                            swimmingPools
+                        )
+                    ) {
 
                         div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="background:#00BFFF;' +
-                            'border:1px solid #FFFFFF"></i>' +
+                            protectiveLegendSymbol(
+                                "#00BFFF",
+                                "drop"
+                            ) +
                             'Swimming Pools<br>';
+
                     }
 
 
-                    if (map.hasLayer(libraries)) {
+                    // ========================================================
+                    // LIBRARIES
+                    // Book
+                    // ========================================================
+
+                    if (
+                        map.hasLayer(
+                            libraries
+                        )
+                    ) {
 
                         div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="background:#8A2BE2;' +
-                            'border:1px solid #FFFFFF"></i>' +
+                            protectiveLegendSymbol(
+                                "#8A2BE2",
+                                "book"
+                            ) +
                             'Libraries<br>';
+
                     }
 
-                    if (map.hasLayer(skateparks)) {
+
+                    // ========================================================
+                    // SKATEPARKS
+                    // Hexagon
+                    // ========================================================
+
+                    if (
+                        map.hasLayer(
+                            skateparks
+                        )
+                    ) {
 
                         div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="background:#555555;' +
-                            'border:1px solid #FFFFFF"></i>' +
+                            protectiveLegendSymbol(
+                                "#555555",
+                                "hexagon"
+                            ) +
                             'Skateparks<br>';
+
                     }
-                    if (map.hasLayer(amphitheaters)) {
+
+
+                    // ========================================================
+                    // ARTS / CULTURAL VENUES
+                    // Stars
+                    // ========================================================
+
+                    if (
+                        map.hasLayer(
+                            amphitheaters
+                        )
+                    ) {
 
                         div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="background:#A6CEE3;' +
-                            'border:1px solid #FFFFFF"></i>' +
+                            protectiveLegendSymbol(
+                                "#A6CEE3",
+                                "star"
+                            ) +
                             'Amphitheaters<br>';
+
                     }
-                    if (map.hasLayer(artCulturalCenters)) {
+
+
+                    if (
+                        map.hasLayer(
+                            artCulturalCenters
+                        )
+                    ) {
 
                         div.innerHTML +=
-                            '<i class="circle-symbol" ' +
-                            'style="background:#C71585;' +
-                            'border:1px solid #FFFFFF"></i>' +
+                            protectiveLegendSymbol(
+                                "#C71585",
+                                "star"
+                            ) +
                             'Art & Cultural Centers<br>';
+
                     }
+
+
+                    // ========================================================
+                    // FOOD ACCESS
+                    // Diamonds
+                    // ========================================================
+
                     var hasFoodAccess =
-                        map.hasLayer(farmersMarkets) ||
-                        map.hasLayer(groceryStores) ||
-                        map.hasLayer(foodAssistance);
+
+                        map.hasLayer(
+                            farmersMarkets
+                        ) ||
+
+                        map.hasLayer(
+                            groceryStores
+                        ) ||
+
+                        map.hasLayer(
+                            foodAssistance
+                        );
 
 
-                    if (hasFoodAccess) {
+                    if (
+                        hasFoodAccess
+                    ) {
 
                         div.innerHTML +=
                             '<div style="' +
@@ -7065,56 +7232,89 @@
                             '">' +
                             'Food Access' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(farmersMarkets)) {
+                    if (
+                        map.hasLayer(
+                            farmersMarkets
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#FFAA00;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#FFAA00",
+                                "diamond"
+                            ) +
+
                             'Farmers Markets' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(groceryStores)) {
+                    if (
+                        map.hasLayer(
+                            groceryStores
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#7CB342;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#7CB342",
+                                "diamond"
+                            ) +
+
                             'Grocery Stores' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(foodAssistance)) {
+                    if (
+                        map.hasLayer(
+                            foodAssistance
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#8B4513;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#8B4513",
+                                "diamond"
+                            ) +
+
                             'Food Assistance' +
                             '</div>';
+
                     }
 
 
-                    // ====================================================
+                    // ========================================================
                     // RECREATION CENTERS
-                    // Protective Layer
-                    // ====================================================
+                    // Squares
+                    // ========================================================
 
                     var hasRecreationCenters =
-                        map.hasLayer(recreationCenters) ||
-                        map.hasLayer(privateRecreationCenters);
+
+                        map.hasLayer(
+                            recreationCenters
+                        ) ||
+
+                        map.hasLayer(
+                            privateRecreationCenters
+                        );
 
 
-                    if (hasRecreationCenters) {
+                    if (
+                        hasRecreationCenters
+                    ) {
 
                         div.innerHTML +=
                             '<div style="' +
@@ -7125,48 +7325,89 @@
                             '">' +
                             'Recreation Centers' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(recreationCenters)) {
+                    if (
+                        map.hasLayer(
+                            recreationCenters
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#4CE600;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#4CE600",
+                                "square"
+                            ) +
+
                             'Public Recreation Centers' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(privateRecreationCenters)) {
+                    if (
+                        map.hasLayer(
+                            privateRecreationCenters
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#228B22;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#228B22",
+                                "square"
+                            ) +
+
                             'Private Recreation Centers' +
                             '</div>';
+
                     }
 
-                    // ====================================================
+
+                    // ========================================================
                     // AFTERSCHOOL PROGRAMS
-                    // Show heading if ANY afterschool sublayer is active
-                    // ====================================================
+                    // Triangles
+                    // ========================================================
 
                     var hasAfterschoolPrograms =
-                        map.hasLayer(youthDevelopment) ||
-                        map.hasLayer(sportsFitness) ||
-                        map.hasLayer(artsMusic) ||
-                        map.hasLayer(academicStem) ||
-                        map.hasLayer(mentalHealthWellness) ||
-                        map.hasLayer(communityServices) ||
-                        map.hasLayer(earlyChildhood);
+
+                        map.hasLayer(
+                            youthDevelopment
+                        ) ||
+
+                        map.hasLayer(
+                            sportsFitness
+                        ) ||
+
+                        map.hasLayer(
+                            artsMusic
+                        ) ||
+
+                        map.hasLayer(
+                            academicStem
+                        ) ||
+
+                        map.hasLayer(
+                            mentalHealthWellness
+                        ) ||
+
+                        map.hasLayer(
+                            communityServices
+                        ) ||
+
+                        map.hasLayer(
+                            earlyChildhood
+                        );
 
 
-                    if (hasAfterschoolPrograms) {
+                    if (
+                        hasAfterschoolPrograms
+                    ) {
 
                         div.innerHTML +=
                             '<div style="' +
@@ -7177,132 +7418,177 @@
                             '">' +
                             'Afterschool Programs' +
                             '</div>';
+
                     }
 
 
-                    // ----------------------------------------------------
-                    // YOUTH DEVELOPMENT
-                    // ----------------------------------------------------
-
-                    if (map.hasLayer(youthDevelopment)) {
+                    if (
+                        map.hasLayer(
+                            youthDevelopment
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#1F78B4;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#1F78B4",
+                                "triangle"
+                            ) +
+
                             'Youth Development' +
                             '</div>';
+
                     }
 
 
-                    // ----------------------------------------------------
-                    // SPORTS & FITNESS
-                    // ----------------------------------------------------
-
-                    if (map.hasLayer(sportsFitness)) {
+                    if (
+                        map.hasLayer(
+                            sportsFitness
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#33A02C;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#33A02C",
+                                "triangle"
+                            ) +
+
                             'Sports & Fitness' +
                             '</div>';
+
                     }
 
 
-                    // ----------------------------------------------------
-                    // ARTS & MUSIC
-                    // ----------------------------------------------------
-
-                    if (map.hasLayer(artsMusic)) {
+                    if (
+                        map.hasLayer(
+                            artsMusic
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#E31A1C;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#E31A1C",
+                                "triangle"
+                            ) +
+
                             'Arts & Music' +
                             '</div>';
+
                     }
 
 
-                    // ----------------------------------------------------
-                    // ACADEMIC & STEM
-                    // ----------------------------------------------------
-
-                    if (map.hasLayer(academicStem)) {
+                    if (
+                        map.hasLayer(
+                            academicStem
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#6A3D9A;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#6A3D9A",
+                                "triangle"
+                            ) +
+
                             'Academic & STEM' +
                             '</div>';
+
                     }
 
 
-                    // ----------------------------------------------------
-                    // MENTAL HEALTH & WELLNESS
-                    // ----------------------------------------------------
-
-                    if (map.hasLayer(mentalHealthWellness)) {
+                    if (
+                        map.hasLayer(
+                            mentalHealthWellness
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#FF7F00;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#FF7F00",
+                                "triangle"
+                            ) +
+
                             'Mental Health & Wellness' +
                             '</div>';
+
                     }
 
 
-                    // ----------------------------------------------------
-                    // COMMUNITY SERVICES
-                    // ----------------------------------------------------
-
-                    if (map.hasLayer(communityServices)) {
+                    if (
+                        map.hasLayer(
+                            communityServices
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#B15928;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#B15928",
+                                "triangle"
+                            ) +
+
                             'Community Services' +
                             '</div>';
+
                     }
 
 
-                    // ----------------------------------------------------
-                    // EARLY CHILDHOOD
-                    // ----------------------------------------------------
-
-                    if (map.hasLayer(earlyChildhood)) {
+                    if (
+                        map.hasLayer(
+                            earlyChildhood
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#FB9A99;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#FB9A99",
+                                "triangle"
+                            ) +
+
                             'Early Childhood' +
                             '</div>';
+
                     }
 
-                    // ====================================================
+
+                    // ========================================================
                     // RECREATION COURT SURFACES
-                    // ====================================================
+                    // Circles
+                    // ========================================================
 
                     var hasRecreationCourts =
-                        map.hasLayer(basketballCourts) ||
-                        map.hasLayer(tennisRacquetCourts) ||
-                        map.hasLayer(pickleballCourts) ||
-                        map.hasLayer(otherCourts);
+
+                        map.hasLayer(
+                            basketballCourts
+                        ) ||
+
+                        map.hasLayer(
+                            tennisRacquetCourts
+                        ) ||
+
+                        map.hasLayer(
+                            pickleballCourts
+                        ) ||
+
+                        map.hasLayer(
+                            otherCourts
+                        );
 
 
-                    if (hasRecreationCourts) {
+                    if (
+                        hasRecreationCourts
+                    ) {
 
                         div.innerHTML +=
                             '<div style="' +
@@ -7313,64 +7599,117 @@
                             '">' +
                             'Recreation Court Surfaces' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(basketballCourts)) {
+                    if (
+                        map.hasLayer(
+                            basketballCourts
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#D95F02;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#D95F02",
+                                "circle"
+                            ) +
+
                             'Basketball Courts' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(tennisRacquetCourts)) {
+                    if (
+                        map.hasLayer(
+                            tennisRacquetCourts
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#1B9E77;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#1B9E77",
+                                "circle"
+                            ) +
+
                             'Tennis & Racquet Courts' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(pickleballCourts)) {
+                    if (
+                        map.hasLayer(
+                            pickleballCourts
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#7570B3;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#7570B3",
+                                "circle"
+                            ) +
+
                             'Pickleball Courts' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(otherCourts)) {
+                    if (
+                        map.hasLayer(
+                            otherCourts
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#666666;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#666666",
+                                "circle"
+                            ) +
+
                             'Other Courts & Recreation' +
                             '</div>';
+
                     }
 
+
+                    // ========================================================
+                    // HEALTH FACILITIES
+                    // Crosses
+                    // ========================================================
+
                     var hasHealthFacilities =
-                        map.hasLayer(healthFacilities) ||
-                        map.hasLayer(hospitals) ||
-                        map.hasLayer(federallyQualifiedHealthCenters) ||
-                        map.hasLayer(schoolBasedHealthCenters);
+
+                        map.hasLayer(
+                            healthFacilities
+                        ) ||
+
+                        map.hasLayer(
+                            hospitals
+                        ) ||
+
+                        map.hasLayer(
+                            federallyQualifiedHealthCenters
+                        ) ||
+
+                        map.hasLayer(
+                            schoolBasedHealthCenters
+                        );
 
 
-                    if (hasHealthFacilities) {
+                    if (
+                        hasHealthFacilities
+                    ) {
 
                         div.innerHTML +=
                             '<div style="' +
@@ -7381,68 +7720,90 @@
                             '">' +
                             'Health Facilities' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(healthFacilities)) {
+                    if (
+                        map.hasLayer(
+                            healthFacilities
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#E7298A;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#E7298A",
+                                "cross"
+                            ) +
+
                             'All Health Facilities' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(hospitals)) {
+                    if (
+                        map.hasLayer(
+                            hospitals
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#C51B7D;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#C51B7D",
+                                "cross"
+                            ) +
+
                             'Hospitals' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(federallyQualifiedHealthCenters)) {
+                    if (
+                        map.hasLayer(
+                            federallyQualifiedHealthCenters
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#E66101;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#E66101",
+                                "cross"
+                            ) +
+
                             'Federally Qualified Health Centers' +
                             '</div>';
+
                     }
 
 
-                    if (map.hasLayer(schoolBasedHealthCenters)) {
+                    if (
+                        map.hasLayer(
+                            schoolBasedHealthCenters
+                        )
+                    ) {
 
                         div.innerHTML +=
                             '<div style="padding-left:14px;">' +
-                            '<i class="circle-symbol" ' +
-                            'style="background:#00A6A6;' +
-                            'border:1px solid #FFFFFF"></i>' +
+
+                            protectiveLegendSymbol(
+                                "#00A6A6",
+                                "cross"
+                            ) +
+
                             'School-Based Health Centers' +
                             '</div>';
+
                     }
 
-                    // ====================================================
-                    // CENSUS TRACT BOUNDARY
-                    // ====================================================
-                    // This is always included with Census Tracts.
-                    // It is intentionally not given its own legend
-                    // symbol because the SVI colors already explain
-                    // the Census Tract layer.
-                    // ====================================================
-
-
-                }
-
+                };
 
                 // ========================================================
                 // INITIAL LEGEND
