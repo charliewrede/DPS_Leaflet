@@ -1491,10 +1491,10 @@ ATTRIBUTION
                 })
 
 
-                .then(function (results) {
+                .then(function (data) {
 
                     displayAddressResults(
-                        results,
+                        data.results || [],
                         resultsContainer,
                         input
                     );
