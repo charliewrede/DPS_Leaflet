@@ -255,23 +255,18 @@ PROTECTIVE POINT SYMBOLS
 
         .protective-legend-symbol {
             position: relative;
-
             display: inline-block;
-
-            float: left;
+            vertical-align: middle;
 
             width: 14px;
             height: 14px;
 
-            margin:
-                4px 8px 0 2px;
+            margin: 0 8px 0 2px;
 
             background: rgba(40, 40, 40, 0.85);
 
-            clip-path:
-                var(--shape-path);
+            clip-path: var(--shape-path);
         }
-
 
         .protective-legend-symbol::after {
             content: "";
@@ -7621,10 +7616,10 @@ ATTRIBUTION
 
                         div.innerHTML +=
                             '<div style = "clear:both;">'
-                            protectiveLegendSymbol(
-                                "#0070FF",
-                                "cross"
-                            ) +
+                        protectiveLegendSymbol(
+                            "#0070FF",
+                            "cross"
+                        ) +
                             'SUD Facilities<br>';
 
                     }
