@@ -14,7 +14,7 @@
 //        d. the box itself
 // ============================================================================
 
-import { SEARCH } from "./config.js";
+import { SEARCH, POPUP_PANE } from "./config.js";
 
 
 // ============================================================================
@@ -159,11 +159,29 @@ export function addAddressSearch(map) {
             .addTo(map)
             .bindPopup(
                 "<strong>Search Result</strong><br>" +
-                escapeText(result.formatted)
-            )
-            .openPopup();
+                escapeText(result.formatted),
+
+                // Same top pane as every other popup, so it sits above
+                // all map layers instead of behind them
+                { pane: POPUP_PANE }
+            );
+
+        // Remove the pin as soon as its popup closes, which happens when
+        // the user clicks anywhere else on the map or opens another popup
+        resultMarker.on("popupclose", function () {
+
+            map.removeLayer(this);
+
+            if (resultMarker === this) {
+                resultMarker = null;
+            }
+        });
 
         map.setView(location, SEARCH.resultZoom);
+
+        // Open the popup after the map has moved, so the move cannot
+        // close it again straight away
+        resultMarker.openPopup();
     }
 
     // ---- d. The box itself -------------------------------------------------
