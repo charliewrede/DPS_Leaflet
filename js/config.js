@@ -197,6 +197,72 @@ function sudServices(properties) {
     return services;
 }
 
+// ---- CDPHE health facilities -----------------------------------------------
+
+// Counties that make up the Denver metro area.
+const DENVER_METRO_COUNTIES = [
+    "DENVER",
+    "ADAMS",
+    "ARAPAHOE",
+    "JEFFERSON",
+    "DOUGLAS",
+    "BOULDER",
+    "BROOMFIELD"
+];
+
+// Keeps the open mental health facilities in the Denver metro area from the
+// statewide CDPHE file: psychiatric hospitals and behavioral health centers.
+function isMetroMentalHealthFacility(feature) {
+
+    const p = feature.properties;
+
+    const isMentalHealth =
+        p.Map_Symbol === "Behavioral/Mental Health" ||
+        p.Facility_Type_Detail === "PSYCHIATRIC" ||
+        p.Facility_Type_Detail === "LICENSED PSYCH";
+
+    return (
+        isMentalHealth &&
+        p.Operating_Status === "Active" &&
+        DENVER_METRO_COUNTIES.includes(p.County)
+    );
+}
+
+// The rows of a CDPHE health facility popup. CDPHE files name their columns
+// either with spaces ("Facility Name") or underscores ("Facility_Name");
+// "separator" says which this file uses.
+function healthFacilityRows(separator) {
+
+    const column = name => name.replace(/ /g, separator);
+
+    return [
+        field("Facility Name", column("Facility Name")),
+        field("Facility Type", column("Facility Type")),
+        field("Health Service Category", column("Map Symbol")),
+        field("Certification / Program", column("Facility Type Detail"), {
+            format: replaceValues({
+                "MEDICARE": "Medicare",
+                "MEDICAID": "Medicaid",
+                "MEDICARE/MEDICAID": "Medicare & Medicaid"
+            })
+        }),
+        field("Address", column("Address Full"), { format: titleCase }),
+        field("Telephone", "Telephone"),
+        field("Licensed Beds", column("Licensed Beds Total"), {
+            show: beds =>
+                beds !== null &&
+                beds !== undefined &&
+                beds !== "" &&
+                beds !== false &&
+                Number(beds) > 0
+        }),
+        field("License Status", column("CDPHE HFEMS Licensed")),
+        field("Operating Status", column("Operating Status"))
+    ];
+}
+
+// ---- Other popup helpers ---------------------------------------------------
+
 // A census percentage row: shown even when the value is 0.
 const censusPercent = (label, source) =>
     field(label, source, { show: "defined", format: percent });
@@ -396,30 +462,10 @@ export const POPUPS = {
     ],
 
     // Shared by Hospitals and Federally Qualified Health Centers
-    healthFacility: [
-        field("Facility Name", "Facility Name"),
-        field("Facility Type", "Facility Type"),
-        field("Health Service Category", "Map Symbol"),
-        field("Certification / Program", "Facility Type Detail", {
-            format: replaceValues({
-                "MEDICARE": "Medicare",
-                "MEDICAID": "Medicaid",
-                "MEDICARE/MEDICAID": "Medicare & Medicaid"
-            })
-        }),
-        field("Address", "Address Full", { format: titleCase }),
-        field("Telephone", "Telephone"),
-        field("Licensed Beds", "Licensed Beds Total", {
-            show: beds =>
-                beds !== null &&
-                beds !== undefined &&
-                beds !== "" &&
-                beds !== false &&
-                Number(beds) > 0
-        }),
-        field("License Status", "CDPHE HFEMS Licensed"),
-        field("Operating Status", "Operating Status")
-    ],
+    healthFacility: healthFacilityRows(" "),
+
+    // Same rows, for the CDPHE file whose columns use underscores
+    mentalHealthFacility: healthFacilityRows("_"),
 
     schoolBasedHealthCenter: [
         field("Health Center", "Name"),
@@ -456,6 +502,8 @@ export const POPUPS = {
 //   popup        which popup from section 4 to use
 //   legendLabel  legend text, when it should differ from "label"
 //   style        Leaflet drawing options (outline color, weight, fill, ...)
+//   filter       function that keeps only some features of the file, e.g.
+//                only the Denver metro rows of a statewide file
 //
 // LAYER TYPES
 //   "riskPolygons"  polygons colored by a 0-1 score      (census tracts)
@@ -831,8 +879,22 @@ export const LAYERS = [
         file: "School_Based_Health_Centers.geojson",
         color: "#00A6A6",
         shape: "cross",
-
         popup: POPUPS.schoolBasedHealthCenter
+    },
+    {
+        id: "mentalHealthFacilities",
+        label: "Mental Health Facilities",
+        group: "healthFacilities",
+        type: "symbolPoints",
+
+        // Statewide CDPHE list of all licensed health facilities. The filter
+        // keeps only open mental health facilities in the Denver metro area.
+        file: "CDPHE_Health_Facilities.geojson",
+        filter: isMetroMentalHealthFacility,
+
+        color: "#7B3294",
+        shape: "cross",
+        popup: POPUPS.mentalHealthFacility
     }
 ];
 

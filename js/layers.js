@@ -201,10 +201,9 @@ function createRiskPoints(config, data) {
 
 function createRankedPoints(config, sourceData) {
 
-    // Keep the features that qualify, highest score first, and cut the list
-    // to the requested length.
-    const topFeatures = sourceData.features
-        .filter(config.filter)
+    // Highest score first, cut to the requested length. (Features that do
+    // not qualify were already removed by the layer's "filter".)
+    const topFeatures = [...sourceData.features]
         .sort((a, b) =>
             Number(b.properties[config.rankField]) -
             Number(a.properties[config.rankField])
@@ -283,7 +282,15 @@ export function createLayers(data) {
 
         // Most layers use their own file. "rankedPoints" layers borrow the
         // data of another layer (config.sourceLayer).
-        const layerData = data[config.sourceLayer || config.id];
+        let layerData = data[config.sourceLayer || config.id];
+
+        // Optional "filter": keep only the features it approves of
+        if (config.filter) {
+            layerData = {
+                ...layerData,
+                features: layerData.features.filter(config.filter)
+            };
+        }
 
         layers[config.id] = BUILDERS[config.type](config, layerData);
 
